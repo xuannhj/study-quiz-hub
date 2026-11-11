@@ -10,3 +10,4 @@ export const swrSubject: Subject = {
   questions: swrQuestions,
   examPacks: swrExamPacks,
 };
+

@@ -31,7 +31,7 @@ describe('SubjectHubView and StudyChapterView', () => {
     ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /thi quiz/i }));
-    expect(screen.getByText(/Quiz 1 \(Starter\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Quiz 1: Chương 1/i)).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /thi final/i }));
     expect(screen.getByText(/Final Exam Mock #1/i)).toBeInTheDocument();
@@ -61,3 +61,4 @@ describe('SubjectHubView and StudyChapterView', () => {
     ).toBeInTheDocument();
   });
 });
+
