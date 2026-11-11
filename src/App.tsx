@@ -4,6 +4,7 @@ import { DashboardView } from './features/dashboard/DashboardView';
 import { SubjectHubView } from './features/subject-detail/SubjectHubView';
 import { StudyChapterView } from './features/study/StudyChapterView';
 import { ExamRunnerView } from './features/exam/ExamRunnerView';
+import { ImportManagerView } from './features/manager/ImportManagerView';
 
 export function App() {
   return (
@@ -20,6 +21,7 @@ export function App() {
             path="/subjects/:subjectId/exam"
             element={<ExamRunnerView />}
           />
+          <Route path="/import" element={<ImportManagerView />} />
         </Routes>
       </Layout>
     </BrowserRouter>
