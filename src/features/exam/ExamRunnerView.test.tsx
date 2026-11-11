@@ -1,15 +1,24 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { ExamRunnerView } from './ExamRunnerView';
+import { ExamResultView } from './ExamResultView';
 import { storageService } from '../../services/storage';
 import type { ExamLaunchState } from './types';
+
+function LocationStateProbe() {
+  const location = useLocation();
+  return (
+    <div data-testid="location-state">{JSON.stringify(location.state)}</div>
+  );
+}
 
 function renderExamWithState(state: ExamLaunchState | { resume: true }) {
   return render(
     <MemoryRouter
       initialEntries={[{ pathname: '/subjects/swr/exam', state }]}
     >
+      <LocationStateProbe />
       <Routes>
         <Route path="/subjects/:subjectId/exam" element={<ExamRunnerView />} />
         <Route
@@ -102,4 +111,75 @@ describe('ExamRunnerView', () => {
       storageService.getProgress('swr').wrongQuestionStats['swr-q-001'].wrongCount
     ).toBe(1);
   });
+
+  it('replaces location pack state with resume marker so F5 reload preserves active session', () => {
+    renderExamWithState({
+      pack: {
+        id: 'test-reload',
+        subjectId: 'swr',
+        category: 'quiz',
+        title: 'Reload Safety Quiz',
+        durationMinutes: 15,
+        questionCount: 1,
+        chapterIds: ['swr-ch1'],
+        fixedQuestionIds: ['swr-q-001'],
+        passScorePercent: 50,
+      },
+      mode: 'exam',
+      shuffleQuestions: false,
+      shuffleOptions: false,
+    });
+
+    expect(screen.getByTestId('location-state').textContent).toBe(
+      JSON.stringify({ resume: true })
+    );
+  });
+
+  it('distinguishes selected, missed, and wrong options in ExamResultView', () => {
+    render(
+      <MemoryRouter>
+        <ExamResultView
+          subjectId="swr"
+          examTitle="Multi Check"
+          flaggedIds={[]}
+          onRetryWrong={() => {}}
+          summary={{
+            totalCount: 1,
+            correctCount: 0,
+            scorePercent: 0,
+            passed: false,
+            chapterBreakdown: [],
+            results: [
+              {
+                isCorrect: false,
+                selectedOptionIds: ['a', 'c'],
+                question: {
+                  id: 'm1',
+                  subjectId: 'swr',
+                  chapterId: 'swr-ch1',
+                  source: 'slide-generated',
+                  examTarget: 'both',
+                  difficulty: 'understand',
+                  type: 'multiple',
+                  prompt: 'Pick A and B',
+                  options: [
+                    { id: 'a', text: 'Opt A' },
+                    { id: 'b', text: 'Opt B' },
+                    { id: 'c', text: 'Opt C' },
+                  ],
+                  correctOptionIds: ['a', 'b'],
+                  explanation: 'A and B are right.',
+                },
+              },
+            ],
+          }}
+        />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Đáp án đúng (Bạn đã chọn)')).toBeInTheDocument();
+    expect(screen.getByText('Đáp án đúng (Bạn bỏ sót)')).toBeInTheDocument();
+    expect(screen.getByText('Bạn chọn (Sai)')).toBeInTheDocument();
+  });
 });
+

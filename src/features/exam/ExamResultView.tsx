@@ -177,11 +177,18 @@ export function ExamResultView({
                 const isRight = item.question.correctOptionIds.includes(opt.id);
                 const isSelected = item.selectedOptionIds.includes(opt.id);
                 let style = 'border-slate-200 bg-slate-50 text-slate-700';
-                if (isRight) {
+                let label = '';
+                if (isRight && isSelected) {
                   style =
-                    'border-emerald-400 bg-emerald-50 text-emerald-900 font-medium';
+                    'border-emerald-500 bg-emerald-50 text-emerald-900 font-medium';
+                  label = 'Đáp án đúng (Bạn đã chọn)';
+                } else if (isRight) {
+                  style =
+                    'border-emerald-400 border-dashed bg-emerald-50/50 text-emerald-900 font-medium';
+                  label = 'Đáp án đúng (Bạn bỏ sót)';
                 } else if (isSelected) {
                   style = 'border-rose-400 bg-rose-50 text-rose-900';
+                  label = 'Bạn chọn (Sai)';
                 }
                 return (
                   <div
@@ -189,9 +196,7 @@ export function ExamResultView({
                     className={`rounded-lg border px-3 py-2 flex items-center justify-between ${style}`}
                   >
                     <span>{opt.text}</span>
-                    <span className="text-xs">
-                      {isRight ? 'Đáp án đúng' : isSelected ? 'Bạn chọn' : ''}
-                    </span>
+                    {label && <span className="text-xs">{label}</span>}
                   </div>
                 );
               })}
@@ -209,3 +214,4 @@ export function ExamResultView({
     </div>
   );
 }
+

@@ -114,4 +114,31 @@ B. Two
     expect(parsed.questions[0].chapterId).toBe('swr-ch2');
     expect(parsed.questions[0].source).toBe('imported');
   });
+
+  it('keeps prompt, options, answer, and explanation together when blank lines appear inside a question', () => {
+    const raw = `
+1. What is a Context Diagram?
+
+A. Top-level DFD showing system boundary
+
+B. Detailed database table schema
+
+Answer: A
+
+Explanation: Context diagram sits at DFD level 0 parent.
+
+2. Second question without blank lines?
+A. Yes
+B. No
+Answer: A
+`;
+
+    const result = parseRawQuestionsText(raw);
+    expect(result.issues.filter((i) => i.severity === 'error')).toEqual([]);
+    expect(result.questions).toHaveLength(2);
+    expect(result.questions[0].correctOptionIds).toEqual(['a']);
+    expect(result.questions[0].explanation).toBe(
+      'Context diagram sits at DFD level 0 parent.'
+    );
+  });
 });

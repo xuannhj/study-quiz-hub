@@ -38,12 +38,29 @@ function splitBlocks(rawText: string): string[][] {
   const blocks: string[][] = [];
   let current: string[] = [];
 
-  for (const line of lines) {
-    const trimmed = line.trim();
+  const findNextNonEmpty = (startIdx: number): string | undefined => {
+    for (let k = startIdx + 1; k < lines.length; k++) {
+      const t = lines[k].trim();
+      if (t) return t;
+    }
+    return undefined;
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const trimmed = lines[i].trim();
     if (!trimmed) {
       if (current.length > 0) {
-        blocks.push(current);
-        current = [];
+        const nextLine = findNextNonEmpty(i);
+        const nextIsContinuation =
+          nextLine !== undefined &&
+          (OPTION_LINE_RE.test(nextLine) ||
+            ANSWER_LINE_RE.test(nextLine) ||
+            EXPLANATION_LINE_RE.test(nextLine));
+        const currentHasOptions = current.some((l) => OPTION_LINE_RE.test(l));
+        if (currentHasOptions && !nextIsContinuation) {
+          blocks.push(current);
+          current = [];
+        }
       }
       continue;
     }

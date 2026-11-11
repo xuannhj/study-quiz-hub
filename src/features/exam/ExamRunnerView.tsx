@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
   ArrowRight,
@@ -55,12 +55,19 @@ function hydrateQuestionsFromSession(
 export function ExamRunnerView() {
   const { subjectId = '' } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const subject = storageService.getSubjectById(subjectId);
 
   const initialState = location.state as
     | ExamLaunchState
     | { resume?: boolean }
     | null;
+
+  useEffect(() => {
+    if (initialState && 'pack' in initialState) {
+      navigate(location.pathname, { replace: true, state: { resume: true } });
+    }
+  }, [initialState, location.pathname, navigate]);
 
   const [sessionState, setSessionState] = useState<{
     session: ActiveExamSession | null;
@@ -621,3 +628,4 @@ export function ExamRunnerView() {
     </div>
   );
 }
+

@@ -60,5 +60,40 @@ describe('SubjectHubView and StudyChapterView', () => {
       screen.getByText(/chưa có câu hỏi làm sai hoặc đánh dấu sao/i)
     ).toBeInTheDocument();
   });
+
+  it('dismisses the active session banner immediately when clicking "Bỏ qua"', () => {
+    storageService.saveActiveSession('swr', {
+      id: 'sess-dismiss',
+      subjectId: 'swr',
+      examPackId: 'swr-quiz-1',
+      examTitle: 'Quiz 1 In Progress',
+      category: 'quiz',
+      mode: 'exam',
+      durationMinutes: 20,
+      passScorePercent: 60,
+      shuffleQuestions: false,
+      shuffleOptions: false,
+      snapshots: [],
+      answers: {},
+      checkedQuestionIds: [],
+      flaggedQuestionIds: [],
+      currentIndex: 0,
+      remainingSeconds: 600,
+      startedAt: '2026-11-11T10:00:00Z',
+      updatedAt: '2026-11-11T10:01:00Z',
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/subjects/swr']}>
+        <Routes>
+          <Route path="/subjects/:subjectId" element={<SubjectHubView />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText(/Quiz 1 In Progress/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /bỏ qua/i }));
+    expect(screen.queryByText(/Quiz 1 In Progress/i)).not.toBeInTheDocument();
+  });
 });
 

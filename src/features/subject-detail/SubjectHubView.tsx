@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   AlertTriangle,
@@ -25,7 +25,13 @@ export function SubjectHubView() {
   const { subjectId = '' } = useParams();
   const navigate = useNavigate();
   const subject = storageService.getSubjectById(subjectId);
-  const progress = storageService.getProgress(subjectId);
+  const [progress, setProgress] = useState(() =>
+    storageService.getProgress(subjectId)
+  );
+
+  useEffect(() => {
+    setProgress(storageService.getProgress(subjectId));
+  }, [subjectId]);
 
   const [activeTab, setActiveTab] = useState<SubjectTab>('study');
   const [selectedPack, setSelectedPack] = useState<ExamPack | null>(null);
@@ -180,7 +186,10 @@ export function SubjectHubView() {
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => storageService.clearActiveSession(subject.id)}
+                onClick={() => {
+                  storageService.clearActiveSession(subject.id);
+                  setProgress(storageService.getProgress(subject.id));
+                }}
                 className="rounded-lg px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100"
               >
                 Bỏ qua
@@ -626,3 +635,4 @@ export function SubjectHubView() {
     </div>
   );
 }
+
