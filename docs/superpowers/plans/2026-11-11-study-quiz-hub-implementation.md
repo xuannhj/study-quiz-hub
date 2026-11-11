@@ -2948,16 +2948,15 @@ git commit -m "feat: add app layout, markdown study renderer, and multi-subject 
 ### Task 7: Subject Hub & Study Chapter Views (Học Lý Thuyết, Thi Quiz, Thi Final, Kho Câu Sai)
 
 **Files:**
+- Create: `E:\SELF-STUDY\study-quiz-hub\src\features\exam\types.ts`
 - Create: `E:\SELF-STUDY\study-quiz-hub\src\features\study\StudyChapterView.tsx`
 - Create: `E:\SELF-STUDY\study-quiz-hub\src\features\subject-detail\SubjectHubView.tsx`
 - Modify: `E:\SELF-STUDY\study-quiz-hub\src\App.tsx`
 - Test: `E:\SELF-STUDY\study-quiz-hub\src\features\subject-detail\SubjectHubView.test.tsx`
 
 **Interfaces:**
-- Consumes: `storageService`, `createDynamicExamPack`, `StudyContentRenderer`, `ExamSetupModal` (or navigates to `/subjects/:subjectId/exam` passing `ExamLaunchConfig` via router `location.state`).
-  To decouple Task 7 from Task 8 cleanly, define and export `ExamLaunchState` in `src/features/exam/types.ts` (create `src/features/exam/types.ts` in this task!).
-- Create: `E:\SELF-STUDY\study-quiz-hub\src\features\exam\types.ts` containing:
-  `ExamLaunchState { pack: ExamPack; mode: ExamMode; shuffleQuestions: boolean; shuffleOptions: boolean }`
+- Consumes: `storageService`, `createDynamicExamPack`, `StudyContentRenderer`.
+- Produces: `ExamLaunchState` in `src/features/exam/types.ts`, `StudyChapterView`, `SubjectHubView`.
 
 - [ ] **Step 1: Create shared exam launch type and write failing test for `SubjectHubView` & `StudyChapterView`**
 
