@@ -99,8 +99,13 @@ export function createStorageService(
   builtInSubjects: readonly Subject[],
   storage?: Storage
 ): StorageService {
-  const targetStorage =
-    storage ?? (typeof window !== 'undefined' ? window.localStorage : undefined);
+  const browserStorage =
+    typeof window !== 'undefined' &&
+    window.localStorage &&
+    typeof window.localStorage.getItem === 'function'
+      ? window.localStorage
+      : undefined;
+  const targetStorage = storage ?? browserStorage;
 
   const read = (): AppStoragePayload =>
     safeParsePayload(targetStorage?.getItem(STORAGE_KEY) ?? null);

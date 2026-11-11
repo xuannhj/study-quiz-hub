@@ -1,6 +1,17 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Layout } from './components/Layout';
+import { DashboardView } from './features/dashboard/DashboardView';
+
 export function App() {
-  return <div className="p-6 text-slate-800">Study & Quiz Hub</div>;
+  return (
+    <BrowserRouter>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<DashboardView />} />
+        </Routes>
+      </Layout>
+    </BrowserRouter>
+  );
 }
 
 export default App;
-
