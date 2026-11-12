@@ -1,7 +1,14 @@
+/// <reference types="vite/client" />
 import { describe, it, expect } from 'vitest';
 import { BUILT_IN_SUBJECTS } from './index';
 import { buildExamQuestions } from '../../services/exam/examEngine';
 import type { Subject } from '../../types/study';
+
+const PUBLIC_IMAGES = new Set(
+  Object.keys(import.meta.glob('../../../public/images/**/*')).map((p) =>
+    p.replace(/^.*\/public/, '')
+  )
+);
 
 function assertSubjectIntegrity(
   subject: Subject,
@@ -38,6 +45,9 @@ function assertSubjectIntegrity(
       expect(optionIds.has(correctId)).toBe(true);
     }
     expect(q.explanation.trim().length).toBeGreaterThan(0);
+    if (q.imageUrl) {
+      expect(PUBLIC_IMAGES.has(q.imageUrl)).toBe(true);
+    }
   }
 
   const packIds = new Set<string>();

@@ -74,6 +74,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Quan sát Figure 12-2 ("Order a chemical from a vendor" — Lesson 01, Page 5), quy trình đặt mua hóa chất bắt đầu từ bước nào và ở làn nào?',
+    imageUrl: '/images/swr-pdf/figure-12-2-swimlane.png',
+    imageCaption: 'Figure 12-2: Swimlane diagram — Order a chemical from a vendor (Lesson 01, Page 5)',
     options: [
       { id: 'a', text: 'Làn Buyer: Create a vendor purchase order' },
       { id: 'b', text: 'Làn Chemist: Create a chemical request' },
@@ -94,6 +96,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong sơ đồ Swimlane Figure 12-2 (Lesson 01, Page 5), sau khi Vendor xử lý "Receive and fulfill chemical order", luồng kiểm tra tại hình thoi "Order accepted?" trong làn Buyer sẽ đi đâu nếu kết quả là "No"?',
+    imageUrl: '/images/swr-pdf/figure-12-2-swimlane.png',
+    imageCaption: 'Figure 12-2: Swimlane diagram — Order a chemical from a vendor (Lesson 01, Page 5)',
     options: [
       { id: 'a', text: 'Quay lại bước "Create a vendor purchase order" ở làn Buyer.' },
       { id: 'b', text: 'Quay lại bước "Create a chemical request" ở làn Chemist.' },
@@ -114,6 +118,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong Figure 12-2 (Lesson 01, Page 5), sau khi Vendor thực hiện "Ship chemical containers", bước nào tiếp nhận kiện hàng trước khi Chemist nhận hóa chất tại phòng thí nghiệm?',
+    imageUrl: '/images/swr-pdf/figure-12-2-swimlane.png',
+    imageCaption: 'Figure 12-2: Swimlane diagram — Order a chemical from a vendor (Lesson 01, Page 5)',
     options: [
       { id: 'a', text: 'Buyer thực hiện "Review and approve invoice".' },
       { id: 'b', text: 'Receiving thực hiện "Receive shipment at receiving dock".' },
@@ -174,6 +180,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Quan sát luồng thanh toán hóa đơn ở nửa dưới Figure 12-2 (Lesson 01, Page 5), trình tự chính xác từ lúc Vendor xuất hóa đơn cho tới khi nhận tiền là gì?',
+    imageUrl: '/images/swr-pdf/figure-12-2-swimlane.png',
+    imageCaption: 'Figure 12-2: Swimlane diagram — Order a chemical from a vendor (Lesson 01, Page 5)',
     options: [
       { id: 'a', text: 'Vendor: Create and send invoice -> Buyer: Review and approve invoice -> Buyer: Send payment -> Vendor: Receive payment.' },
       { id: 'b', text: 'Chemist: Review and approve invoice -> Receiving: Send payment -> Vendor: Receive payment.' },
@@ -214,6 +222,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong Figure 12-2 (Lesson 01, Page 5), bước "Update order status" do ai thực hiện và diễn ra ngay sau điều kiện nào?',
+    imageUrl: '/images/swr-pdf/figure-12-2-swimlane.png',
+    imageCaption: 'Figure 12-2: Swimlane diagram — Order a chemical from a vendor (Lesson 01, Page 5)',
     options: [
       { id: 'a', text: 'Do Buyer thực hiện, ngay sau khi "Order accepted?" rẽ nhánh "Yes".' },
       { id: 'b', text: 'Do Vendor thực hiện, ngay sau khi giao hàng.' },
@@ -338,6 +348,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Quan sát ví dụ Context Diagram "Chemical Tracking System" (Lesson 02, Pages 5 & 8), thực thể ngoài "Bar Code Reader" thuộc loại nào và trao đổi luồng gì với hệ thống?',
+    imageUrl: '/images/swr-pdf/context-diagram-cts.png',
+    imageCaption: 'Context Diagram — Chemical Tracking System (Lesson 02, Pages 5 & 8)',
     options: [
       { id: 'a', text: 'Là thiết bị phần cứng (hardware device), gửi luồng "scanned bar code" vào Chemical Tracking System.' },
       { id: 'b', text: 'Là kho dữ liệu nội bộ, nhận luồng "inventory report" từ hệ thống.' },
@@ -398,6 +410,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Quan sát Context Diagram "Chemical Tracking System" (Lesson 02, Pages 5 & 8), thực thể "Training Database" (hệ thống ngoài) trao đổi cặp luồng dữ liệu nào với hệ thống?',
+    imageUrl: '/images/swr-pdf/context-diagram-cts.png',
+    imageCaption: 'Context Diagram — Chemical Tracking System (Lesson 02, Pages 5 & 8)',
     options: [
       { id: 'a', text: 'Hệ thống gửi "training record request" ra Training Database, và Training Database trả về "hazardous training record" vào hệ thống.' },
       { id: 'b', text: 'Hệ thống gửi "scanned bar code" ra Training Database.' },
@@ -418,6 +432,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong Context Diagram ở Pages 5 & 8 (Lesson 02), thực thể ngoài "Health and Safety Department" tương tác với Chemical Tracking System qua cặp luồng nào?',
+    imageUrl: '/images/swr-pdf/context-diagram-cts.png',
+    imageCaption: 'Context Diagram — Chemical Tracking System (Lesson 02, Pages 5 & 8)',
     options: [
       { id: 'a', text: 'Gửi "request for usage report" vào hệ thống và nhận "chemical usage report" từ hệ thống.' },
       { id: 'b', text: 'Gửi "vendor catalog query" và nhận "vendor catalog information".' },
@@ -438,6 +454,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong ví dụ Context Diagram (Lesson 02, Pages 5 & 8), cụm từ "chemical container" xuất hiện giữa Chemical Tracking System với 2 thực thể nào — minh họa cho việc Data-flow có thể là vật liệu (materials) chứ không chỉ là dữ liệu số?',
+    imageUrl: '/images/swr-pdf/context-diagram-cts.png',
+    imageCaption: 'Context Diagram — Chemical Tracking System (Lesson 02, Pages 5 & 8)',
     options: [
       { id: 'a', text: 'Chemist (nhận chemical container từ hệ thống) và Chemical Stockroom (kết nối chemical container với hệ thống).' },
       { id: 'b', text: 'Bar Code Reader và Training Database.' },
@@ -478,6 +496,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trên Context Diagram của Chemical Tracking System (Lesson 02, Pages 5 & 8), một mũi tên nối trực tiếp từ "Buyer" sang "Chemist" (không đi qua vòng tròn hệ thống) có xuất hiện hay không, và vì sao?',
+    imageUrl: '/images/swr-pdf/context-diagram-cts.png',
+    imageCaption: 'Context Diagram — Chemical Tracking System (Lesson 02, Pages 5 & 8)',
     options: [
       { id: 'a', text: 'Không — Context Diagram chỉ mô tả các kết nối giữa Hệ thống (ở tâm) với từng External Entity qua ranh giới hệ thống, không vẽ giao tiếp ngoài ranh giới giữa hai thực thể ngoài với nhau.' },
       { id: 'b', text: 'Có — mọi External Entity phải nối chéo trực tiếp với tất cả External Entity khác.' },
@@ -581,7 +601,7 @@ export const swrPdfQuestions: Question[] = [
     difficulty: 'understand',
     type: 'single',
     prompt:
-      'Quan sát minh họa quan hệ "Generalization" ở Lesson 03 (Page 9), chiều mũi tên tam giác rỗng được vẽ như thế nào?',
+      'Trong UML Use Case Diagram (Lesson 03, Page 9), khi biểu diễn quan hệ tổng quát hóa/kế thừa (Generalization) giữa các Actor hoặc Use Case, chiều mũi tên tam giác rỗng được vẽ như thế nào?',
     options: [
       { id: 'a', text: 'Nét liền có mũi tên tam giác rỗng trỏ TỪ phần tử con (như Salesperson, Supervisor hoặc Withdraw Money) TỚI phần tử cha (Employee hoặc Perform Money Transaction).' },
       { id: 'b', text: 'Nét đứt có mũi tên tam giác rỗng trỏ từ phần tử cha xuống phần tử con.' },
@@ -601,7 +621,7 @@ export const swrPdfQuestions: Question[] = [
     difficulty: 'understand',
     type: 'single',
     prompt:
-      'Theo minh họa ở Lesson 03 (Page 10), với tình huống Use Case "Create Account" luôn bắt buộc gọi bước kiểm tra "Validate Email", quan hệ và chiều mũi tên nào là ĐÚNG?',
+      'Theo quy ước UML Use Case Diagram (Lesson 03, Page 10), với tình huống Use Case "Create Account" luôn bắt buộc gọi bước kiểm tra "Validate Email", quan hệ và chiều mũi tên nào là ĐÚNG?',
     options: [
       { id: 'a', text: 'Mũi tên nét đứt gắn nhãn <<include>> trỏ TỪ "Create Account" ĐẾN "Validate Email".' },
       { id: 'b', text: 'Mũi tên nét đứt gắn nhãn <<include>> trỏ từ "Validate Email" về "Create Account".' },
@@ -621,7 +641,7 @@ export const swrPdfQuestions: Question[] = [
     difficulty: 'understand',
     type: 'single',
     prompt:
-      'Theo minh họa ở Lesson 03 (Page 10), khi đặt hàng ("Place Order"), khách hàng CÓ THỂ tùy chọn áp mã giảm giá ("Apply Discount") hoặc cập nhật địa chỉ giao hàng ("Update Delivery Address"). Quan hệ và chiều mũi tên nào là ĐÚNG?',
+      'Theo quy ước UML Use Case Diagram (Lesson 03, Page 10), khi đặt hàng ("Place Order"), khách hàng CÓ THỂ tùy chọn áp mã giảm giá ("Apply Discount") hoặc cập nhật địa chỉ giao hàng ("Update Delivery Address"). Quan hệ và chiều mũi tên nào là ĐÚNG?',
     options: [
       { id: 'a', text: 'Mũi tên nét đứt gắn nhãn <<extend>> trỏ TỪ "Apply Discount" và "Update Delivery Address" VỀ "Place Order".' },
       { id: 'b', text: 'Mũi tên nét đứt gắn nhãn <<extend>> trỏ từ "Place Order" ra "Apply Discount" và "Update Delivery Address".' },
@@ -642,6 +662,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Quan sát Figure 8-2 ("Partial use case diagram for the Chemical Tracking System" — Lesson 03, Page 4), nhận xét nào ĐÚNG về cấu trúc Use Case Diagram này?',
+    imageUrl: '/images/swr-pdf/figure-8-2-usecase.jpg',
+    imageCaption: 'Figure 8-2: Partial Use Case Diagram for Chemical Tracking System (Lesson 03, Page 4)',
     options: [
       { id: 'a', text: 'Hộp chữ nhật ranh giới hệ thống chứa các Use Case (hình oval như "Request a Chemical", "Dispose of a Chemical"); các Actor (kể cả "Training Database") đứng bên ngoài hộp.' },
       { id: 'b', text: 'Actor "Training Database" nằm bên trong hộp hệ thống vì nó là cơ sở dữ liệu.' },
@@ -682,6 +704,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Quan sát Figure 8-2 (Lesson 03, Page 4), Actor "Requester" kết nối trực tiếp với 3 Use Case nào?',
+    imageUrl: '/images/swr-pdf/figure-8-2-usecase.jpg',
+    imageCaption: 'Figure 8-2: Partial Use Case Diagram for Chemical Tracking System (Lesson 03, Page 4)',
     options: [
       { id: 'a', text: 'Obtain Material Safety Data Sheet, Request a Chemical và Dispose of a Chemical.' },
       { id: 'b', text: 'Search Vendor Catalogs, Manage Inventory và Dispose of a Chemical.' },
@@ -702,6 +726,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'multiple',
     prompt:
       'Quan sát Figure 8-2 (Lesson 03, Page 4), ngoài Requester, chọn 2 Actor phía bên phải cũng tham gia vào Use Case "Request a Chemical":',
+    imageUrl: '/images/swr-pdf/figure-8-2-usecase.jpg',
+    imageCaption: 'Figure 8-2: Partial Use Case Diagram for Chemical Tracking System (Lesson 03, Page 4)',
     options: [
       { id: 'a', text: 'Training Database và Buyer.' },
       { id: 'b', text: 'Chemical Stockroom.' },
@@ -746,6 +772,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong mẫu đặc tả "UC-4 Request a Chemical" (Lesson 04, Page 5), phân biệt nào ĐÚNG giữa Primary Actor và Secondary Actors?',
+    imageUrl: '/images/swr-pdf/uc-4-part1.jpg',
+    imageCaption: 'UC-4 Request a Chemical — Use Case Specification phần 1 (Lesson 04, Page 5)',
     options: [
       { id: 'a', text: 'Primary Actor là Requester (người khởi phát mục tiêu yêu cầu hóa chất); Secondary Actors là Buyer, Chemical Stockroom và Training Database.' },
       { id: 'b', text: 'Primary Actor là Training Database; Secondary Actors là Requester.' },
@@ -766,6 +794,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong bảng đặc tả UC-4 (Lesson 04, Page 5), "Trigger" khác gì với "Preconditions"?',
+    imageUrl: '/images/swr-pdf/uc-4-part1.jpg',
+    imageCaption: 'UC-4 Request a Chemical — Use Case Specification phần 1 (Lesson 04, Page 5)',
     options: [
       { id: 'a', text: 'Trigger là sự kiện/hành động khởi phát Use Case ("Requester indicates that he wants to request a chemical"); Preconditions là các điều kiện tiên quyết phải đúng sẵn trước khi chạy (user đã xác thực, được phân quyền, CSDL đang online).' },
       { id: 'b', text: 'Trigger mô tả trạng thái sau khi chạy xong Use Case; Preconditions mô tả lỗi ngoại lệ.' },
@@ -786,6 +816,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong đặc tả UC-4 (Lesson 04, Pages 5–6), tình huống "4.1 Request a Chemical from a Vendor" và "4.1.E1 Chemical Is Not Commercially Available" lần lượt được xếp vào mục nào?',
+    imageUrl: '/images/swr-pdf/uc-4-part2.jpg',
+    imageCaption: 'UC-4 Request a Chemical — Alternative Flows & Exceptions phần 2 (Lesson 04, Page 6)',
     options: [
       { id: 'a', text: '4.1 là Alternative Flow (luồng thay thế khi đặt mua từ nhà cung cấp); 4.1.E1 là Exception (ngoại lệ khi không có nhà cung cấp nào bán hóa chất đó).' },
       { id: 'b', text: '4.1 là Normal Flow; 4.1.E1 là Postcondition.' },
@@ -806,6 +838,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong ngoại lệ "4.1.E1 Chemical Is Not Commercially Available" (Lesson 04, Page 6), nếu người dùng chọn nhánh 3a ("Requester asks to request another chemical") thì điều gì xảy ra tiếp theo ở bước 3b?',
+    imageUrl: '/images/swr-pdf/uc-4-part2.jpg',
+    imageCaption: 'UC-4 Request a Chemical — Exceptions 4.1.E1 (Lesson 04, Page 6)',
     options: [
       { id: 'a', text: 'Hệ thống bắt đầu lại Normal Flow từ đầu (System starts normal flow over).' },
       { id: 'b', text: 'Hệ thống chấm dứt ngay lập tức Use Case và ghi POST-1.' },
@@ -826,6 +860,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Quan sát sơ đồ luồng "Normal Flow vs Alternative Flow" ở Lesson 04 (Page 7), đường đi chuẩn của một Alternative Flow thông thường diễn ra như thế nào?',
+    imageUrl: '/images/swr-pdf/uc-flow-branch.png',
+    imageCaption: 'Normal Flow vs Alternative Flow (Lesson 04, Page 7)',
     options: [
       { id: 'a', text: 'Rẽ nhánh từ điều kiện nhánh (branch condition) sau Step 2, chạy qua các bước thay thế (Step 3a -> 3b -> 3c), rồi nhập lại vào Normal Flow ở Step 4 trước khi đạt use case postconditions.' },
       { id: 'b', text: 'Chạy song song độc lập từ đầu đến cuối và không bao giờ nhập lại Normal Flow.' },
@@ -846,6 +882,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Theo mẫu đặc tả UC-4 (Lesson 04, Page 6), mục "Assumptions" và "Business Rules" dùng để ghi nhận thông tin gì?',
+    imageUrl: '/images/swr-pdf/uc-4-part2.jpg',
+    imageCaption: 'UC-4 Request a Chemical — Business Rules & Assumptions (Lesson 04, Page 6)',
     options: [
       { id: 'a', text: 'Assumptions ghi giả định mặc định đúng (VD: cấu trúc hóa chất import được giả định là hợp lệ); Business Rules tham chiếu mã quy tắc nghiệp vụ chi phối (VD: BR-28, BR-31).' },
       { id: 'b', text: 'Assumptions ghi lịch trình bàn giao dự án; Business Rules ghi danh sách bug đã phát hiện.' },
@@ -866,6 +904,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Theo Figure 8-1 ("From Use cases to functional requirements" — Lesson 04, Page 10), từ "Use Case Specification" qua bước "analysis" sẽ trực tiếp sinh ra 2 sản phẩm nào?',
+    imageUrl: '/images/swr-pdf/figure-8-1-uc-to-fr.jpg',
+    imageCaption: 'Figure 8-1: From Use cases/User stories to functional requirements & tests (Lesson 04, Page 10)',
     options: [
       { id: 'a', text: 'Functional requirements và Tests.' },
       { id: 'b', text: 'Business objectives và Context diagram.' },
@@ -886,6 +926,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong Figure 8-1 (Lesson 04, Page 10), theo hướng tiếp cận Agile User Story, các cuộc hội thoại làm rõ User Story ("conversations" -> "refined user stories" -> "conversations") dẫn trực tiếp đến đầu ra nào để kiểm chứng?',
+    imageUrl: '/images/swr-pdf/figure-8-1-uc-to-fr.jpg',
+    imageCaption: 'Figure 8-1: From Use cases/User stories to functional requirements & tests (Lesson 04, Page 10)',
     options: [
       { id: 'a', text: 'Acceptance tests (kiểm thử chấp nhận).' },
       { id: 'b', text: 'Cockburn Use Case ID & Assumptions.' },
@@ -926,6 +968,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong Normal Flow `4.0` của `UC-4 Request a Chemical` (Lesson 04, Page 5), ở Bước 4 ("Requester selects a specific container or asks to place a vendor order"), nếu Requester chọn đặt từ Vendor thì hệ thống rẽ sang mục nào và sau khi hoàn tất Bước 5 của nhánh đó thì ai được thông báo?',
+    imageUrl: '/images/swr-pdf/uc-4-part1.jpg',
+    imageCaption: 'UC-4 Request a Chemical — Normal Flow 4.0 & Postconditions (Lesson 04, Page 5)',
     options: [
       { id: 'a', text: 'Rẽ sang Alternative Flow 4.1 ("Request a Chemical from a Vendor"); sau khi lưu request, hệ thống thông báo cho Buyer (còn Normal Flow 4.0 thông báo cho Chemical Stockroom).' },
       { id: 'b', text: 'Rẽ sang Exception 4.1.E1 và thông báo cho Training Database.' },
@@ -946,6 +990,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong bảng đặc tả UC-4 (Lesson 04, Page 6), mục "Frequency of Use" và "Priority" ghi thông tin gì?',
+    imageUrl: '/images/swr-pdf/uc-4-part2.jpg',
+    imageCaption: 'UC-4 Request a Chemical — Priority & Frequency of Use (Lesson 04, Page 6)',
     options: [
       { id: 'a', text: 'Priority: High; Frequency of Use: ước lượng tần suất sử dụng thực tế ("khoảng 5 lần/tuần bởi mỗi chemist, 200 lần/tuần bởi nhân viên kho hóa chất").' },
       { id: 'b', text: 'Priority: Low; Frequency of Use: chỉ dùng 1 lần duy nhất lúc cài đặt.' },
@@ -1010,6 +1056,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Quan sát State-Transition Diagram của Chemical Request (Lesson 05–06, Page 4), khi yêu cầu đang ở trạng thái "In Preparation", đối tượng có thể chuyển trực tiếp sang những trạng thái nào?',
+    imageUrl: '/images/swr-pdf/std-chemical-request.png',
+    imageCaption: 'State-Transition Diagram — Chemical Request (Lesson 05–06, Page 4)',
     options: [
       { id: 'a', text: 'Chỉ "Postponed" (lưu nháp chưa hoàn tất) hoặc "Accepted" (hệ thống chấp nhận yêu cầu hợp lệ).' },
       { id: 'b', text: 'Có thể chuyển thẳng sang "Canceled" hoặc "Fulfilled".' },
@@ -1030,6 +1078,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Theo State-Transition Diagram ở Lesson 05–06 (Page 4), từ trạng thái "Accepted", yêu cầu hóa chất có thể chuyển sang trạng thái "Fulfilled" theo sự kiện nào?',
+    imageUrl: '/images/swr-pdf/std-chemical-request.png',
+    imageCaption: 'State-Transition Diagram — Chemical Request (Lesson 05–06, Page 4)',
     options: [
       { id: 'a', text: 'Sự kiện "chemical stockroom fills request" (kho hóa chất cấp phát trực tiếp từ tồn kho).' },
       { id: 'b', text: 'Sự kiện "requester retrieves incomplete request".' },
@@ -1050,6 +1100,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'multiple',
     prompt:
       'Quan sát State-Transition Diagram ở Lesson 05–06 (Page 4), chọn 2 nhóm trạng thái có mũi tên cho phép chuyển sang "Canceled":',
+    imageUrl: '/images/swr-pdf/std-chemical-request.png',
+    imageCaption: 'State-Transition Diagram — Chemical Request (Lesson 05–06, Page 4)',
     options: [
       { id: 'a', text: 'Postponed và Accepted (khi requester hủy yêu cầu)' },
       { id: 'b', text: 'Placed và Back-Ordered (khi buyer hủy đơn đặt hàng với vendor)' },
@@ -1070,6 +1122,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong State-Transition Diagram (Lesson 05–06, Page 4), một đơn đặt hàng đang ở trạng thái "Placed" nhưng nhà cung cấp tạm hết hàng nên báo "vendor places chemical on back-order". Sau khi chuyển sang "Back-Ordered", đơn hàng có thể đi tiếp tới trạng thái nào?',
+    imageUrl: '/images/swr-pdf/std-chemical-request.png',
+    imageCaption: 'State-Transition Diagram — Chemical Request (Lesson 05–06, Page 4)',
     options: [
       { id: 'a', text: '"Fulfilled" (khi nhận được hóa chất từ vendor) hoặc "Canceled" (khi buyer hủy đơn).' },
       { id: 'b', text: 'Quay ngược lại "In Preparation" để người dùng sửa yêu cầu.' },
@@ -1090,6 +1144,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong State-Transition Diagram (Lesson 05–06, Page 4), tổng cộng có bao nhiêu trạng thái của Chemical Request được vẽ và từ "Placed" có thể đi trực tiếp tới "Fulfilled" mà không qua "Back-Ordered" không?',
+    imageUrl: '/images/swr-pdf/std-chemical-request.png',
+    imageCaption: 'State-Transition Diagram — Chemical Request (Lesson 05–06, Page 4)',
     options: [
       { id: 'a', text: 'Có 7 trạng thái (In Preparation, Postponed, Accepted, Placed, Back-Ordered, Fulfilled, Canceled); và từ "Placed" CÓ đường đi thẳng tới "Fulfilled" khi "chemical received from vendor".' },
       { id: 'b', text: 'Có 5 trạng thái; từ "Placed" bắt buộc phải qua "Back-Ordered" mới tới được "Fulfilled".' },
@@ -1149,7 +1205,7 @@ export const swrPdfQuestions: Question[] = [
     difficulty: 'remember',
     type: 'single',
     prompt:
-      'Trong chú giải (Key) của Figure 12-1 (Level 0 DFD, Lesson 05–06, Page 6), 4 ký hiệu chuẩn dùng trên DFD gồm những hình gì?',
+      'Trong Level 0 DFD (Lesson 05–06, Page 6), 4 ký hiệu chuẩn dùng để biểu diễn sơ đồ luồng dữ liệu gồm những hình gì?',
     options: [
       { id: 'a', text: 'Mũi tên (data flow), hình tròn (process), cặp đường thẳng song song (Data Store), hình chữ nhật (External Entity).' },
       { id: 'b', text: 'Hình oval (use case), người que (actor), mũi tên nét đứt (include), hộp hệ thống.' },
@@ -1170,6 +1226,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Quan sát Figure 12-1 ("Partial level 0 DFD for the Chemical Tracking System" — Lesson 05–06, Page 6), thành phần "Chemical Stockroom Inventory" thuộc loại ký hiệu nào và tương tác trực tiếp với những Process nào?',
+    imageUrl: '/images/swr-pdf/figure-12-1-dfd-level0.jpg',
+    imageCaption: 'Figure 12-1: Partial level 0 DFD for the Chemical Tracking System (Lesson 05–06, Page 6)',
     options: [
       { id: 'a', text: 'Là Data Store; cấp dữ liệu cho Process 2 ("fulfill request from stockroom") & Process 4 ("generate reports"), và nhận cập nhật từ Process 5 ("update stockroom inventory").' },
       { id: 'b', text: 'Là External Entity; gửi đơn hàng cho Process 3 ("order a chemical from a vendor").' },
@@ -1210,6 +1268,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Quan sát Figure 12-1 (Lesson 05–06, Page 6), 3 kho dữ liệu (Data Stores) xuất hiện trong Level 0 DFD của Chemical Tracking System là gì?',
+    imageUrl: '/images/swr-pdf/figure-12-1-dfd-level0.jpg',
+    imageCaption: 'Figure 12-1: Partial level 0 DFD for the Chemical Tracking System (Lesson 05–06, Page 6)',
     options: [
       { id: 'a', text: 'Vendor Catalog, Chemical Request và Chemical Stockroom Inventory.' },
       { id: 'b', text: 'Chemist, Buyer và Health and Safety Department.' },
@@ -1230,6 +1290,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong Figure 12-1 (Lesson 05–06, Page 6), mũi tên dữ liệu đi ra từ Process "1. place a chemical request" được lưu vào Data Store nào, để rồi cấp tiếp cho Process 2 và Process 3?',
+    imageUrl: '/images/swr-pdf/figure-12-1-dfd-level0.jpg',
+    imageCaption: 'Figure 12-1: Partial level 0 DFD for the Chemical Tracking System (Lesson 05–06, Page 6)',
     options: [
       { id: 'a', text: 'Data Store "Chemical Request" (với luồng "chemical request").' },
       { id: 'b', text: 'Data Store "Vendor Catalog".' },
@@ -1250,6 +1312,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong quy ước vẽ DFD ở Figure 12-1 (Lesson 05–06, Page 6), có dòng dữ liệu nào chạy trực tiếp từ External Entity "Chemist" sang thẳng Data Store "Chemical Request" mà không đi qua một Process hay không?',
+    imageUrl: '/images/swr-pdf/figure-12-1-dfd-level0.jpg',
+    imageCaption: 'Figure 12-1: Partial level 0 DFD for the Chemical Tracking System (Lesson 05–06, Page 6)',
     options: [
       { id: 'a', text: 'Không — mọi dữ liệu ra/vào Data Store trong DFD đều đi thông qua một Process (như Process 1 "place a chemical request" hoặc Process 6 "search vendor catalogs").' },
       { id: 'b', text: 'Có — External Entity nối thẳng trực tiếp vào Data Store để bỏ qua Process.' },
@@ -1293,7 +1357,7 @@ export const swrPdfQuestions: Question[] = [
     difficulty: 'understand',
     type: 'single',
     prompt:
-      'Quan sát bảng so sánh 3 mức Data Modeling trong Knowledge Chapter 13 PDF (Page 5), điểm khác biệt chính xác giữa Conceptual Data Model và Logical Data Model là gì?',
+      'Trong 3 mức Data Modeling ở Knowledge Chapter 13 PDF (Page 5), điểm khác biệt chính xác giữa Conceptual Data Model và Logical Data Model là gì?',
     options: [
       { id: 'a', text: 'Conceptual chỉ có Entity names và Entity relationships; Logical bổ sung thêm Attributes, Primary keys và Foreign keys.' },
       { id: 'b', text: 'Conceptual đã có sẵn Table names, Column names và Column data types; Logical chỉ có Entity names.' },
@@ -1313,7 +1377,7 @@ export const swrPdfQuestions: Question[] = [
     difficulty: 'remember',
     type: 'single',
     prompt:
-      'Theo bảng so sánh ở Page 5 (Knowledge Chapter 13 PDF), những thành phần nào chỉ xuất hiện ở mức Physical Data Model (không có ở Conceptual và Logical)?',
+      'Theo lý thuyết 3 mức Data Modeling ở Page 5 (Knowledge Chapter 13 PDF), những thành phần nào chỉ xuất hiện ở mức Physical Data Model (không có ở Conceptual và Logical)?',
     options: [
       { id: 'a', text: 'Table names, Column names và Column data types.' },
       { id: 'b', text: 'Primary keys và Foreign keys.' },
@@ -1333,7 +1397,7 @@ export const swrPdfQuestions: Question[] = [
     difficulty: 'remember',
     type: 'single',
     prompt:
-      'Theo bảng so sánh ở Page 5 (Knowledge Chapter 13 PDF), hai thành phần nào xuất hiện ở CẢ Logical Data Model VÀ Physical Data Model (đánh dấu X ở cả hai cột)?',
+      'Theo lý thuyết 3 mức Data Modeling ở Page 5 (Knowledge Chapter 13 PDF), hai thành phần nào xuất hiện ở CẢ Logical Data Model VÀ Physical Data Model?',
     options: [
       { id: 'a', text: 'Primary keys và Foreign keys.' },
       { id: 'b', text: 'Entity names và Attributes.' },
@@ -1373,7 +1437,7 @@ export const swrPdfQuestions: Question[] = [
     difficulty: 'understand',
     type: 'single',
     prompt:
-      'Quan sát trang 7 của Knowledge Chapter 13 PDF ("ERD Notations"), cùng một quan hệ "Chemical Stockroom Inventory" chứa nhiều "Chemical Container" được biểu diễn khác nhau thế nào giữa Chen Notation và Crow’s Foot Notation?',
+      'Theo Knowledge Chapter 13 PDF (Page 7 — "ERD Notations"), cùng một quan hệ một–nhiều ("Chemical Stockroom Inventory" chứa nhiều "Chemical Container") được biểu diễn khác nhau thế nào giữa Chen Notation và Crow’s Foot Notation?',
     options: [
       { id: 'a', text: 'Chen dùng hình thoi "storing" cùng số "1" và "M" trên đường nối; Crow’s Foot dùng đường thẳng gắn nhãn động từ "stores" với vạch "|" bên phía 1 và ký hiệu vòng tròn-chân chim "o<" bên phía nhiều.' },
       { id: 'b', text: 'Chen dùng ký hiệu chân chim "o<" còn Crow’s Foot dùng hình thoi.' },
@@ -1414,6 +1478,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Quan sát mô hình ERD "From Context to Data Model" (Knowledge Chapter 13 PDF, Page 3), mối quan hệ giữa "Chemical Request" và "Chemical" có bản số (cardinality) là gì, và "Chemical Container" nối tới "Container History" với bản số nào?',
+    imageUrl: '/images/swr-pdf/erd-cts.jpg',
+    imageCaption: 'ERD — From Context to Data Model: Chemical Tracking System (Knowledge Chapter 13, Page 3)',
     options: [
       { id: 'a', text: 'Chemical Request — Chemical là M:M (many-to-many); Chemical Container — Container History là 1:1 (one-to-one).' },
       { id: 'b', text: 'Chemical Request — Chemical là 1:1; Chemical Container — Container History là M:M.' },
@@ -1434,6 +1500,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Tiếp tục quan sát ERD ở Page 3 (Knowledge Chapter 13 PDF — "From Context to Data Model"), quan hệ nào sau đây mô tả ĐÚNG bản số giữa các cặp thực thể?',
+    imageUrl: '/images/swr-pdf/erd-cts.jpg',
+    imageCaption: 'ERD — From Context to Data Model: Chemical Tracking System (Knowledge Chapter 13, Page 3)',
     options: [
       { id: 'a', text: 'Chemical Stockroom Inventory (1) — storing — (M) Chemical Container; và Requester (1) — placing — (M) Chemical Request.' },
       { id: 'b', text: 'Chemical Stockroom Inventory (M) — storing — (1) Chemical Container.' },
@@ -1454,6 +1522,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Quan sát Figure 13-5 ("Sample CRUD matrix for the Chemical Tracking System" — Knowledge Chapter 13 PDF, Page 10), nhìn vào cột thực thể "Vendor Catalog" chỉ có duy nhất chữ "R" ở hàng "Place Order" và "Change Order". Ma trận này giúp BA phát hiện điều gì?',
+    imageUrl: '/images/swr-pdf/figure-13-5-crud.jpg',
+    imageCaption: 'Figure 13-5: Sample CRUD matrix for the Chemical Tracking System (Knowledge Chapter 13, Page 10)',
     options: [
       { id: 'a', text: 'Thiếu các Use Case hoặc yêu cầu chức năng để Create, Update, Delete dữ liệu "Vendor Catalog" (hệ thống mới chỉ có đọc R mà chưa thấy ai tạo/cập nhật danh mục nhà cung cấp).' },
       { id: 'b', text: 'Use Case "Place Order" đang bị dư thừa chức năng xóa dữ liệu.' },
@@ -1474,6 +1544,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Tiếp tục đọc Figure 13-5 (Knowledge Chapter 13 PDF, Page 10), hai trục hàng và cột của bảng CRUD Matrix đối chiếu cặp thành phần nào với nhau, và trong bảng mẫu, Use Case "Edit Requesters" thực hiện những thao tác nào lên Entity "Requester"?',
+    imageUrl: '/images/swr-pdf/figure-13-5-crud.jpg',
+    imageCaption: 'Figure 13-5: Sample CRUD matrix for the Chemical Tracking System (Knowledge Chapter 13, Page 10)',
     options: [
       { id: 'a', text: 'Hàng là Use Case, cột là Entity; "Edit Requesters" thực hiện C, U (Create, Update) lên "Requester" (chưa thấy thao tác D - Delete).' },
       { id: 'b', text: 'Hàng là Actor, cột là Report; "Edit Requesters" thực hiện R, D.' },
@@ -1494,6 +1566,8 @@ export const swrPdfQuestions: Question[] = [
     type: 'single',
     prompt:
       'Trong Figure 13-5 (Knowledge Chapter 13 PDF, Page 10), hàng Use Case "Report on Orders" tương tác với những Entity nào và bằng thao tác gì?',
+    imageUrl: '/images/swr-pdf/figure-13-5-crud.jpg',
+    imageCaption: 'Figure 13-5: Sample CRUD matrix for the Chemical Tracking System (Knowledge Chapter 13, Page 10)',
     options: [
       { id: 'a', text: 'Chỉ thực hiện thao tác R (Read) trên 3 Entity: Order, Chemical và Requester.' },
       { id: 'b', text: 'Thực hiện C, U, D trên Order và Vendor Catalog.' },

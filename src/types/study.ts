@@ -34,6 +34,8 @@ export interface Question {
   difficulty: QuestionDifficulty;
   type: QuestionType;
   prompt: string;
+  imageUrl?: string;
+  imageCaption?: string;
   options: QuestionOption[];
   correctOptionIds: string[];
   explanation: string;
