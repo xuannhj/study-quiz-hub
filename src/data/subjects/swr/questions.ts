@@ -1,4 +1,5 @@
 import type { Question } from '../../../types/study';
+import { swrExtendedQuestions } from './questionsExtended';
 
 export const swrQuestions: Question[] = [
   // Chương 1 (4 câu)
@@ -1258,4 +1259,5 @@ export const swrQuestions: Question[] = [
     explanation:
       'Slide 6 Chương 19 nêu 5 yếu tố lập lịch: Estimated product size, Known team productivity, Task list, Reasonably stable requirements cho iteration tới, và PM experience.',
   },
+  ...swrExtendedQuestions,
 ];

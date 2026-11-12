@@ -3,5 +3,5 @@ export const swrMeta = {
   code: 'SWR302',
   name: 'Software Requirements',
   description:
-    'Tổng hợp trọn bộ 19 Chương từ Slide bài giảng Software Requirements (kèm các bài chuyên đề Context Diagram, Swimlane, Use Case, State/DFD & Data Modeling) cùng ngân hàng 60 câu hỏi ôn tập, Quiz định kỳ và Final Exam.',
+    'Tổng hợp trọn bộ 19 Chương từ Slide & Giáo trình Software Requirements (ngân hàng 118 câu hỏi, 5 bộ Quiz theo cụm chương và 3 đề Final Exam). Riêng 6 file PDF chuyên đề được tách thành môn SWR-PDF riêng.',
 };
