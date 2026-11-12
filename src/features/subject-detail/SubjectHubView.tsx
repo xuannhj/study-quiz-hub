@@ -45,11 +45,11 @@ export function SubjectHubView() {
 
   if (!subject) {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
-        <p className="text-slate-600">Không tìm thấy môn học.</p>
+      <div className="rounded-3xl border border-sage-border bg-paper p-8 text-center shadow-cozy">
+        <p className="text-ink-soft">Không tìm thấy môn học.</p>
         <Link
           to="/"
-          className="mt-3 inline-block text-sm font-medium text-indigo-600"
+          className="mt-3 inline-block text-sm font-semibold text-moss"
         >
           Quay về danh sách môn học
         </Link>
@@ -137,10 +137,10 @@ export function SubjectHubView() {
   };
 
   const tabClass = (tab: SubjectTab) =>
-    `inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
+    `inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-medium transition-colors ${
       activeTab === tab
-        ? 'bg-indigo-600 text-white shadow-sm'
-        : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+        ? 'bg-moss text-white shadow-sm font-semibold'
+        : 'bg-paper text-ink-soft border border-sage-border hover:bg-sage-tint hover:text-ink'
     }`;
 
   return (
@@ -148,7 +148,7 @@ export function SubjectHubView() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Link
           to="/"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-indigo-600"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-soft hover:text-moss transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Danh sách môn học
@@ -156,30 +156,30 @@ export function SubjectHubView() {
 
         <Link
           to={`/import?subject=${subject.id}`}
-          className="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          className="rounded-2xl border border-sage-border bg-paper px-3.5 py-2 text-sm font-medium text-ink hover:bg-sage-tint transition-colors"
         >
           + Nạp thêm câu hỏi cho {subject.code}
         </Link>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="rounded-lg bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
+      <div className="rounded-3xl border border-sage-border bg-paper p-6 shadow-cozy">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <span className="rounded-xl bg-moss-soft border border-moss/20 px-2.5 py-1 text-xs font-mono font-semibold text-moss">
             {subject.code}
           </span>
-          <span className="text-xs text-slate-500">
+          <span className="text-xs font-medium text-ink-soft">
             {subject.chapters.length} chương • {subject.questions.length} câu hỏi
           </span>
         </div>
-        <h1 className="mt-2 text-2xl font-bold text-slate-900">
-          {subject.name}
-        </h1>
-        <p className="mt-1 text-sm text-slate-600">{subject.description}</p>
+        <h1 className="mt-2.5 text-2xl font-bold text-ink">{subject.name}</h1>
+        <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
+          {subject.description}
+        </p>
 
         {progress.activeSession && (
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3">
-            <div className="text-sm text-indigo-900">
-              Bạn đang làm dở:{' '}
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-firefly/45 bg-firefly-soft px-4 py-3">
+            <div className="text-sm text-ink">
+              Nhi đang làm dở:{' '}
               <strong>{progress.activeSession.examTitle}</strong> (còn{' '}
               {Math.ceil(progress.activeSession.remainingSeconds / 60)} phút)
             </div>
@@ -190,14 +190,14 @@ export function SubjectHubView() {
                   storageService.clearActiveSession(subject.id);
                   setProgress(storageService.getProgress(subject.id));
                 }}
-                className="rounded-lg px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100"
+                className="rounded-xl px-3 py-1.5 text-xs font-medium text-wood hover:bg-firefly/20 transition-colors"
               >
                 Bỏ qua
               </button>
               <button
                 type="button"
                 onClick={resumeActiveSession}
-                className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700"
+                className="rounded-xl bg-moss px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-moss-hover transition-colors"
               >
                 Làm tiếp ngay
               </button>
@@ -251,33 +251,35 @@ export function SubjectHubView() {
             return (
               <div
                 key={chapter.id}
-                className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="rounded-3xl border border-sage-border bg-paper p-5 shadow-cozy flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-moss/40 transition-colors"
               >
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-indigo-600">
+                <div className="space-y-1.5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-lg bg-sage-tint px-2 py-0.5 text-xs font-semibold text-moss">
                       Chương {chapter.order}
                     </span>
                     {done && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-blossom-soft border border-blossom/30 px-2.5 py-0.5 text-xs font-medium text-blossom-ink">
                         <CheckCircle2 className="h-3 w-3" />
                         Đã học
                       </span>
                     )}
-                    <span className="text-xs text-slate-500">
+                    <span className="text-xs text-ink-soft">
                       • {qCount} câu hỏi
                     </span>
                   </div>
-                  <h2 className="text-base font-bold text-slate-900">
+                  <h2 className="text-base font-bold text-ink">
                     {chapter.title}
                   </h2>
-                  <p className="text-sm text-slate-600">{chapter.summary}</p>
+                  <p className="text-sm leading-relaxed text-ink-soft">
+                    {chapter.summary}
+                  </p>
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
                   <Link
                     to={`/subjects/${subject.id}/study/${chapter.id}`}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                    className="inline-flex items-center gap-1.5 rounded-2xl bg-moss px-4 py-2 text-sm font-semibold text-white hover:bg-moss-hover transition-colors"
                   >
                     <BookOpen className="h-4 w-4" />
                     Đọc bài học
@@ -295,22 +297,20 @@ export function SubjectHubView() {
             {quizPacks.map((pack) => (
               <div
                 key={pack.id}
-                className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm flex flex-col justify-between gap-4"
+                className="rounded-3xl border border-sage-border bg-paper p-5 shadow-cozy flex flex-col justify-between gap-4 hover:border-moss/45 transition-colors"
               >
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">
-                    {pack.title}
-                  </h3>
-                  <p className="mt-1 text-sm text-slate-600">
+                  <h3 className="text-base font-bold text-ink">{pack.title}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
                     {pack.description}
                   </p>
-                  <div className="mt-3 flex items-center gap-3 text-xs text-slate-500">
+                  <div className="mt-3 flex items-center gap-3 text-xs text-ink-soft">
                     <span className="inline-flex items-center gap-1">
-                      <FileQuestion className="h-3.5 w-3.5" />
+                      <FileQuestion className="h-3.5 w-3.5 text-rain" />
                       Tối đa {pack.questionCount} câu
                     </span>
                     <span className="inline-flex items-center gap-1">
-                      <Clock className="h-3.5 w-3.5" />
+                      <Clock className="h-3.5 w-3.5 text-moss" />
                       {pack.durationMinutes} phút
                     </span>
                   </div>
@@ -318,7 +318,7 @@ export function SubjectHubView() {
                 <button
                   type="button"
                   onClick={() => openLaunchConfig(pack, 'practice')}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-moss px-4 py-2.5 text-sm font-semibold text-white hover:bg-moss-hover transition-colors"
                 >
                   <Play className="h-4 w-4" />
                   Bắt đầu Quiz
@@ -327,8 +327,8 @@ export function SubjectHubView() {
             ))}
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
-            <h3 className="text-base font-bold text-slate-900">
+          <div className="rounded-3xl border border-sage-border bg-paper p-5 sm:p-6 shadow-cozy space-y-4">
+            <h3 className="text-base font-bold text-ink">
               Tạo nhanh bài Quiz theo Chương
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -345,10 +345,10 @@ export function SubjectHubView() {
                           : [...prev, ch.id]
                       )
                     }
-                    className={`rounded-lg px-3 py-1.5 text-xs font-medium border transition-colors ${
+                    className={`rounded-xl px-3 py-1.5 text-xs font-medium border transition-colors ${
                       selected
-                        ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
-                        : 'border-slate-200 text-slate-700 hover:bg-slate-50'
+                        ? 'border-moss bg-moss-soft text-moss font-semibold'
+                        : 'border-sage-border text-ink-soft hover:bg-sage-tint'
                     }`}
                   >
                     Chương {ch.order}
@@ -357,7 +357,7 @@ export function SubjectHubView() {
               })}
             </div>
             <div className="flex flex-wrap items-center gap-4">
-              <label className="text-sm text-slate-700 flex items-center gap-2">
+              <label className="text-sm text-ink flex items-center gap-2">
                 Số câu hỏi:
                 <input
                   type="number"
@@ -367,14 +367,14 @@ export function SubjectHubView() {
                   onChange={(e) =>
                     setCustomQuizCount(Number(e.target.value) || 10)
                   }
-                  className="w-20 rounded-lg border border-slate-300 px-2.5 py-1 text-sm"
+                  className="w-20 rounded-xl border border-sage-border bg-mist/60 px-2.5 py-1.5 text-sm text-ink outline-none focus:border-moss"
                 />
               </label>
               <button
                 type="button"
                 disabled={subject.questions.length === 0}
                 onClick={handleCreateCustomQuiz}
-                className="inline-flex items-center gap-2 rounded-xl border border-indigo-600 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-50 disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-2xl border border-moss bg-moss-soft/50 px-4 py-2 text-sm font-semibold text-moss hover:bg-moss-soft disabled:opacity-50 transition-colors"
               >
                 <Shuffle className="h-4 w-4" />
                 Tạo bài Quiz
@@ -390,19 +390,19 @@ export function SubjectHubView() {
             {finalPacks.map((pack) => (
               <div
                 key={pack.id}
-                className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm flex flex-col justify-between gap-4"
+                className="rounded-3xl border border-sage-border bg-paper p-5 shadow-cozy flex flex-col justify-between gap-4 hover:border-rain/60 transition-colors"
               >
                 <div>
-                  <span className="inline-block rounded-md bg-violet-50 px-2 py-0.5 text-xs font-semibold text-violet-700">
+                  <span className="inline-block rounded-lg bg-rain-soft px-2.5 py-0.5 text-xs font-semibold text-rain-ink">
                     Final Exam
                   </span>
-                  <h3 className="mt-2 text-base font-bold text-slate-900">
+                  <h3 className="mt-2.5 text-base font-bold text-ink">
                     {pack.title}
                   </h3>
-                  <p className="mt-1 text-sm text-slate-600">
+                  <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
                     {pack.description}
                   </p>
-                  <div className="mt-3 flex items-center gap-3 text-xs text-slate-500">
+                  <div className="mt-3 flex items-center gap-3 text-xs text-ink-soft">
                     <span>
                       {Math.min(pack.questionCount, subject.questions.length)}/
                       {pack.questionCount} câu khả dụng
@@ -414,7 +414,7 @@ export function SubjectHubView() {
                 <button
                   type="button"
                   onClick={() => openLaunchConfig(pack, 'exam')}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-rain px-4 py-2.5 text-sm font-semibold text-white hover:bg-rain-hover transition-colors"
                 >
                   <GraduationCap className="h-4 w-4" />
                   Vào thi Final
@@ -423,20 +423,21 @@ export function SubjectHubView() {
             ))}
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm flex flex-wrap items-center justify-between gap-4">
+          <div className="rounded-3xl border border-sage-border bg-paper p-5 sm:p-6 shadow-cozy flex flex-wrap items-center justify-between gap-4">
             <div>
-              <h3 className="text-base font-bold text-slate-900">
+              <h3 className="text-base font-bold text-ink">
                 Sinh Đề Final Ngẫu Nhiên Toàn Môn
               </h3>
-              <p className="text-sm text-slate-600">
-                Tự động bốc câu hỏi rải đều qua tất cả các chương (tối đa theo ngân hàng hiện có: {subject.questions.length} câu).
+              <p className="text-sm text-ink-soft">
+                Tự động bốc câu hỏi rải đều qua tất cả các chương (tối đa theo
+                ngân hàng hiện có: {subject.questions.length} câu).
               </p>
             </div>
             <div className="flex items-center gap-3">
               <select
                 value={finalCount}
                 onChange={(e) => setFinalCount(Number(e.target.value))}
-                className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
+                className="rounded-xl border border-sage-border bg-mist/60 px-3 py-2 text-sm text-ink outline-none focus:border-moss"
               >
                 <option value={30}>30 câu</option>
                 <option value={50}>50 câu</option>
@@ -446,7 +447,7 @@ export function SubjectHubView() {
                 type="button"
                 disabled={subject.questions.length === 0}
                 onClick={handleCreateRandomFinal}
-                className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-2xl bg-ink px-4 py-2.5 text-sm font-semibold text-paper hover:bg-wood disabled:opacity-50 transition-colors"
               >
                 <Shuffle className="h-4 w-4" />
                 Tạo đề Final ngay
@@ -455,31 +456,29 @@ export function SubjectHubView() {
           </div>
 
           {progress.attempts.length > 0 && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
-              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <History className="h-4 w-4 text-slate-500" />
+            <div className="rounded-3xl border border-sage-border bg-paper p-5 sm:p-6 shadow-cozy space-y-3">
+              <h3 className="text-base font-bold text-ink flex items-center gap-2">
+                <History className="h-4 w-4 text-ink-soft" />
                 Lịch sử làm bài gần đây
               </h3>
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-sage-border/60">
                 {progress.attempts.slice(0, 5).map((att) => (
                   <div
                     key={att.id}
                     className="py-2.5 flex items-center justify-between text-sm"
                   >
                     <div>
-                      <p className="font-medium text-slate-800">
-                        {att.examTitle}
-                      </p>
-                      <p className="text-xs text-slate-500">
+                      <p className="font-medium text-ink">{att.examTitle}</p>
+                      <p className="text-xs text-ink-soft">
                         {att.mode === 'exam' ? 'Thi bấm giờ' : 'Ôn tập'} •{' '}
                         {new Date(att.completedAt).toLocaleString('vi-VN')}
                       </p>
                     </div>
                     <span
-                      className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${
+                      className={`rounded-xl px-2.5 py-1 text-xs font-semibold ${
                         att.passed
-                          ? 'bg-emerald-50 text-emerald-700'
-                          : 'bg-rose-50 text-rose-700'
+                          ? 'bg-moss-soft text-moss'
+                          : 'bg-blossom-soft text-blossom-ink'
                       }`}
                     >
                       {att.correctCount}/{att.totalCount} ({att.scorePercent}%)
@@ -493,32 +492,33 @@ export function SubjectHubView() {
       )}
 
       {activeTab === 'mistakes' && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+        <div className="rounded-3xl border border-sage-border bg-paper p-6 shadow-cozy space-y-4">
           {reviewQuestions.length === 0 ? (
-            <div className="text-center py-6 text-sm text-slate-500">
+            <div className="text-center py-8 text-sm text-ink-soft">
               Hiện chưa có câu hỏi làm sai hoặc đánh dấu sao nào cho môn này.
             </div>
           ) : (
             <>
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">
+                  <h3 className="text-base font-bold text-ink">
                     Danh sách câu cần ôn lại ({reviewQuestions.length} câu)
                   </h3>
-                  <p className="text-sm text-slate-600">
-                    Làm đúng lại câu đã sai sẽ tự động đánh dấu Đã thuộc (Mastered).
+                  <p className="text-sm text-ink-soft">
+                    Làm đúng lại câu đã sai sẽ tự động đánh dấu Đã thuộc
+                    (Mastered).
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={handleReviewMistakes}
-                  className="inline-flex items-center gap-2 rounded-xl bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-firefly px-4 py-2 text-sm font-semibold text-ink hover:bg-firefly-bright transition-colors"
                 >
                   <Play className="h-4 w-4" />
                   Làm lại toàn bộ ngay
                 </button>
               </div>
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-sage-border/60">
                 {reviewQuestions.map((q) => {
                   const wrongStat = progress.wrongQuestionStats[q.id];
                   const isBookmarked = progress.bookmarkedQuestionIds.includes(
@@ -527,19 +527,19 @@ export function SubjectHubView() {
                   return (
                     <div
                       key={q.id}
-                      className="py-3 flex items-start justify-between gap-4"
+                      className="py-3.5 flex items-start justify-between gap-4"
                     >
-                      <p className="text-sm text-slate-800">{q.prompt}</p>
+                      <p className="text-sm text-ink">{q.prompt}</p>
                       <div className="flex items-center gap-2 shrink-0">
                         {wrongStat && !wrongStat.mastered && (
-                          <span className="inline-flex items-center gap-1 rounded bg-rose-50 px-2 py-0.5 text-xs text-rose-700">
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-blossom-soft px-2.5 py-0.5 text-xs font-medium text-blossom-ink">
                             <AlertTriangle className="h-3 w-3" />
                             Sai {wrongStat.wrongCount} lần
                           </span>
                         )}
                         {isBookmarked && (
-                          <span className="inline-flex items-center gap-1 rounded bg-amber-50 px-2 py-0.5 text-xs text-amber-700">
-                            <Bookmark className="h-3 w-3" />
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-firefly-soft px-2.5 py-0.5 text-xs font-medium text-wood">
+                            <Bookmark className="h-3 w-3 text-firefly" />
                             Đã lưu
                           </span>
                         )}
@@ -554,60 +554,63 @@ export function SubjectHubView() {
       )}
 
       {selectedPack && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl space-y-4">
-            <h2 className="text-lg font-bold text-slate-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/35 backdrop-blur-[2px] p-4">
+          <div className="w-full max-w-md rounded-3xl border border-sage-border bg-paper p-6 shadow-xl space-y-4">
+            <h2 className="text-lg font-bold text-ink">
               Cấu hình bài làm: {selectedPack.title}
             </h2>
 
             <div className="space-y-2">
-              <p className="text-sm font-medium text-slate-700">Chọn chế độ:</p>
-              <div className="grid grid-cols-2 gap-2">
+              <p className="text-sm font-medium text-ink">Chọn chế độ:</p>
+              <div className="grid grid-cols-2 gap-2.5">
                 <button
                   type="button"
                   onClick={() => setLaunchMode('practice')}
-                  className={`rounded-xl border p-3 text-left text-sm ${
+                  className={`rounded-2xl border p-3.5 text-left text-sm transition-colors ${
                     launchMode === 'practice'
-                      ? 'border-indigo-600 bg-indigo-50 text-indigo-900'
-                      : 'border-slate-200 hover:bg-slate-50'
+                      ? 'border-moss bg-moss-soft text-ink'
+                      : 'border-sage-border hover:bg-sage-tint'
                   }`}
                 >
                   <div className="font-semibold">Ôn tập (Practice)</div>
-                  <div className="text-xs text-slate-600 mt-0.5">
+                  <div className="text-xs text-ink-soft mt-0.5">
                     Hiện đáp án &amp; giải thích ngay sau mỗi câu
                   </div>
                 </button>
                 <button
                   type="button"
                   onClick={() => setLaunchMode('exam')}
-                  className={`rounded-xl border p-3 text-left text-sm ${
+                  className={`rounded-2xl border p-3.5 text-left text-sm transition-colors ${
                     launchMode === 'exam'
-                      ? 'border-indigo-600 bg-indigo-50 text-indigo-900'
-                      : 'border-slate-200 hover:bg-slate-50'
+                      ? 'border-moss bg-moss-soft text-ink'
+                      : 'border-sage-border hover:bg-sage-tint'
                   }`}
                 >
                   <div className="font-semibold">Thi thử (Timed)</div>
-                  <div className="text-xs text-slate-600 mt-0.5">
-                    Đếm ngược {selectedPack.durationMinutes} phút, nộp bài mới chấm
+                  <div className="text-xs text-ink-soft mt-0.5">
+                    Đếm ngược {selectedPack.durationMinutes} phút, nộp bài mới
+                    chấm
                   </div>
                 </button>
               </div>
             </div>
 
-            <div className="space-y-2 pt-1 text-sm text-slate-700">
-              <label className="flex items-center gap-2">
+            <div className="space-y-2 pt-1 text-sm text-ink">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={shuffleQuestions}
                   onChange={(e) => setShuffleQuestions(e.target.checked)}
+                  className="accent-moss rounded"
                 />
                 Đảo ngẫu nhiên thứ tự câu hỏi
               </label>
-              <label className="flex items-center gap-2">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={shuffleOptions}
                   onChange={(e) => setShuffleOptions(e.target.checked)}
+                  className="accent-moss rounded"
                 />
                 Đảo thứ tự các đáp án A/B/C/D
               </label>
@@ -617,14 +620,14 @@ export function SubjectHubView() {
               <button
                 type="button"
                 onClick={() => setSelectedPack(null)}
-                className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                className="rounded-xl border border-sage-border bg-paper px-4 py-2 text-sm font-medium text-ink-soft hover:bg-sage-tint"
               >
                 Hủy
               </button>
               <button
                 type="button"
                 onClick={confirmLaunch}
-                className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                className="rounded-xl bg-moss px-4 py-2 text-sm font-semibold text-white hover:bg-moss-hover"
               >
                 Bắt đầu làm bài
               </button>
@@ -635,4 +638,3 @@ export function SubjectHubView() {
     </div>
   );
 }
-

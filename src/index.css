@@ -2,3 +2,232 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-mist: 245 247 245;
+  --color-mist-deep: 232 238 234;
+  --color-paper: 255 255 255;
+  --color-on-accent: 255 255 255;
+  --color-ink: 24 36 30;
+  --color-ink-soft: 86 104 94;
+  --color-sage-border: 216 226 219;
+  --color-sage-tint: 238 244 240;
+  --color-moss: 74 118 86;
+  --color-moss-hover: 59 96 69;
+  --color-moss-soft: 230 242 233;
+  --color-rain: 92 148 156;
+  --color-rain-hover: 75 128 136;
+  --color-rain-soft: 229 242 244;
+  --color-rain-ink: 44 92 99;
+  --color-wood: 92 75 67;
+  --color-wood-soft: 244 238 233;
+  --color-firefly: 215 168 59;
+  --color-firefly-bright: 244 213 123;
+  --color-firefly-soft: 254 248 228;
+  --color-blossom: 201 118 139;
+  --color-blossom-soft: 253 241 244;
+  --color-blossom-ink: 140 66 84;
+  --shadow-cozy: 0 2px 14px -4px rgba(24, 36, 30, 0.08);
+}
+
+html.dark {
+  color-scheme: dark;
+  --color-mist: 24 25 26;
+  --color-mist-deep: 32 34 36;
+  --color-paper: 36 37 38;
+  --color-on-accent: 255 255 255;
+  --color-ink: 228 230 235;
+  --color-ink-soft: 176 179 184;
+  --color-sage-border: 62 64 66;
+  --color-sage-tint: 58 59 60;
+  --color-moss: 76 140 94;
+  --color-moss-hover: 92 158 110;
+  --color-moss-soft: 42 58 47;
+  --color-rain: 92 162 172;
+  --color-rain-hover: 108 178 188;
+  --color-rain-soft: 38 54 58;
+  --color-rain-ink: 158 220 228;
+  --color-wood: 222 198 182;
+  --color-wood-soft: 54 48 44;
+  --color-firefly: 235 186 76;
+  --color-firefly-bright: 249 224 142;
+  --color-firefly-soft: 60 51 28;
+  --color-blossom: 222 138 158;
+  --color-blossom-soft: 64 40 48;
+  --color-blossom-ink: 246 184 198;
+  --shadow-cozy: 0 6px 24px -6px rgba(0, 0, 0, 0.55);
+}
+
+@layer base {
+  body {
+    background-color: rgb(var(--color-mist));
+    color: rgb(var(--color-ink));
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+}
+
+/* Explicit full-screen dark mode overrides (immune to dev-server Tailwind config cache) */
+html.dark,
+html.dark body,
+html.dark .bg-mist,
+html.dark .bg-mist\/80,
+html.dark .bg-mist\/70,
+html.dark .bg-mist\/60,
+html.dark .bg-mist\/50,
+html.dark .bg-mist\/40 {
+  background-color: #18191a !important;
+  color: #e4e6eb;
+}
+
+html.dark .bg-mist-deep {
+  background-color: #202225 !important;
+}
+
+html.dark .bg-paper {
+  background-color: #242526 !important;
+  color: #e4e6eb;
+}
+
+html.dark .bg-paper\/95,
+html.dark .bg-paper\/90 {
+  background-color: rgba(36, 37, 38, 0.94) !important;
+  color: #e4e6eb;
+}
+
+html.dark .bg-sage-tint,
+html.dark .hover\:bg-sage-tint:hover {
+  background-color: #3a3b3c !important;
+}
+
+html.dark .text-ink,
+html.dark .text-ink\/90 {
+  color: #e4e6eb !important;
+}
+
+html.dark .text-ink-soft,
+html.dark .text-ink-soft\/70,
+html.dark .text-ink-soft\/60 {
+  color: #b0b3b8 !important;
+}
+
+html.dark .border-sage-border,
+html.dark .border-sage-border\/80,
+html.dark .border-sage-border\/70,
+html.dark .border-sage-border\/60,
+html.dark .border-sage-border\/50,
+html.dark .divide-sage-border > :not([hidden]) ~ :not([hidden]),
+html.dark .divide-sage-border\/60 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #3e4042 !important;
+}
+
+html.dark .bg-moss {
+  background-color: #4c8c5e !important;
+  color: #ffffff !important;
+}
+
+html.dark .hover\:bg-moss-hover:hover {
+  background-color: #5c9e6e !important;
+}
+
+html.dark .bg-moss-soft,
+html.dark .bg-moss-soft\/70,
+html.dark .bg-moss-soft\/50,
+html.dark .bg-moss-soft\/45 {
+  background-color: rgba(76, 140, 94, 0.22) !important;
+}
+
+html.dark .text-moss {
+  color: #7bc48e !important;
+}
+
+html.dark .bg-rain-soft,
+html.dark .bg-rain-soft\/60,
+html.dark .bg-rain-soft\/45 {
+  background-color: rgba(92, 162, 172, 0.2) !important;
+}
+
+html.dark .text-rain-ink,
+html.dark .text-\[\#376369\] {
+  color: #9edce4 !important;
+}
+
+html.dark .bg-firefly-soft,
+html.dark .bg-firefly-soft\/95,
+html.dark .bg-firefly-soft\/75,
+html.dark .bg-firefly-soft\/70 {
+  background-color: rgba(235, 186, 76, 0.16) !important;
+}
+
+html.dark .bg-wood-soft {
+  background-color: #36302c !important;
+}
+
+html.dark .text-wood {
+  color: #dec6b6 !important;
+}
+
+html.dark .bg-blossom-soft {
+  background-color: rgba(222, 138, 158, 0.18) !important;
+}
+
+html.dark .text-blossom-ink,
+html.dark .text-\[\#8C4859\],
+html.dark .text-\[\#6D2E3F\] {
+  color: #f6b8c6 !important;
+}
+
+html.dark input:not([type='checkbox']):not([type='radio']),
+html.dark textarea,
+html.dark select {
+  background-color: #3a3b3c !important;
+  color: #e4e6eb !important;
+  border-color: #4e5052 !important;
+}
+
+.pixelated {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+@keyframes cozy-rain-fall {
+  0% {
+    transform: translate3d(8px, -18px, 0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translate3d(-12px, 120px, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes cozy-firefly-glow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(0.85);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate3d(3px, -5px, 0) scale(1.2);
+    opacity: 0.95;
+  }
+}
+
+.animate-cozy-rain {
+  animation: cozy-rain-fall linear infinite;
+}
+
+.animate-cozy-firefly {
+  animation: cozy-firefly-glow ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-cozy-rain,
+  .animate-cozy-firefly {
+    animation: none !important;
+  }
+}

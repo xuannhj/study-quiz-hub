@@ -5,14 +5,14 @@ function renderInline(text: string) {
   return parts.map((part, idx) => {
     if (part.startsWith('**') && part.endsWith('**')) {
       return (
-        <strong key={idx} className="font-semibold text-slate-900">
+        <strong key={idx} className="font-semibold text-ink">
           {part.slice(2, -2)}
         </strong>
       );
     }
     if (part.startsWith('*') && part.endsWith('*')) {
       return (
-        <em key={idx} className="italic">
+        <em key={idx} className="italic text-ink/90">
           {part.slice(1, -1)}
         </em>
       );
@@ -21,7 +21,7 @@ function renderInline(text: string) {
       return (
         <code
           key={idx}
-          className="rounded bg-slate-100 px-1.5 py-0.5 text-xs font-mono text-indigo-700"
+          className="rounded-md bg-sage-tint px-1.5 py-0.5 text-xs font-mono text-moss"
         >
           {part.slice(1, -1)}
         </code>
@@ -50,7 +50,7 @@ export function StudyContentRenderer({ content }: { content: string }) {
   const blocks = content.trim().split(/\n\s*\n/);
 
   return (
-    <div className="space-y-3 text-sm leading-relaxed text-slate-700">
+    <div className="space-y-3 text-sm leading-relaxed text-ink/90">
       {blocks.map((block, bIdx) => {
         const lines = block
           .split('\n')
@@ -62,23 +62,26 @@ export function StudyContentRenderer({ content }: { content: string }) {
           return (
             <div
               key={bIdx}
-              className="overflow-x-auto rounded-lg border border-slate-200"
+              className="overflow-x-auto rounded-2xl border border-sage-border bg-paper"
             >
-              <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
-                <thead className="bg-slate-100 text-slate-800">
+              <table className="min-w-full divide-y divide-sage-border text-left text-sm">
+                <thead className="bg-sage-tint text-ink">
                   <tr>
                     {header.map((cell, cIdx) => (
-                      <th key={cIdx} className="px-3 py-2 font-semibold">
+                      <th key={cIdx} className="px-3.5 py-2.5 font-semibold">
                         {renderInline(cell)}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 bg-white">
+                <tbody className="divide-y divide-sage-border/60 bg-paper">
                   {body.map((row, rIdx) => (
-                    <tr key={rIdx}>
+                    <tr
+                      key={rIdx}
+                      className={rIdx % 2 === 1 ? 'bg-mist/60' : 'bg-paper'}
+                    >
                       {row.map((cell, cIdx) => (
-                        <td key={cIdx} className="px-3 py-2 align-top">
+                        <td key={cIdx} className="px-3.5 py-2.5 align-top">
                           {renderInline(cell)}
                         </td>
                       ))}
@@ -92,7 +95,7 @@ export function StudyContentRenderer({ content }: { content: string }) {
 
         if (lines.every((l) => l.startsWith('- '))) {
           return (
-            <ul key={bIdx} className="list-disc pl-5 space-y-1.5">
+            <ul key={bIdx} className="list-disc pl-5 space-y-1.5 marker:text-moss">
               {lines.map((line, lIdx) => (
                 <li key={lIdx}>{renderInline(line.slice(2))}</li>
               ))}
@@ -105,7 +108,7 @@ export function StudyContentRenderer({ content }: { content: string }) {
             {lines.map((line, lIdx) =>
               line.startsWith('- ') ? (
                 <div key={lIdx} className="flex gap-2 pl-2">
-                  <span className="text-indigo-500">•</span>
+                  <span className="text-moss font-bold">•</span>
                   <span>{renderInline(line.slice(2))}</span>
                 </div>
               ) : (
@@ -118,4 +121,3 @@ export function StudyContentRenderer({ content }: { content: string }) {
     </div>
   );
 }
-
