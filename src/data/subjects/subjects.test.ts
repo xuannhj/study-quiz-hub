@@ -87,4 +87,11 @@ describe('BUILT_IN_SUBJECTS integrity', () => {
     expect(swrPdf).toBeDefined();
     assertSubjectIntegrity(swrPdf!, 6, 80, 8, 3);
   });
+
+  it('registers FER202-PAST subject with 8 term chapters, 754 crawled questions, and 17 exam packs', () => {
+    const ferPast = BUILT_IN_SUBJECTS.find((s) => s.id === 'fer202-past');
+    expect(ferPast).toBeDefined();
+    assertSubjectIntegrity(ferPast!, 8, 754, 1, 16);
+  });
 });
+

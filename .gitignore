@@ -5,4 +5,5 @@ dist
 *.local
 .superpowers/
 slides/*/text/
+scratch/
 

@@ -1,5 +1,13 @@
 import type { Subject } from '../../types/study';
 import { swrSubject } from './swr';
 import { swrPdfSubject } from './swr-pdf';
+import { fer202PastSubject } from './fer202-past';
 
-export const BUILT_IN_SUBJECTS: Subject[] = [swrSubject, swrPdfSubject];
+export const BUILT_IN_SUBJECTS: Subject[] = [
+  swrSubject,
+  swrPdfSubject,
+  fer202PastSubject,
+];
+
+export { fer202PastSubject };
+
