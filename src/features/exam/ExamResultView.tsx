@@ -1,13 +1,21 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle2, RotateCcw, XCircle } from 'lucide-react';
+import { CheckCircle2, RotateCcw, Sparkles } from 'lucide-react';
 import type { ExamGradeSummary } from '../../services/exam/examEngine';
 import type { Question } from '../../types/study';
+import { QuestionDiagram } from './QuestionDiagram';
+import { generateSessionCompanionNote } from '../../services/studyCompanion';
+import {
+  computeStreakStats,
+  loadStreakState,
+} from '../../services/studyStreak';
 
 interface ExamResultViewProps {
   subjectId: string;
+  subjectName?: string;
   examTitle: string;
   summary: ExamGradeSummary;
+  spentSeconds?: number;
   flaggedIds: string[];
   onRetryWrong: (wrongQuestions: Question[]) => void;
 }
@@ -16,8 +24,10 @@ type ReviewFilter = 'all' | 'wrong' | 'flagged';
 
 export function ExamResultView({
   subjectId,
+  subjectName,
   examTitle,
   summary,
+  spentSeconds = 60,
   flaggedIds,
   onRetryWrong,
 }: ExamResultViewProps) {
@@ -34,32 +44,55 @@ export function ExamResultView({
     return true;
   });
 
+  const streakStats = computeStreakStats(loadStreakState());
+  const companionNote = generateSessionCompanionNote({
+    total: summary.totalCount,
+    correct: summary.correctCount,
+    wrong: wrongQuestions.length,
+    minutes: Math.max(1, Math.round(spentSeconds / 60)),
+    streak: Math.max(1, streakStats.currentStreakDays),
+    subjectName: subjectName ?? subjectId.toUpperCase(),
+    daysAway: streakStats.daysAwayBeforeToday,
+  });
+
   return (
     <div className="mx-auto max-w-4xl space-y-6">
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+      <div className="rounded-3xl border border-sage-border bg-paper p-6 shadow-cozy">
+        <p className="text-xs font-semibold uppercase tracking-wider text-ink-soft">
           Kết quả làm bài
         </p>
-        <h1 className="mt-1 text-2xl font-bold text-slate-900">{examTitle}</h1>
+        <h1 className="mt-1 text-2xl font-bold text-ink">{examTitle}</h1>
+
+        {/* Warm Companion Recap & Comforting Feedback */}
+        <div className="mt-4 rounded-2xl border border-firefly/35 bg-firefly-soft/75 p-4 space-y-1.5">
+          <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-wood">
+            <Sparkles className="h-3.5 w-3.5 text-firefly shrink-0" />
+            <span>
+              Hôm nay em đã ôn {summary.totalCount} câu, nhớ được{' '}
+              {summary.correctCount} câu
+            </span>
+          </div>
+          <p className="text-sm leading-relaxed text-ink">{companionNote}</p>
+        </div>
 
         <div className="mt-5 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-xl bg-slate-50 p-4">
-            <div className="text-xs text-slate-500">Điểm số</div>
-            <div className="mt-1 text-3xl font-bold text-indigo-600">
+          <div className="rounded-2xl bg-mist p-4 border border-sage-border/70">
+            <div className="text-xs text-ink-soft">Điểm số</div>
+            <div className="mt-1 text-3xl font-bold text-moss">
               {summary.scorePercent}%
             </div>
           </div>
-          <div className="rounded-xl bg-slate-50 p-4">
-            <div className="text-xs text-slate-500">Số câu đúng</div>
-            <div className="mt-1 text-3xl font-bold text-slate-900">
+          <div className="rounded-2xl bg-mist p-4 border border-sage-border/70">
+            <div className="text-xs text-ink-soft">Số câu nhớ được</div>
+            <div className="mt-1 text-3xl font-bold text-ink">
               {summary.correctCount}/{summary.totalCount}
             </div>
           </div>
-          <div className="rounded-xl bg-slate-50 p-4">
-            <div className="text-xs text-slate-500">Trạng thái</div>
+          <div className="rounded-2xl bg-mist p-4 border border-sage-border/70">
+            <div className="text-xs text-ink-soft">Trạng thái</div>
             <div
               className={`mt-1 inline-flex items-center gap-1.5 text-lg font-bold ${
-                summary.passed ? 'text-emerald-600' : 'text-rose-600'
+                summary.passed ? 'text-moss' : 'text-wood'
               }`}
             >
               {summary.passed ? (
@@ -68,7 +101,7 @@ export function ExamResultView({
                 </>
               ) : (
                 <>
-                  <XCircle className="h-5 w-5" /> Chưa đạt
+                  <Sparkles className="h-5 w-5 text-firefly" /> Đang làm quen
                 </>
               )}
             </div>
@@ -78,7 +111,7 @@ export function ExamResultView({
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             to={`/subjects/${subjectId}`}
-            className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="rounded-2xl border border-sage-border bg-paper px-4 py-2 text-sm font-medium text-ink hover:bg-sage-tint transition-colors"
           >
             Quay về môn học
           </Link>
@@ -86,32 +119,32 @@ export function ExamResultView({
             <button
               type="button"
               onClick={() => onRetryWrong(wrongQuestions)}
-              className="inline-flex items-center gap-2 rounded-xl bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700"
+              className="inline-flex items-center gap-2 rounded-2xl bg-firefly px-4 py-2 text-sm font-semibold text-ink hover:bg-firefly-bright transition-colors"
             >
               <RotateCcw className="h-4 w-4" />
-              Làm lại {wrongQuestions.length} câu sai
+              Ôn lại {wrongQuestions.length} câu hẹn gặp sau
             </button>
           )}
         </div>
       </div>
 
       {summary.chapterBreakdown.length > 0 && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-3">
-          <h2 className="text-base font-bold text-slate-900">
+        <div className="rounded-3xl border border-sage-border bg-paper p-6 shadow-cozy space-y-3">
+          <h2 className="text-base font-bold text-ink">
             Phân tích theo Chương
           </h2>
           <div className="space-y-2.5">
             {summary.chapterBreakdown.map((ch) => (
               <div key={ch.chapterId} className="space-y-1">
-                <div className="flex justify-between text-xs font-medium text-slate-700">
+                <div className="flex justify-between text-xs font-medium text-ink-soft">
                   <span>{ch.chapterTitle}</span>
                   <span>
                     {ch.correct}/{ch.total} ({ch.accuracyPercent}%)
                   </span>
                 </div>
-                <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                <div className="h-2 rounded-full bg-mist-deep overflow-hidden">
                   <div
-                    className="h-full bg-indigo-600 rounded-full"
+                    className="h-full bg-moss rounded-full"
                     style={{ width: `${ch.accuracyPercent}%` }}
                   />
                 </div>
@@ -123,9 +156,7 @@ export function ExamResultView({
 
       <div className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-lg font-bold text-slate-900">
-            Chi tiết từng câu hỏi
-          </h2>
+          <h2 className="text-lg font-bold text-ink">Chi tiết từng câu hỏi</h2>
           <div className="flex gap-2">
             {(
               [
@@ -138,10 +169,10 @@ export function ExamResultView({
                 key={key}
                 type="button"
                 onClick={() => setFilter(key)}
-                className={`rounded-lg px-3 py-1.5 text-xs font-medium border ${
+                className={`rounded-xl px-3 py-1.5 text-xs font-medium border transition-colors ${
                   filter === key
-                    ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
-                    : 'border-slate-200 bg-white text-slate-600'
+                    ? 'border-moss bg-moss-soft text-moss font-semibold'
+                    : 'border-sage-border bg-paper text-ink-soft hover:bg-sage-tint'
                 }`}
               >
                 {label}
@@ -153,58 +184,70 @@ export function ExamResultView({
         {visibleResults.map((item, idx) => (
           <div
             key={item.question.id}
-            className={`rounded-2xl border p-5 bg-white ${
-              item.isCorrect ? 'border-emerald-200' : 'border-rose-200'
+            className={`rounded-3xl border p-5 bg-paper shadow-cozy ${
+              item.isCorrect ? 'border-moss/40' : 'border-blossom/60'
             }`}
           >
             <div className="flex items-start justify-between gap-2">
-              <p className="font-semibold text-slate-900 text-sm">
+              <p className="font-semibold text-ink text-sm leading-relaxed">
                 Câu {idx + 1}: {item.question.prompt}
               </p>
               <span
-                className={`shrink-0 rounded-md px-2 py-0.5 text-xs font-semibold ${
+                className={`shrink-0 rounded-lg px-2.5 py-0.5 text-xs font-semibold ${
                   item.isCorrect
-                    ? 'bg-emerald-50 text-emerald-700'
-                    : 'bg-rose-50 text-rose-700'
+                    ? 'bg-moss-soft text-moss'
+                    : 'bg-blossom-soft text-blossom-ink'
                 }`}
               >
                 {item.isCorrect ? 'Đúng' : 'Sai'}
               </span>
             </div>
 
+            {item.question.imageUrl && (
+              <div className="mt-3">
+                <QuestionDiagram
+                  imageUrl={item.question.imageUrl}
+                  imageCaption={item.question.imageCaption}
+                  compact
+                />
+              </div>
+            )}
+
             <div className="mt-3 space-y-1.5 text-sm">
               {item.question.options.map((opt) => {
                 const isRight = item.question.correctOptionIds.includes(opt.id);
                 const isSelected = item.selectedOptionIds.includes(opt.id);
-                let style = 'border-slate-200 bg-slate-50 text-slate-700';
+                let style = 'border-sage-border bg-mist/60 text-ink-soft';
                 let label = '';
                 if (isRight && isSelected) {
-                  style =
-                    'border-emerald-500 bg-emerald-50 text-emerald-900 font-medium';
+                  style = 'border-moss bg-moss-soft text-ink font-medium';
                   label = 'Đáp án đúng (Bạn đã chọn)';
                 } else if (isRight) {
                   style =
-                    'border-emerald-400 border-dashed bg-emerald-50/50 text-emerald-900 font-medium';
+                    'border-moss/70 border-dashed bg-moss-soft/50 text-ink font-medium';
                   label = 'Đáp án đúng (Bạn bỏ sót)';
                 } else if (isSelected) {
-                  style = 'border-rose-400 bg-rose-50 text-rose-900';
+                  style =
+                    'border-blossom bg-blossom-soft text-blossom-ink';
                   label = 'Bạn chọn (Sai)';
                 }
                 return (
                   <div
                     key={opt.id}
-                    className={`rounded-lg border px-3 py-2 flex items-center justify-between ${style}`}
+                    className={`rounded-xl border px-3.5 py-2 flex items-center justify-between gap-3 ${style}`}
                   >
                     <span>{opt.text}</span>
-                    {label && <span className="text-xs">{label}</span>}
+                    {label && (
+                      <span className="text-xs shrink-0">{label}</span>
+                    )}
                   </div>
                 );
               })}
             </div>
 
             {item.question.explanation && (
-              <div className="mt-3 rounded-xl bg-indigo-50/70 p-3 text-xs text-slate-700">
-                <strong className="text-indigo-900">Giải thích: </strong>
+              <div className="mt-3 rounded-2xl bg-rain-soft/45 border border-rain/20 p-3.5 text-xs text-ink leading-relaxed">
+                <strong className="text-rain-ink">Giải thích: </strong>
                 {item.question.explanation}
               </div>
             )}
@@ -214,4 +257,3 @@ export function ExamResultView({
     </div>
   );
 }
-

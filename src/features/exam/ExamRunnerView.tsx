@@ -6,10 +6,16 @@ import {
   Bookmark,
   CheckCircle2,
   Clock,
+  Eye,
+  EyeOff,
   Flag,
   Send,
 } from 'lucide-react';
 import { storageService } from '../../services/storage';
+import {
+  recordAnsweredQuestions,
+  recordCompletedExam,
+} from '../../services/studyStreak';
 import {
   buildExamQuestions,
   createDynamicExamPack,
@@ -20,6 +26,7 @@ import {
 import type { ActiveExamSession, Question } from '../../types/study';
 import type { ExamLaunchState } from './types';
 import { ExamResultView } from './ExamResultView';
+import { QuestionDiagram } from './QuestionDiagram';
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
@@ -127,6 +134,8 @@ export function ExamRunnerView() {
   const [gradeSummary, setGradeSummary] = useState<ExamGradeSummary | null>(
     null
   );
+  const [lastSpentSeconds, setLastSpentSeconds] = useState<number>(60);
+  const [focusMode, setFocusMode] = useState<boolean>(false);
 
   const { session, questions } = sessionState;
   const currentQuestion = session ? questions[session.currentIndex] : undefined;
@@ -155,7 +164,26 @@ export function ExamRunnerView() {
       session.passScorePercent
     );
     const totalSeconds = session.durationMinutes * 60;
-    const spent = Math.max(0, totalSeconds - session.remainingSeconds);
+    const elapsedWallSeconds = Math.max(
+      0,
+      Math.round((Date.now() - new Date(session.startedAt).getTime()) / 1000)
+    );
+    const spent =
+      session.mode === 'exam'
+        ? Math.max(0, totalSeconds - session.remainingSeconds)
+        : elapsedWallSeconds;
+
+    const checkedSet = new Set(session.checkedQuestionIds);
+    const uncheckedResults = summary.results.filter(
+      (r) => !checkedSet.has(r.question.id)
+    );
+    if (uncheckedResults.length > 0) {
+      recordAnsweredQuestions(
+        uncheckedResults.length,
+        uncheckedResults.filter((r) => r.isCorrect).length
+      );
+    }
+    recordCompletedExam();
 
     storageService.recordExamAttempt(subject.id, {
       id: `attempt-${Date.now()}`,
@@ -176,6 +204,7 @@ export function ExamRunnerView() {
       })),
     });
 
+    setLastSpentSeconds(spent);
     setProgress(storageService.getProgress(subject.id));
     setGradeSummary(summary);
   }, [subject, session, questions]);
@@ -244,6 +273,13 @@ export function ExamRunnerView() {
 
   const handleCheckPractice = useCallback(() => {
     if (!currentQuestion || !session || session.mode !== 'practice') return;
+    if (!session.checkedQuestionIds.includes(currentQuestion.id)) {
+      const selected = session.answers[currentQuestion.id] ?? [];
+      recordAnsweredQuestions(
+        1,
+        isAnswerCorrect(currentQuestion, selected) ? 1 : 0
+      );
+    }
     updateSession((prev) =>
       prev.checkedQuestionIds.includes(currentQuestion.id)
         ? prev
@@ -308,9 +344,9 @@ export function ExamRunnerView() {
 
   if (!subject) {
     return (
-      <div className="rounded-2xl bg-white p-8 text-center border border-slate-200">
-        <p className="text-slate-600">Không tìm thấy môn học.</p>
-        <Link to="/" className="mt-2 inline-block text-sm text-indigo-600">
+      <div className="rounded-3xl bg-paper p-8 text-center border border-sage-border shadow-cozy">
+        <p className="text-ink-soft">Không tìm thấy môn học.</p>
+        <Link to="/" className="mt-2 inline-block text-sm font-semibold text-moss">
           Về trang chủ
         </Link>
       </div>
@@ -319,13 +355,13 @@ export function ExamRunnerView() {
 
   if (!session || questions.length === 0 || !currentQuestion) {
     return (
-      <div className="rounded-2xl bg-white p-8 text-center border border-slate-200 space-y-3">
-        <p className="text-slate-700">
+      <div className="rounded-3xl bg-paper p-8 text-center border border-sage-border shadow-cozy space-y-3">
+        <p className="text-ink">
           Chưa có câu hỏi nào phù hợp để bắt đầu bài thi này.
         </p>
         <Link
           to={`/subjects/${subject.id}`}
-          className="inline-block rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white"
+          className="inline-block rounded-2xl bg-moss px-4 py-2 text-sm font-semibold text-white hover:bg-moss-hover"
         >
           Quay lại môn {subject.code}
         </Link>
@@ -337,8 +373,10 @@ export function ExamRunnerView() {
     return (
       <ExamResultView
         subjectId={subject.id}
+        subjectName={subject.name}
         examTitle={session.examTitle}
         summary={gradeSummary}
+        spentSeconds={lastSpentSeconds}
         flaggedIds={session.flaggedQuestionIds}
         onRetryWrong={(wrongQs) => {
           const retryPack = createDynamicExamPack({
@@ -400,27 +438,42 @@ export function ExamRunnerView() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-3.5 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-sage-border bg-paper px-5 py-4 shadow-cozy">
         <div>
-          <span className="text-xs font-semibold text-indigo-600">
+          <span className="inline-block rounded-lg bg-moss-soft px-2 py-0.5 text-xs font-semibold text-moss">
             {session.mode === 'exam' ? 'Phòng thi bấm giờ' : 'Chế độ ôn tập'}
           </span>
-          <h1 className="text-base font-bold text-slate-900">
+          <h1 className="mt-1 text-base font-bold text-ink">
             {session.examTitle}
           </h1>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           {session.mode === 'exam' && (
-            <div className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 px-3 py-1.5 text-sm font-mono font-semibold text-slate-800">
-              <Clock className="h-4 w-4 text-indigo-600" />
+            <div className="inline-flex items-center gap-1.5 rounded-2xl bg-sage-tint px-3.5 py-2 text-sm font-mono font-semibold text-ink">
+              <Clock className="h-4 w-4 text-moss" />
               {formatTimer(session.remainingSeconds)}
             </div>
           )}
           <button
             type="button"
+            onClick={() => setFocusMode((prev) => !prev)}
+            aria-pressed={focusMode}
+            className="inline-flex items-center gap-1.5 rounded-2xl border border-sage-border bg-paper px-3 py-2 text-xs font-medium text-ink-soft hover:bg-sage-tint hover:text-ink transition-colors"
+          >
+            {focusMode ? (
+              <Eye className="h-3.5 w-3.5 text-moss" />
+            ) : (
+              <EyeOff className="h-3.5 w-3.5 text-ink-soft" />
+            )}
+            <span className="hidden sm:inline">
+              {focusMode ? 'Hiện danh sách câu' : 'Chế độ Focus'}
+            </span>
+          </button>
+          <button
+            type="button"
             onClick={handleSubmitExam}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            className="inline-flex items-center gap-1.5 rounded-2xl bg-moss px-4 py-2 text-sm font-semibold text-white hover:bg-moss-hover transition-colors"
           >
             <Send className="h-4 w-4" />
             Nộp bài
@@ -428,15 +481,19 @@ export function ExamRunnerView() {
         </div>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[1fr_260px]">
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+      <div
+        className={`grid gap-5 ${
+          focusMode ? 'max-w-3xl mx-auto' : 'lg:grid-cols-[1fr_260px]'
+        }`}
+      >
+        <div className="rounded-3xl border border-sage-border bg-paper p-6 shadow-cozy space-y-5">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold text-slate-700">
+              <span className="text-sm font-semibold text-ink">
                 Câu {session.currentIndex + 1} / {questions.length}
               </span>
               {currentQuestion.type === 'multiple' && (
-                <span className="rounded-md bg-violet-50 px-2 py-0.5 text-xs font-semibold text-violet-700">
+                <span className="rounded-lg bg-rain-soft px-2.5 py-0.5 text-xs font-semibold text-rain-ink">
                   Chọn {currentQuestion.correctOptionIds.length} đáp án
                 </span>
               )}
@@ -450,10 +507,10 @@ export function ExamRunnerView() {
                     storageService.toggleBookmark(subject.id, currentQuestion.id)
                   )
                 }
-                className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-medium ${
+                className={`inline-flex items-center gap-1 rounded-xl border px-2.5 py-1 text-xs font-medium transition-colors ${
                   isBookmarked
-                    ? 'border-amber-300 bg-amber-50 text-amber-700'
-                    : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                    ? 'border-firefly/50 bg-firefly-soft text-wood'
+                    : 'border-sage-border text-ink-soft hover:bg-sage-tint'
                 }`}
               >
                 <Bookmark className="h-3.5 w-3.5" />
@@ -462,10 +519,10 @@ export function ExamRunnerView() {
               <button
                 type="button"
                 onClick={toggleFlag}
-                className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-medium ${
+                className={`inline-flex items-center gap-1 rounded-xl border px-2.5 py-1 text-xs font-medium transition-colors ${
                   isFlagged
-                    ? 'border-rose-300 bg-rose-50 text-rose-700'
-                    : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                    ? 'border-blossom/60 bg-blossom-soft text-blossom-ink'
+                    : 'border-sage-border text-ink-soft hover:bg-sage-tint'
                 }`}
               >
                 <Flag className="h-3.5 w-3.5" />
@@ -474,9 +531,14 @@ export function ExamRunnerView() {
             </div>
           </div>
 
-          <p className="text-base font-medium leading-relaxed text-slate-900">
+          <p className="text-base font-medium leading-relaxed text-ink">
             {currentQuestion.prompt}
           </p>
+
+          <QuestionDiagram
+            imageUrl={currentQuestion.imageUrl}
+            imageCaption={currentQuestion.imageCaption}
+          />
 
           <div className="space-y-2.5">
             {currentQuestion.options.map((opt, idx) => {
@@ -486,17 +548,18 @@ export function ExamRunnerView() {
               );
 
               let optionClass =
-                'border-slate-200 bg-white hover:border-indigo-300 hover:bg-slate-50';
+                'border-sage-border bg-paper hover:border-moss/50 hover:bg-mist/70';
               if (isChecked) {
                 if (isCorrectOpt) {
                   optionClass =
-                    'border-emerald-500 bg-emerald-50 text-emerald-950';
+                    'border-moss bg-moss-soft text-ink font-medium';
                 } else if (selected) {
-                  optionClass = 'border-rose-500 bg-rose-50 text-rose-950';
+                  optionClass =
+                    'border-blossom bg-blossom-soft text-blossom-ink';
                 }
               } else if (selected) {
                 optionClass =
-                  'border-indigo-600 bg-indigo-50 text-indigo-950 ring-1 ring-indigo-600';
+                  'border-moss bg-moss-soft/75 text-ink ring-1 ring-moss';
               }
 
               return (
@@ -504,12 +567,18 @@ export function ExamRunnerView() {
                   key={opt.id}
                   type="button"
                   onClick={() => toggleOption(opt.id)}
-                  className={`w-full text-left rounded-xl border p-3.5 text-sm transition-all flex items-start gap-3 ${optionClass}`}
+                  className={`w-full text-left rounded-2xl border p-3.5 text-sm transition-all flex items-start gap-3 ${optionClass}`}
                 >
-                  <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-slate-300 bg-white text-xs font-semibold text-slate-700">
+                  <span
+                    className={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-xs font-mono font-semibold ${
+                      selected
+                        ? 'border-moss bg-moss text-white'
+                        : 'border-sage-border bg-mist text-ink-soft'
+                    }`}
+                  >
                     {LETTERS[idx] ?? idx + 1}
                   </span>
-                  <span className="pt-0.5">{opt.text}</span>
+                  <span className="pt-0.5 leading-relaxed">{opt.text}</span>
                 </button>
               );
             })}
@@ -521,7 +590,7 @@ export function ExamRunnerView() {
                 type="button"
                 disabled={selectedIds.length === 0}
                 onClick={handleCheckPractice}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-2xl bg-moss px-4 py-2 text-sm font-semibold text-white hover:bg-moss-hover disabled:opacity-50 transition-colors"
               >
                 <CheckCircle2 className="h-4 w-4" />
                 Kiểm tra đáp án
@@ -531,17 +600,24 @@ export function ExamRunnerView() {
 
           {isChecked && (
             <div
-              className={`rounded-xl border p-4 text-sm ${
+              className={`rounded-2xl border p-4 text-sm ${
                 isPracticeRight
-                  ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
-                  : 'border-rose-200 bg-rose-50 text-rose-900'
+                  ? 'border-moss/40 bg-moss-soft text-ink'
+                  : 'border-firefly/50 bg-firefly-soft text-wood'
               }`}
             >
               <p className="font-bold">
-                {isPracticeRight ? 'Chính xác!' : 'Chưa đúng!'}
+                {isPracticeRight
+                  ? 'Chính xác!'
+                  : 'Câu này sẽ quay lại sau nha'}
+              </p>
+              <p className="mt-0.5 text-xs text-ink-soft">
+                {isPracticeRight
+                  ? 'Nhớ chắc câu này rồi — đom đóm ghi nhận thêm điểm sáng cho em bé nè ✨'
+                  : 'Não mình đang làm quen với ý này đó, đọc nhẹ phần giải thích bên dưới nha.'}
               </p>
               {currentQuestion.explanation && (
-                <p className="mt-1 text-slate-700">
+                <p className="mt-2 text-ink/90 leading-relaxed">
                   <strong>Giải thích: </strong>
                   {currentQuestion.explanation}
                 </p>
@@ -549,7 +625,7 @@ export function ExamRunnerView() {
             </div>
           )}
 
-          <div className="flex items-center justify-between border-t border-slate-100 pt-4">
+          <div className="flex items-center justify-between border-t border-sage-border/70 pt-4">
             <button
               type="button"
               disabled={session.currentIndex === 0}
@@ -559,7 +635,7 @@ export function ExamRunnerView() {
                   currentIndex: Math.max(0, prev.currentIndex - 1),
                 }))
               }
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40"
+              className="inline-flex items-center gap-1.5 rounded-2xl border border-sage-border bg-paper px-3.5 py-2 text-sm font-medium text-ink hover:bg-sage-tint disabled:opacity-40 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               Câu trước
@@ -577,7 +653,7 @@ export function ExamRunnerView() {
                   ),
                 }))
               }
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-40"
+              className="inline-flex items-center gap-1.5 rounded-2xl border border-sage-border bg-paper px-3.5 py-2 text-sm font-medium text-ink hover:bg-sage-tint disabled:opacity-40 transition-colors"
             >
               Câu tiếp
               <ArrowRight className="h-4 w-4" />
@@ -585,22 +661,23 @@ export function ExamRunnerView() {
           </div>
         </div>
 
-        <aside className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm h-fit space-y-4">
-          <h2 className="text-sm font-bold text-slate-900">Danh sách câu hỏi</h2>
+        {!focusMode && (
+        <aside className="rounded-3xl border border-sage-border bg-paper p-4 shadow-cozy h-fit space-y-4">
+          <h2 className="text-sm font-bold text-ink">Danh sách câu hỏi</h2>
           <div className="grid grid-cols-5 gap-2">
             {questions.map((q, idx) => {
               const answered = (session.answers[q.id]?.length ?? 0) > 0;
               const flagged = session.flaggedQuestionIds.includes(q.id);
               const isCurrent = idx === session.currentIndex;
 
-              let btnClass = 'border-slate-200 bg-slate-50 text-slate-700';
+              let btnClass = 'border-sage-border bg-mist text-ink-soft';
               if (flagged) {
-                btnClass = 'border-rose-400 bg-rose-50 text-rose-700';
+                btnClass = 'border-firefly bg-firefly-soft text-wood';
               } else if (answered) {
-                btnClass = 'border-indigo-300 bg-indigo-50 text-indigo-700';
+                btnClass = 'border-moss/50 bg-moss-soft text-moss';
               }
               if (isCurrent) {
-                btnClass += ' ring-2 ring-indigo-600';
+                btnClass += ' ring-2 ring-moss';
               }
 
               return (
@@ -610,22 +687,22 @@ export function ExamRunnerView() {
                   onClick={() =>
                     updateSession((prev) => ({ ...prev, currentIndex: idx }))
                   }
-                  className={`h-9 rounded-lg border text-xs font-semibold ${btnClass}`}
+                  className={`h-9 rounded-xl border text-xs font-mono font-semibold transition-all ${btnClass}`}
                 >
                   {idx + 1}
                 </button>
               );
             })}
           </div>
-          <p className="text-xs text-slate-500 leading-relaxed">
-            Phím tắt: <code className="font-mono">1-6</code> chọn đáp án,{' '}
-            <code className="font-mono">←/→</code> chuyển câu,{' '}
-            <code className="font-mono">F</code> cắm cờ,{' '}
-            <code className="font-mono">Enter</code> kiểm tra.
+          <p className="text-xs text-ink-soft leading-relaxed">
+            Phím tắt: <code className="font-mono text-moss">1-6</code> chọn đáp án,{' '}
+            <code className="font-mono text-moss">←/→</code> chuyển câu,{' '}
+            <code className="font-mono text-moss">F</code> cắm cờ,{' '}
+            <code className="font-mono text-moss">Enter</code> kiểm tra.
           </p>
         </aside>
+        )}
       </div>
     </div>
   );
 }
-

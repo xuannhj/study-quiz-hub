@@ -181,5 +181,46 @@ describe('ExamRunnerView', () => {
     expect(screen.getByText('Đáp án đúng (Bạn bỏ sót)')).toBeInTheDocument();
     expect(screen.getByText('Bạn chọn (Sai)')).toBeInTheDocument();
   });
+
+  it('renders diagram image and opens lightbox zoom when question has imageUrl', () => {
+    render(
+      <MemoryRouter
+        initialEntries={[
+          {
+            pathname: '/subjects/swr-pdf/exam',
+            state: {
+              pack: {
+                id: 'test-diagram',
+                subjectId: 'swr-pdf',
+                category: 'quiz',
+                title: 'Diagram Quiz',
+                durationMinutes: 10,
+                questionCount: 1,
+                chapterIds: ['swr-pdf-l1'],
+                fixedQuestionIds: ['swr-pdf-q-009'],
+                passScorePercent: 50,
+              },
+              mode: 'practice',
+              shuffleQuestions: false,
+              shuffleOptions: false,
+            } satisfies ExamLaunchState,
+          },
+        ]}
+      >
+        <Routes>
+          <Route path="/subjects/:subjectId/exam" element={<ExamRunnerView />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    const img = screen.getByRole('img', { name: /Figure 12-2/i });
+    expect(img).toHaveAttribute('src', '/images/swr-pdf/figure-12-2-swimlane.png');
+
+    fireEvent.click(screen.getByRole('button', { name: /Phóng to hình minh họa/i }));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
 });
 

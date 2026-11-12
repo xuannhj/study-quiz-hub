@@ -9,15 +9,30 @@ describe('DashboardView', () => {
     window.localStorage.clear();
   });
 
-  it('renders built-in SWR subject card and allows creating a new subject', () => {
+  it('highlights primary Start Studying action, Firefly Jar daily goal, and creates a new subject', () => {
     render(
       <MemoryRouter>
         <DashboardView />
       </MemoryRouter>
     );
 
-    expect(screen.getByText('SWR302')).toBeInTheDocument();
+    expect(screen.getAllByText('SWR302').length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByText('Thời gian biểu thi sắp tới')).toBeInTheDocument();
     expect(screen.getByText('Software Requirements')).toBeInTheDocument();
+    expect(screen.getByText('SWR-PDF')).toBeInTheDocument();
+    expect(
+      screen.getByText(/không gian ôn tập riêng của xuân nhi/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /bắt đầu ôn ngay/i })
+    ).toBeInTheDocument();
+    expect(screen.getByText(/lọ đom đóm/i)).toBeInTheDocument();
+    expect(screen.queryByPlaceholderText(/tìm nhanh môn học/i)).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /xem lịch thi/i }));
+    expect(screen.getByRole('dialog', { name: /lịch thi của xuân nhi/i })).toBeInTheDocument();
+    expect(screen.getByText(/18\/11\/2026 · 16h20-17h40/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /đóng lịch thi/i }));
 
     fireEvent.click(screen.getByRole('button', { name: /thêm môn học/i }));
 
@@ -34,4 +49,3 @@ describe('DashboardView', () => {
     expect(window.localStorage.getItem(STORAGE_KEY)).toContain('SWP391');
   });
 });
-
