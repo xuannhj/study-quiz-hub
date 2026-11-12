@@ -129,6 +129,7 @@ html.dark .hover\:bg-moss-hover:hover {
 }
 
 html.dark .bg-moss-soft,
+html.dark .bg-moss-soft\/75,
 html.dark .bg-moss-soft\/70,
 html.dark .bg-moss-soft\/50,
 html.dark .bg-moss-soft\/45 {
@@ -205,15 +206,36 @@ html.dark select {
   }
 }
 
+@keyframes cozy-window-rain {
+  0% {
+    transform: translate3d(6px, -12px, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate3d(-18px, 260px, 0);
+    opacity: 0;
+  }
+}
+
+.animate-cozy-window-rain {
+  animation: cozy-window-rain linear infinite;
+}
+
 @keyframes cozy-firefly-glow {
   0%,
   100% {
     transform: translate3d(0, 0, 0) scale(0.85);
-    opacity: 0.35;
+    opacity: 0.18;
   }
   50% {
-    transform: translate3d(3px, -5px, 0) scale(1.2);
-    opacity: 0.95;
+    transform: translate3d(2px, -4px, 0) scale(1.1);
+    opacity: 0.55;
   }
 }
 
@@ -227,6 +249,7 @@ html.dark select {
 
 @media (prefers-reduced-motion: reduce) {
   .animate-cozy-rain,
+  .animate-cozy-window-rain,
   .animate-cozy-firefly {
     animation: none !important;
   }

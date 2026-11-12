@@ -4,13 +4,13 @@ import { MemoryRouter } from 'react-router-dom';
 import { Layout } from './Layout';
 import { AMBIENT_STORAGE_KEY, THEME_STORAGE_KEY } from './cozyMood';
 
-describe('Layout clean header, Day/Night window swap, settings menu, and dock', () => {
+describe('Layout minimal hero, Day/Night window swap, settings menu, and dock', () => {
   beforeEach(() => {
     window.localStorage.clear();
     document.documentElement.classList.remove('dark');
   });
 
-  it('switches Day/Night banner artwork cleanly and houses ambient/sound/import inside Cài đặt menu', () => {
+  it('keeps minimal hero without greeting pill, swaps Day/Night artwork, and opens Cài đặt menu', () => {
     render(
       <MemoryRouter>
         <Layout>
@@ -21,13 +21,16 @@ describe('Layout clean header, Day/Night window swap, settings menu, and dock', 
 
     expect(screen.getByText('Góc học của Xuân Nhi')).toBeInTheDocument();
     expect(screen.queryByText(/Lofi Town/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/Đêm khuya yên tĩnh/i)
+    ).not.toBeInTheDocument();
 
     const bannerImg = screen.getByRole('img', {
       name: /khung cửa sổ mưa rơi/i,
     });
     expect(bannerImg).toHaveAttribute('src', '/images/cozy-window.png');
 
-    // Enlarged Focus timer & Streak chip
+    // Focus timer & Streak chip
     expect(screen.getByText('25:00')).toBeInTheDocument();
     const streakBtn = screen.getByRole('button', { name: /1 ngày/i });
     fireEvent.click(streakBtn);
@@ -48,7 +51,7 @@ describe('Layout clean header, Day/Night window swap, settings menu, and dock', 
     fireEvent.click(lightBtn);
     expect(document.documentElement.classList.contains('dark')).toBe(false);
 
-    // Open Cài đặt menu to control Sound, Rain & Fireflies, and Import
+    // Open Cài đặt menu
     fireEvent.click(screen.getByRole('button', { name: /cài đặt/i }));
     const soundMenuBtn = screen.getByRole('menuitem', {
       name: /âm thanh nền/i,
@@ -61,6 +64,9 @@ describe('Layout clean header, Day/Night window swap, settings menu, and dock', 
     });
     fireEvent.click(ambientMenuBtn);
     expect(window.localStorage.getItem(AMBIENT_STORAGE_KEY)).toBe('false');
+    expect(
+      screen.getByRole('menuitem', { name: /môn học/i })
+    ).toBeInTheDocument();
     expect(
       screen.getByRole('menuitem', { name: /import & backup/i })
     ).toBeInTheDocument();
