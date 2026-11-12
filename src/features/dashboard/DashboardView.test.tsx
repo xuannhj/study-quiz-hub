@@ -4,38 +4,40 @@ import { MemoryRouter } from 'react-router-dom';
 import { DashboardView } from './DashboardView';
 import { STORAGE_KEY } from '../../services/storage/storageService';
 
-describe('DashboardView', () => {
+describe('DashboardView minimal calm layout', () => {
   beforeEach(() => {
     window.localStorage.clear();
   });
 
-  it('highlights primary Start Studying action, Firefly Jar daily goal, and creates a new subject', () => {
+  it('removes clutter copy, renders 3 upcoming exams, pixel firefly jar 0/5 goal, and creates a subject', () => {
     render(
       <MemoryRouter>
         <DashboardView />
       </MemoryRouter>
     );
 
+    expect(
+      screen.queryByText(/không gian ôn tập riêng của xuân nhi/i)
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/nhịp ngày/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/đã làm 0 câu/i)).not.toBeInTheDocument();
+
     expect(screen.getAllByText('SWR302').length).toBeGreaterThanOrEqual(2);
-    expect(screen.getByText('Thời gian biểu thi sắp tới')).toBeInTheDocument();
     expect(screen.getByText('Software Requirements')).toBeInTheDocument();
     expect(screen.getByText('SWR-PDF')).toBeInTheDocument();
-    expect(
-      screen.getByText(/không gian ôn tập riêng của xuân nhi/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText('0/19')).toBeInTheDocument();
+    expect(screen.getByText('0/5')).toBeInTheDocument();
     expect(
       screen.getByRole('link', { name: /bắt đầu ôn ngay/i })
     ).toBeInTheDocument();
-    expect(screen.getByText(/lọ đom đóm/i)).toBeInTheDocument();
-    expect(screen.queryByPlaceholderText(/tìm nhanh môn học/i)).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /xem lịch thi/i }));
-    expect(screen.getByRole('dialog', { name: /lịch thi của xuân nhi/i })).toBeInTheDocument();
-    expect(screen.getByText(/18\/11\/2026 · 16h20-17h40/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('dialog', { name: /lịch thi của xuân nhi/i })
+    ).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /đóng lịch thi/i }));
 
     fireEvent.click(screen.getByRole('button', { name: /thêm môn học/i }));
-
     fireEvent.change(screen.getByLabelText(/mã môn/i), {
       target: { value: 'SWP391' },
     });

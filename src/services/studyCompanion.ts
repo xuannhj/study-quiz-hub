@@ -1,7 +1,4 @@
-import {
-  DAILY_CHAPTER_GOAL,
-  type StudyStreakStats,
-} from './studyStreak';
+import { type StudyStreakStats } from './studyStreak';
 
 export interface SessionCompanionInput {
   total: number;
@@ -14,10 +11,14 @@ export interface SessionCompanionInput {
   date?: Date;
 }
 
+const NORMAL_MOTIVATION_LINES = [
+  'Mỗi câu một chút, em đang tiến lên đó.',
+  'Em đã ngồi đây rồi, vậy là giỏi rồi.',
+  'Từ từ thôi, em làm được mà.',
+] as const;
+
 /**
- * Generates warm, zero-pressure companion feedback following Xuan Nhi's supportive rules:
- * no harsh words, always cites real numbers, comforts on mistakes or return after break,
- * gently praises real effort, and ends with a cozy next cue.
+ * Generates warm, zero-pressure companion feedback after completing an exam/practice session.
  */
 export function generateSessionCompanionNote({
   total,
@@ -45,8 +46,7 @@ export function generateSessionCompanionNote({
   }
 
   if (accuracy >= 0.8 && total > 0) {
-    const fireflyLine =
-      'Đom đóm trong lọ lại sáng thêm nhờ em rồi.';
+    const fireflyLine = 'Đom đóm trong lọ lại sáng thêm nhờ em rồi.';
     const endCue = isNight
       ? 'Thư giãn mắt chút rồi uống ngụm nước ấm nha 🌧️'
       : 'Nghỉ tay chút cho dịu mắt rồi hẳn đi tiếp nhé ✨';
@@ -57,37 +57,31 @@ export function generateSessionCompanionNote({
 }
 
 /**
- * Single contextual whisper line for the header banner (replaces repetitive encouragement).
+ * Picks a single ultra-short (<= 10 words), warm motivational headline based on real context.
  */
-export function getContextualHeaderWhisper(
+export function pickSingleMotivationHeadline(
   stats: StudyStreakStats,
-  date: Date = new Date()
+  nearestExamDays: number | null,
+  randomFn: () => number = Math.random
 ): string {
-  if (stats.daysAwayBeforeToday >= 2) {
-    return `Mừng em bé quay lại sau ${stats.daysAwayBeforeToday} ngày — hôm nay mình ôn thật nhẹ nhàng thôi nha.`;
-  }
-
-  if (
-    stats.todayExamsCount >= stats.dailyExamGoal ||
-    stats.todayChaptersCount >= DAILY_CHAPTER_GOAL
-  ) {
-    return `Xong mục tiêu hôm nay (${stats.todayExamsCount} đề · ${stats.todayChaptersCount} chương) rồi nè, trời như hửng sáng cùng Xuân Nhi luôn ✨`;
-  }
-
   if (stats.todayExamsCount > 0 || stats.todayAnsweredCount > 0) {
-    return `Hôm nay Xuân Nhi đã làm ${stats.todayExamsCount} đề (${stats.todayAnsweredCount} câu) rồi — giữ nhịp chắc tay này nhé.`;
+    return 'Hôm nay em làm tốt lắm, nghỉ một chút nhé.';
   }
 
-  const hour = date.getHours();
-  if (hour >= 22 || hour < 5) {
-    return 'Đêm khuya yên tĩnh bên khung cửa sổ — có mình ngồi học cùng Xuân Nhi đây.';
+  if (stats.daysAwayBeforeToday >= 2) {
+    return 'Chào mừng em quay lại, mình học nhẹ nhàng thôi.';
   }
-  if (hour >= 18) {
-    return 'Buổi tối dịu nhẹ rồi, làm gọn một lượt ngắn cùng cây nhỏ và lọ đom đóm nha Nhi.';
+
+  if (nearestExamDays !== null && nearestExamDays >= 0 && nearestExamDays <= 3) {
+    return 'Gần tới rồi, em đã chuẩn bị tốt hơn em nghĩ.';
   }
-  if (hour >= 12) {
-    return 'Buổi chiều bình yên nè, chọn một phần nhỏ em muốn ôn là đủ đẹp ngày hôm nay rồi.';
+
+  if (stats.currentStreakDays >= 2) {
+    return `${stats.currentStreakDays} ngày liên tiếp, em bé siêu quá!`;
   }
-  return 'Sáng mới tinh khôi, bắt đầu thật nhẹ nhàng cùng Xuân Nhi nhé.';
+
+  const idx = Math.floor(randomFn() * NORMAL_MOTIVATION_LINES.length);
+  return NORMAL_MOTIVATION_LINES[
+    Math.min(NORMAL_MOTIVATION_LINES.length - 1, Math.max(0, idx))
+  ];
 }
-

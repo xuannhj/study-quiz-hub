@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CalendarDays, Clock, MapPin, X } from 'lucide-react';
+import { CalendarDays, X } from 'lucide-react';
 import {
   XUAN_NHI_EXAM_SCHEDULE,
   computeDaysUntilExamDate,
@@ -21,18 +21,20 @@ function loadSavedExamDate(): string {
 }
 
 /**
- * Cute compact upcoming-exam timetable strip for the left workspace card,
- * with a full modal schedule view.
+ * Minimal 3-slot upcoming exam strip inside the primary workspace card,
+ * plus full exam schedule modal.
  */
 export function ExamScheduleWidget() {
   const [scheduleOpen, setScheduleOpen] = useState(false);
   const [swrDate, setSwrDate] = useState<string>(() => loadSavedExamDate());
 
   const upcomingPrimary = getUpcomingPrimaryExams();
-  const uniqueUpcomingSubjects = upcomingPrimary.filter(
-    (item, idx, arr) =>
-      arr.findIndex((other) => other.subjectCode === item.subjectCode) === idx
-  );
+  const topThreeExams = upcomingPrimary
+    .filter(
+      (item, idx, arr) =>
+        arr.findIndex((other) => other.subjectCode === item.subjectCode) === idx
+    )
+    .slice(0, 3);
 
   const handleSaveCustomSwrDate = (value: string) => {
     const next = value || DEFAULT_SWR_EXAM_DATE;
@@ -46,12 +48,9 @@ export function ExamScheduleWidget() {
 
   return (
     <>
-      <div className="rounded-2xl border border-sage-border/80 bg-mist/80 p-3.5 space-y-2.5">
-        <div className="flex items-center justify-between gap-2">
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink">
-            <CalendarDays className="h-3.5 w-3.5 text-rain shrink-0" />
-            <span>Thời gian biểu thi sắp tới</span>
-          </span>
+      <div className="space-y-2">
+        <div className="flex items-center justify-end gap-1.5">
+          <CalendarDays className="h-3.5 w-3.5 text-ink-soft" />
           <button
             type="button"
             onClick={() => setScheduleOpen(true)}
@@ -61,50 +60,50 @@ export function ExamScheduleWidget() {
           </button>
         </div>
 
-        {uniqueUpcomingSubjects.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {uniqueUpcomingSubjects.map((slot) => {
+        {topThreeExams.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            {topThreeExams.map((slot, idx) => {
               const days =
                 slot.subjectCode === 'SWR302'
                   ? computeDaysUntilExamDate(swrDate)
                   : computeDaysUntilExamDate(slot.date);
-              const isSwr = slot.subjectCode === 'SWR302';
+              const isNearest = idx === 0;
+              const isWithinWeek = days <= 7;
+              const formattedTime = slot.time.slice(0, 5).replace('h', ':');
 
               return (
-                <div
+                <button
                   key={slot.id}
-                  className={`rounded-xl border p-2.5 text-xs transition-colors ${
-                    isSwr
-                      ? 'border-moss/50 bg-moss-soft/75'
-                      : 'border-sage-border bg-paper'
+                  type="button"
+                  onClick={() => setScheduleOpen(true)}
+                  className={`text-left rounded-2xl border p-3 transition-colors hover:bg-mist-deep hover:border-moss/60 ${
+                    isNearest
+                      ? 'border-moss/60 bg-paper'
+                      : idx === 1
+                        ? 'border-sage-border bg-paper opacity-90'
+                        : 'border-sage-border bg-paper opacity-75'
                   }`}
                 >
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="font-mono font-bold text-ink">
-                      {slot.subjectCode}
-                    </span>
-                    <span className="text-[10px] font-semibold text-moss">
-                      còn {days}d
-                    </span>
+                  <div className="text-[14px] font-semibold text-ink font-mono">
+                    {slot.subjectCode}
                   </div>
-                  <div className="mt-1 flex items-center gap-1 text-[11px] text-ink-soft font-mono">
-                    <Clock className="h-3 w-3 text-rain shrink-0" />
-                    <span className="truncate">
-                      {slot.dateLabel.slice(0, 5)} · {slot.time.slice(0, 5)}
-                    </span>
+                  <div
+                    className={`mt-0.5 text-2xl font-bold leading-tight ${
+                      isWithinWeek
+                        ? 'text-[#B45309] dark:text-[#F5B971]'
+                        : 'text-moss'
+                    }`}
+                  >
+                    {days} ngày
                   </div>
-                  <div className="mt-0.5 flex items-center gap-1 text-[11px] text-ink-soft">
-                    <MapPin className="h-3 w-3 text-blossom shrink-0" />
-                    <span>Phòng {slot.room}</span>
+                  <div className="mt-1 text-[12px] text-ink-soft truncate font-mono">
+                    {slot.dateLabel.slice(0, 5)} · {formattedTime} · P.
+                    {slot.room}
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>
-        ) : (
-          <p className="text-xs text-ink-soft">
-            Đã hoàn thành hết các mốc thi trong kỳ này rồi!
-          </p>
         )}
       </div>
 
@@ -121,12 +120,9 @@ export function ExamScheduleWidget() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="inline-flex items-center gap-1.5 rounded-full bg-rain-soft px-2.5 py-0.5 text-[11px] font-medium text-rain-ink">
-                  <CalendarDays className="h-3 w-3" />
-                  <span>Lịch thi chính thức &amp; 2NDFE</span>
-                </div>
-                <h2 className="mt-2 text-lg font-bold text-ink">
+              <div className="flex items-center gap-2">
+                <CalendarDays className="h-5 w-5 text-moss" />
+                <h2 className="text-lg font-bold text-ink">
                   Lịch thi của Xuân Nhi
                 </h2>
               </div>
@@ -153,8 +149,8 @@ export function ExamScheduleWidget() {
                       isPast
                         ? 'border-sage-border/50 bg-mist/40 opacity-60'
                         : slot.subjectCode === 'SWR302' && !isSecondary
-                          ? 'border-moss/50 bg-moss-soft/45'
-                          : 'border-sage-border bg-mist/80'
+                          ? 'border-moss/60 bg-mist-deep'
+                          : 'border-sage-border bg-paper'
                     }`}
                   >
                     <div className="space-y-0.5 min-w-0">
@@ -162,13 +158,13 @@ export function ExamScheduleWidget() {
                         <span className="font-mono font-bold text-ink">
                           {slot.subjectCode}
                         </span>
-                        <span className="rounded-md bg-paper px-1.5 py-0.5 text-[10px] font-semibold border border-sage-border">
+                        <span className="rounded-md bg-mist px-1.5 py-0.5 text-[10px] font-semibold border border-sage-border">
                           {slot.examType}
                         </span>
                         <span className="text-[11px] text-ink-soft">
                           {slot.format === 'PRACTICAL_EXAM'
-                            ? 'Thực hành (PE)'
-                            : 'Trắc nghiệm (FE)'}
+                            ? 'Thực hành'
+                            : 'Trắc nghiệm'}
                         </span>
                       </div>
                       <div className="text-ink-soft truncate">
@@ -180,12 +176,11 @@ export function ExamScheduleWidget() {
                       <div className="font-mono font-semibold text-ink">
                         {slot.dateLabel} · {slot.time}
                       </div>
-                      <div className="inline-flex items-center gap-1 text-[11px] text-ink-soft justify-end">
-                        <MapPin className="h-3 w-3 text-rain" />
-                        <span>Phòng {slot.room}</span>
+                      <div className="text-[11px] text-ink-soft">
+                        Phòng {slot.room}
                         {!isPast && (
-                          <span className="ml-1 text-moss font-semibold">
-                            · Còn {days} ngày
+                          <span className="ml-1.5 text-moss font-semibold">
+                            · {days} ngày
                           </span>
                         )}
                       </div>
@@ -196,7 +191,7 @@ export function ExamScheduleWidget() {
             </div>
 
             <div className="mt-4 pt-3 border-t border-sage-border/70 flex flex-wrap items-center justify-between gap-2 text-xs text-ink-soft">
-              <span>Tùy chỉnh mốc đếm ngược SWR302:</span>
+              <span>Ngày thi SWR302:</span>
               <input
                 type="date"
                 value={swrDate}
@@ -211,4 +206,3 @@ export function ExamScheduleWidget() {
     </>
   );
 }
-

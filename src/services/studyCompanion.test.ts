@@ -1,7 +1,31 @@
 import { describe, it, expect } from 'vitest';
-import { generateSessionCompanionNote } from './studyCompanion';
+import {
+  generateSessionCompanionNote,
+  pickSingleMotivationHeadline,
+} from './studyCompanion';
+import type { StudyStreakStats } from './studyStreak';
 
-const FORBIDDEN_HARSH_WORDS = ['sai', 'kém', 'yếu', 'tệ'];
+const FORBIDDEN_HARSH_WORDS = ['sai', 'kém', 'yếu', 'tệ', 'phải'];
+
+function makeStats(overrides: Partial<StudyStreakStats> = {}): StudyStreakStats {
+  return {
+    currentStreakDays: 1,
+    longestStreakDays: 1,
+    todaySeconds: 0,
+    totalSeconds: 0,
+    todayAnsweredCount: 0,
+    todayCorrectCount: 0,
+    todayExamsCount: 0,
+    todayChaptersCount: 0,
+    dailyExamGoal: 5,
+    totalCorrectAnswers: 0,
+    completedFocusSessions: 0,
+    fireflyCount: 0,
+    daysAwayBeforeToday: 0,
+    last7Days: [],
+    ...overrides,
+  };
+}
 
 function assertKindAndSpecific(note: string, expectedSubstrings: string[]) {
   const lower = note.toLowerCase();
@@ -13,7 +37,7 @@ function assertKindAndSpecific(note: string, expectedSubstrings: string[]) {
   }
 }
 
-describe('studyCompanion warm session feedback', () => {
+describe('studyCompanion warm session feedback & single dashboard headline', () => {
   it('welcomes returning learner gently after missed days', () => {
     const note = generateSessionCompanionNote({
       total: 8,
@@ -57,5 +81,22 @@ describe('studyCompanion warm session feedback', () => {
 
     assertKindAndSpecific(note, ['9/10', 'SWR302', 'Đom đóm']);
   });
-});
 
+  it('picks short (<=10 words) situational dashboard headlines', () => {
+    expect(
+      pickSingleMotivationHeadline(makeStats({ todayExamsCount: 1 }), 5)
+    ).toBe('Hôm nay em làm tốt lắm, nghỉ một chút nhé.');
+    expect(
+      pickSingleMotivationHeadline(makeStats({ daysAwayBeforeToday: 2 }), 5)
+    ).toBe('Chào mừng em quay lại, mình học nhẹ nhàng thôi.');
+    expect(pickSingleMotivationHeadline(makeStats(), 2)).toBe(
+      'Gần tới rồi, em đã chuẩn bị tốt hơn em nghĩ.'
+    );
+    expect(
+      pickSingleMotivationHeadline(makeStats({ currentStreakDays: 4 }), 6)
+    ).toBe('4 ngày liên tiếp, em bé siêu quá!');
+    expect(
+      pickSingleMotivationHeadline(makeStats(), 6, () => 0.5).split(/\s+/).length
+    ).toBeLessThanOrEqual(10);
+  });
+});
