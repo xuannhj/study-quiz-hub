@@ -88,6 +88,12 @@ describe('BUILT_IN_SUBJECTS integrity', () => {
     assertSubjectIntegrity(swrPdf!, 6, 80, 8, 3);
   });
 
+  it('registers FER202 slide & modern React subject with 15 chapters, 150 questions, and 9 exam packs', () => {
+    const fer = BUILT_IN_SUBJECTS.find((s) => s.id === 'fer202');
+    expect(fer).toBeDefined();
+    assertSubjectIntegrity(fer!, 15, 150, 5, 4);
+  });
+
   it('registers FER202-PAST subject with 8 term chapters, 754 crawled questions, and 17 exam packs', () => {
     const ferPast = BUILT_IN_SUBJECTS.find((s) => s.id === 'fer202-past');
     expect(ferPast).toBeDefined();
