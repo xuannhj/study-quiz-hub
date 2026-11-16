@@ -190,4 +190,38 @@ describe('storageService', () => {
     expect(restored.ok).toBe(true);
     expect(freshSvc.getSubjects()).toHaveLength(2);
   });
+
+  it('manages study notes: create, update, toggle completed, and delete', () => {
+    const svc = createStorageService(seedBuiltIn(), memoryStorage);
+    expect(svc.getAllNotes()).toHaveLength(0);
+
+    const note1 = svc.saveNote({
+      subjectId: 'swr',
+      questionId: 'swr-q1',
+      questionPrompt: 'What is FR?',
+      content: 'Functional requirements define system behavior.',
+    });
+    expect(note1.id).toBeDefined();
+    expect(note1.content).toContain('Functional requirements');
+    expect(note1.isCompleted).toBe(false);
+    expect(svc.getAllNotes()).toHaveLength(1);
+
+    // Update same question note
+    const updated = svc.saveNote({
+      subjectId: 'swr',
+      questionId: 'swr-q1',
+      content: 'Updated: FR defines features & functions.',
+    });
+    expect(updated.id).toBe(note1.id);
+    expect(updated.content).toBe('Updated: FR defines features & functions.');
+    expect(svc.getAllNotes()).toHaveLength(1);
+
+    // Toggle completed
+    const toggled = svc.toggleNoteCompleted(note1.id);
+    expect(toggled?.isCompleted).toBe(true);
+
+    // Delete note
+    svc.deleteNote(note1.id);
+    expect(svc.getAllNotes()).toHaveLength(0);
+  });
 });

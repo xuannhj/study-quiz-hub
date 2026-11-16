@@ -142,9 +142,21 @@ export interface SubjectExtensionData {
   examPacks: ExamPack[];
 }
 
+export interface StudyNote {
+  id: string;
+  subjectId: string;
+  questionId?: string;
+  questionPrompt?: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  isCompleted?: boolean;
+}
+
 export interface AppStoragePayload {
   version: number;
   customSubjects: Subject[];
   subjectExtensions: Record<string, SubjectExtensionData>;
   progressBySubject: Record<string, UserSubjectProgress>;
+  notes?: StudyNote[];
 }

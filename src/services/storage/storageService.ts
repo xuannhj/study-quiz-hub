@@ -6,6 +6,7 @@ import type {
   ExamAttempt,
   ExamPack,
   Question,
+  StudyNote,
   Subject,
   UserSubjectProgress,
 } from '../../types/study';
@@ -29,6 +30,7 @@ function emptyPayload(): AppStoragePayload {
     customSubjects: [],
     subjectExtensions: {},
     progressBySubject: {},
+    notes: [],
   };
 }
 
@@ -50,6 +52,7 @@ function safeParsePayload(raw: string | null): AppStoragePayload {
         parsed.progressBySubject && typeof parsed.progressBySubject === 'object'
           ? parsed.progressBySubject
           : {},
+      notes: Array.isArray(parsed.notes) ? parsed.notes : [],
     };
   } catch {
     return emptyPayload();
@@ -86,6 +89,17 @@ export interface StorageService {
     questionId: string,
     mastered: boolean
   ): UserSubjectProgress;
+  getAllNotes(): StudyNote[];
+  saveNote(input: {
+    id?: string;
+    subjectId: string;
+    questionId?: string;
+    questionPrompt?: string;
+    content: string;
+    isCompleted?: boolean;
+  }): StudyNote;
+  deleteNote(noteId: string): void;
+  toggleNoteCompleted(noteId: string): StudyNote | undefined;
   exportBackupJson(): string;
   importBackupJson(
     jsonText: string
@@ -371,6 +385,90 @@ export function createStorageService(
       payload.progressBySubject[subjectId] = progress;
       write(payload);
       return progress;
+    },
+
+    getAllNotes(): StudyNote[] {
+      return read().notes ?? [];
+    },
+
+    saveNote(input: {
+      id?: string;
+      subjectId: string;
+      questionId?: string;
+      questionPrompt?: string;
+      content: string;
+      isCompleted?: boolean;
+    }): StudyNote {
+      const payload = read();
+      const notes = payload.notes ?? [];
+      const now = new Date().toISOString();
+
+      if (input.id) {
+        const existingIndex = notes.findIndex((n) => n.id === input.id);
+        if (existingIndex >= 0) {
+          const updated: StudyNote = {
+            ...notes[existingIndex],
+            content: input.content,
+            isCompleted: input.isCompleted ?? notes[existingIndex].isCompleted,
+            updatedAt: now,
+          };
+          notes[existingIndex] = updated;
+          payload.notes = notes;
+          write(payload);
+          return updated;
+        }
+      }
+
+      if (input.questionId) {
+        const existingForQ = notes.findIndex(
+          (n) => n.questionId === input.questionId
+        );
+        if (existingForQ >= 0) {
+          const updated: StudyNote = {
+            ...notes[existingForQ],
+            content: input.content,
+            isCompleted: input.isCompleted ?? notes[existingForQ].isCompleted,
+            updatedAt: now,
+          };
+          notes[existingForQ] = updated;
+          payload.notes = notes;
+          write(payload);
+          return updated;
+        }
+      }
+
+      const newNote: StudyNote = {
+        id: `note-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+        subjectId: input.subjectId,
+        questionId: input.questionId,
+        questionPrompt: input.questionPrompt,
+        content: input.content,
+        createdAt: now,
+        updatedAt: now,
+        isCompleted: input.isCompleted ?? false,
+      };
+
+      payload.notes = [newNote, ...notes];
+      write(payload);
+      return newNote;
+    },
+
+    deleteNote(noteId: string): void {
+      const payload = read();
+      payload.notes = (payload.notes ?? []).filter((n) => n.id !== noteId);
+      write(payload);
+    },
+
+    toggleNoteCompleted(noteId: string): StudyNote | undefined {
+      const payload = read();
+      const notes = payload.notes ?? [];
+      const note = notes.find((n) => n.id === noteId);
+      if (!note) return undefined;
+      note.isCompleted = !note.isCompleted;
+      note.updatedAt = new Date().toISOString();
+      payload.notes = notes;
+      write(payload);
+      return note;
     },
 
     exportBackupJson(): string {

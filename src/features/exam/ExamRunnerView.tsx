@@ -6,6 +6,7 @@ import {
   Bookmark,
   CheckCircle2,
   Clock,
+  Edit3,
   Eye,
   EyeOff,
   Flag,
@@ -139,6 +140,32 @@ export function ExamRunnerView() {
 
   const { session, questions } = sessionState;
   const currentQuestion = session ? questions[session.currentIndex] : undefined;
+
+  const [showNoteBox, setShowNoteBox] = useState(false);
+  const [noteDraft, setNoteDraft] = useState('');
+  const [savedNoteSuccess, setSavedNoteSuccess] = useState(false);
+
+  useEffect(() => {
+    if (!currentQuestion) return;
+    const existing = storageService
+      .getAllNotes()
+      .find((n) => n.questionId === currentQuestion.id);
+    setNoteDraft(existing?.content ?? '');
+    setSavedNoteSuccess(false);
+  }, [currentQuestion?.id]);
+
+  const handleSaveQuestionNote = useCallback(() => {
+    if (!currentQuestion || !subject) return;
+    if (!noteDraft.trim()) return;
+    storageService.saveNote({
+      subjectId: subject.id,
+      questionId: currentQuestion.id,
+      questionPrompt: currentQuestion.prompt,
+      content: noteDraft.trim(),
+    });
+    setSavedNoteSuccess(true);
+    setTimeout(() => setSavedNoteSuccess(false), 2000);
+  }, [currentQuestion, subject, noteDraft]);
 
   const updateSession = useCallback(
     (updater: (prev: ActiveExamSession) => ActiveExamSession) => {
@@ -528,6 +555,19 @@ export function ExamRunnerView() {
                 <Flag className="h-3.5 w-3.5" />
                 {isFlagged ? 'Đã cắm cờ' : 'Cắm cờ'}
               </button>
+              <button
+                type="button"
+                onClick={() => setShowNoteBox((prev) => !prev)}
+                className={`inline-flex items-center gap-1 rounded-xl border px-2.5 py-1 text-xs font-medium transition-colors ${
+                  noteDraft
+                    ? 'border-amber-300 bg-amber-50 text-amber-900 font-semibold'
+                    : 'border-sage-border text-ink-soft hover:bg-sage-tint'
+                }`}
+                title="Ghi chú kiến thức mới cho câu này"
+              >
+                <Edit3 className="h-3.5 w-3.5" />
+                <span>{noteDraft ? 'Đã ghi chú 📝' : 'Ghi chú'}</span>
+              </button>
             </div>
           </div>
 
@@ -622,6 +662,49 @@ export function ExamRunnerView() {
                   {currentQuestion.explanation}
                 </p>
               )}
+              {noteDraft && (
+                <div className="mt-3 rounded-xl border border-amber-300/70 bg-amber-50/90 p-3 text-xs text-amber-950 space-y-1">
+                  <span className="font-bold text-amber-900 flex items-center gap-1">
+                    <Edit3 className="h-3 w-3 text-amber-700" />
+                    Ghi chú của Xuân Nhi cho câu này:
+                  </span>
+                  <p className="leading-relaxed">{noteDraft}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {showNoteBox && (
+            <div className="rounded-2xl border border-amber-300/80 bg-amber-50/80 p-4 space-y-2.5 shadow-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-amber-950 flex items-center gap-1.5">
+                  <Edit3 className="h-3.5 w-3.5 text-amber-700" />
+                  Ghi chú kiến thức mới (Tự động lưu vào Sổ tay)
+                </span>
+                {savedNoteSuccess && (
+                  <span className="text-xs font-semibold text-emerald-700">
+                    ✓ Đã lưu thành công!
+                  </span>
+                )}
+              </div>
+              <textarea
+                value={noteDraft}
+                onChange={(e) => setNoteDraft(e.target.value)}
+                placeholder="Ghi lại kiến thức mới, bẫy lý thuyết, công thức cần nhớ cho câu này..."
+                rows={2}
+                className="w-full rounded-xl border border-amber-200 bg-white p-2.5 text-xs text-ink placeholder:text-ink-soft/60 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-200"
+              />
+              <div className="flex items-center justify-between text-[11px] text-amber-900/80">
+                <span>Ghi chú này sẽ xuất hiện trong Sổ tay của bé để ôn lại.</span>
+                <button
+                  type="button"
+                  onClick={handleSaveQuestionNote}
+                  disabled={!noteDraft.trim()}
+                  className="rounded-xl bg-amber-200 px-3 py-1 font-bold text-amber-950 hover:bg-amber-300 disabled:opacity-50 transition-colors"
+                >
+                  Lưu ghi chú
+                </button>
+              </div>
             </div>
           )}
 
