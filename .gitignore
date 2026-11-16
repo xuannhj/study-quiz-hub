@@ -4,6 +4,7 @@ dist
 .DS_Store
 *.local
 .superpowers/
+docs/superpowers/
 slides/*/text/
 slides/fer/
 scratch/
