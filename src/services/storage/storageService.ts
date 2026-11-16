@@ -81,6 +81,11 @@ export interface StorageService {
     subjectId: string,
     attempt: ExamAttempt
   ): UserSubjectProgress;
+  setQuestionMastered(
+    subjectId: string,
+    questionId: string,
+    mastered: boolean
+  ): UserSubjectProgress;
   exportBackupJson(): string;
   importBackupJson(
     jsonText: string
@@ -338,6 +343,31 @@ export function createStorageService(
         }
       }
 
+      payload.progressBySubject[subjectId] = progress;
+      write(payload);
+      return progress;
+    },
+
+    setQuestionMastered(
+      subjectId: string,
+      questionId: string,
+      mastered: boolean
+    ): UserSubjectProgress {
+      const payload = read();
+      const progress = ensureProgress(payload, subjectId);
+      const current = progress.wrongQuestionStats[questionId];
+      if (current) {
+        progress.wrongQuestionStats[questionId] = {
+          ...current,
+          mastered,
+        };
+      } else if (!mastered) {
+        progress.wrongQuestionStats[questionId] = {
+          wrongCount: 1,
+          lastWrongAt: new Date().toISOString(),
+          mastered: false,
+        };
+      }
       payload.progressBySubject[subjectId] = progress;
       write(payload);
       return progress;

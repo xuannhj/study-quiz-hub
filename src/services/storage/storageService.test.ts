@@ -138,6 +138,12 @@ describe('storageService', () => {
     const p2 = svc.recordExamAttempt('swr', correctAttempt);
     expect(p2.wrongQuestionStats['swr-q1'].mastered).toBe(true);
 
+    // Manual toggle via setQuestionMastered
+    const p3 = svc.setQuestionMastered('swr', 'swr-q1', false);
+    expect(p3.wrongQuestionStats['swr-q1'].mastered).toBe(false);
+    const p4 = svc.setQuestionMastered('swr', 'swr-q1', true);
+    expect(p4.wrongQuestionStats['swr-q1'].mastered).toBe(true);
+
     const session: ActiveExamSession = {
       id: 'sess-1',
       subjectId: 'swr',

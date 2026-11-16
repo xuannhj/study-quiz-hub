@@ -57,3 +57,4 @@ Tùy vào việc em đang muốn làm gì nhé:
 - Em mở VS Code ở nhà, gõ `npm run dev` để chạy trên máy (`localhost:5173`).
 - Vừa gõ code vừa nhìn thấy kết quả thay đổi tức thì trên màn hình để kiểm tra xem có lỗi không.
 - Khi nào sửa xong và kiểm tra ưng ý rồi thì chỉ cần `git push` một phát là bản mới sẽ tự động bay lên Web Online cho em!
+

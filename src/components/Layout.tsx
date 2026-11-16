@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
+  BookMarked,
   BookOpen,
   CloudRain,
   Moon,
@@ -10,6 +11,7 @@ import {
   Upload,
   VolumeX,
 } from 'lucide-react';
+import { storageService } from '../services/storage';
 import {
   AmbientContext,
   applyThemeClass,
@@ -53,6 +55,21 @@ export function Layout({ children }: { children: ReactNode }) {
   const [soundMode, setSoundMode] = useState<LofiSoundMode>('off');
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const totalWrongCount = useMemo(() => {
+    try {
+      const subs = storageService.getSubjects();
+      return subs.reduce((acc, sub) => {
+        const prog = storageService.getProgress(sub.id);
+        const unmastered = Object.values(prog.wrongQuestionStats || {}).filter(
+          (w) => !w.mastered
+        ).length;
+        return acc + unmastered;
+      }, 0);
+    } catch {
+      return 0;
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     applyThemeClass(theme);
@@ -204,6 +221,24 @@ export function Layout({ children }: { children: ReactNode }) {
               </Link>
 
               <nav className="flex items-center gap-1.5 rounded-2xl bg-paper/95 backdrop-blur-md p-1.5 shadow-sm border border-sage-border/80">
+                <Link
+                  to="/mistakes"
+                  className={`inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-xs font-semibold transition-colors ${
+                    location.pathname === '/mistakes'
+                      ? 'bg-paper text-ink shadow-sm border border-sage-border'
+                      : 'text-ink-soft hover:bg-sage-tint hover:text-ink'
+                  }`}
+                  title="Sổ tay câu sai & Flashcard"
+                >
+                  <BookMarked className="h-3.5 w-3.5 text-blossom-ink" />
+                  <span className="hidden sm:inline">Sổ tay</span>
+                  {totalWrongCount > 0 && (
+                    <span className="rounded-full bg-blossom-soft px-1.5 py-0.2 text-[10px] font-bold text-blossom-ink">
+                      {totalWrongCount}
+                    </span>
+                  )}
+                </Link>
+
                 <div
                   role="group"
                   aria-label="Chọn giao diện Sáng hoặc Tối"

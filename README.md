@@ -5,7 +5,7 @@
   <img src="https://img.shields.io/badge/React-18.3-61dafb?style=for-the-badge&logo=react&logoColor=black" alt="React 18" />
   <img src="https://img.shields.io/badge/TypeScript-5.6-3178c6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-3.4-38bdf8?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
-  <img src="https://img.shields.io/badge/Tests-38%20Passed-10b981?style=for-the-badge&logo=vitest&logoColor=white" alt="Tests" />
+  <img src="https://img.shields.io/badge/Tests-40%20Passed-10b981?style=for-the-badge&logo=vitest&logoColor=white" alt="Tests" />
 </p>
 
 Không gian học tập, ôn lý thuyết và luyện đề trắc nghiệm cá nhân hóa của **Xuân Nhi** — được thiết kế theo phong cách **pixel-art ấm cúng**, tối giản và tập trung cao độ khi ôn thi đại học và các môn chuyên ngành FPT University.
@@ -63,7 +63,7 @@ npm install
 # Chạy môi trường phát triển (Local Dev)
 npm run dev
 
-# Chạy bộ kiểm thử tự động (38 unit tests)
+# Chạy bộ kiểm thử tự động (40 unit tests)
 npm test
 
 # Đóng gói bản Production

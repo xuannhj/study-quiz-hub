@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AlertCircle, ArrowRight, Play, Plus, Search, X } from 'lucide-react';
+import { AlertCircle, ArrowRight, BookMarked, Play, Plus, Search, X } from 'lucide-react';
 import { storageService } from '../../services/storage';
 import { createDynamicExamPack } from '../../services/exam/examEngine';
 import type { Subject } from '../../types/study';
@@ -182,6 +182,15 @@ export function DashboardView() {
                 Bắt đầu ôn ngay
               </Link>
             )}
+
+            <Link
+              to="/mistakes"
+              className="inline-flex items-center justify-center gap-1.5 rounded-2xl border border-sage-border bg-paper px-4 py-2.5 text-sm font-semibold text-ink-soft hover:bg-sage-tint hover:text-ink transition-colors shadow-sm"
+              title="Mở sổ tay câu sai & Flashcard"
+            >
+              <BookMarked className="h-4 w-4 text-blossom-ink" />
+              <span className="hidden sm:inline">Sổ tay câu sai</span>
+            </Link>
 
             <button
               type="button"
