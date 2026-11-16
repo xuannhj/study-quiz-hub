@@ -38,10 +38,11 @@ Không gian học tập, ôn lý thuyết và luyện đề trắc nghiệm cá 
 - 🎯 **3 Chế độ học linh hoạt:**
   - **Luyện tập (Practice Mode):** Bấm kiểm tra là hiện ngay đáp án đúng/sai và lời giải thích cặn kẽ.
   - **Thi thử (Exam Mode):** Bấm giờ chuẩn phòng thi, tự động tính điểm và đánh giá Đạt / Không đạt (Pass >= 60%).
-  - **Sổ tay nhớ nhầm (Mistake Notebook):** Tự động gom những câu từng trả lời sai để luyện lại đến khi thành thạo.
+  - **Sổ tay nhớ nhầm & Flashcard đa môn (Mistake Notebook):** Tự động gom những câu từng trả lời sai từ các đề thi, ôn luyện dạng lật thẻ Flashcard khoa học, lọc theo từng môn, đánh dấu Đã thuộc (*Mastered*) hoặc tạo đề thi thử thách làm lại ngay lập tức.
+- 📝 **Ghi chú học tập tức thì khi làm đề (Study Notes & Scratchpad):** Ghi chép nhanh kiến thức mới, bẫy lý thuyết và công thức ngay trong phòng thi mà không làm gián đoạn đồng hồ đếm giờ. Xem lại toàn bộ ghi chú theo môn trong Sổ tay và đánh dấu *Đã học xong ✨*.
 - 🖼️ **Hỗ trợ sơ đồ & hình ảnh chi tiết:** Xem ảnh minh họa, bảng biểu và phóng to sơ đồ chất lượng cao khi làm bài.
 - ⏱️ **Động lực học tập bền bỉ:** Đồng hồ tập trung Pomodoro `25:00`, mục tiêu hũ đom đóm pixel `5–7 đề/ngày`, đếm ngược các kỳ thi sắp tới và chuỗi ngày học liên tục (Streak).
-- 💾 **Lưu trữ an toàn trên máy khách:** Toàn bộ tiến độ học, lịch sử thi và câu sai được lưu tự động trên trình duyệt (`localStorage`), hỗ trợ Export/Backup dữ liệu JSON.
+- 💾 **Lưu trữ an toàn trên máy khách:** Toàn bộ tiến độ học, lịch sử thi, câu sai và ghi chú cá nhân được lưu tự động trên trình duyệt (`localStorage`), hỗ trợ Export/Backup dữ liệu JSON.
 
 ---
 
