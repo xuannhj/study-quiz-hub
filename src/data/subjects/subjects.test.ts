@@ -94,10 +94,10 @@ describe('BUILT_IN_SUBJECTS integrity', () => {
     assertSubjectIntegrity(fer!, 15, 150, 5, 4);
   });
 
-  it('registers FER202-PAST subject with 8 term chapters, 754 crawled questions, and 17 exam packs', () => {
+  it('registers FER202-PAST subject with 9 term chapters, 804 crawled questions, and 18 exam packs', () => {
     const ferPast = BUILT_IN_SUBJECTS.find((s) => s.id === 'fer202-past');
     expect(ferPast).toBeDefined();
-    assertSubjectIntegrity(ferPast!, 8, 754, 1, 16);
+    assertSubjectIntegrity(ferPast!, 9, 804, 1, 17);
   });
 });
 

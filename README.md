@@ -22,8 +22,9 @@ Không gian học tập, ôn lý thuyết và luyện đề trắc nghiệm cá 
   - **150 câu hỏi phân tích chuyên sâu** kèm giải thích tiếng Việt chi tiết từng câu.
   - **9 bộ đề:** 5 Đề Progress Test/Quiz theo cụm Slot + 4 Đề Thi Thử Final Exam (không trùng lặp).
 - **Đề thi các kì trước (FE Past Exams):**
-  - **754 câu hỏi thực tế** thu thập từ 15 đề thi thử FE qua **8 học kỳ gần nhất** (SU26, SP26, FA25, SU25, SP25, FA24, SU24, SP24).
-  - Tích hợp 16 đề luyện thi FE bấm giờ và giải thích chi tiết nguồn gốc đáp án.
+  - **804 câu hỏi thực tế** thu thập từ 16 đề thi FE qua **9 học kỳ gần nhất** (FA26 — Đề chính thức mới nhất, SU26, SP26, FA25, SU25, SP25, FA24, SU24, SP24).
+  - Bổ sung **Đề thi chính thức Kì Fall 2026 (FER202_FA26_FE_163998)** với đầy đủ 50 câu chụp màn hình gốc, đáp án chuẩn xác và lời giải thích chi tiết từng câu.
+  - Tích hợp 18 đề luyện thi FE (16 đề cố định theo kì + 1 đề Mock tổng hợp 50 câu ngẫu nhiên + 1 đề Sprint phản xạ 25 câu) bấm giờ và giải thích chi tiết nguồn gốc đáp án.
 
 ### 2. SWR302 — Software Requirements (Kỹ nghệ yêu cầu phần mềm)
 - **19 chương Slide giáo trình:** 118 câu hỏi trắc nghiệm bao quát toàn bộ quy trình Requirements Engineering.
