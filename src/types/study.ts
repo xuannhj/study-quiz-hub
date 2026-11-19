@@ -56,6 +56,26 @@ export interface ExamPack {
   passScorePercent: number;
 }
 
+export interface PracticalExamSheet {
+  pageNumber: number;
+  title: string;
+  url: string;
+}
+
+export interface PracticalExam {
+  id: string;
+  semester: string;
+  title: string;
+  code: string;
+  description: string;
+  durationMinutes: number;
+  scenarioSummary?: string;
+  requirements: string[];
+  images: PracticalExamSheet[];
+  materialsZipUrl?: string;
+  solutionTips?: string[];
+}
+
 export interface Subject {
   id: string;
   code: string;
@@ -64,6 +84,7 @@ export interface Subject {
   chapters: Chapter[];
   questions: Question[];
   examPacks: ExamPack[];
+  practicalExams?: PracticalExam[];
 }
 
 export interface WrongQuestionStat {
