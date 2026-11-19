@@ -99,5 +99,21 @@ describe('BUILT_IN_SUBJECTS integrity', () => {
     expect(ferPast).toBeDefined();
     assertSubjectIntegrity(ferPast!, 9, 804, 1, 17);
   });
+
+  it('registers SWT301 software testing subject with 7 chapters, 150 questions, 14 exam packs, and 8 PE practical exams', () => {
+    const swt = BUILT_IN_SUBJECTS.find((s) => s.id === 'swt');
+    expect(swt).toBeDefined();
+    assertSubjectIntegrity(swt!, 7, 150, 10, 4);
+    expect(swt!.practicalExams).toBeDefined();
+    expect(swt!.practicalExams!.length).toBe(8);
+  });
+
+  it('registers SWT-PAST subject with 9 term chapters, 547 crawled questions, 10 exam packs, and 8 PE exams', () => {
+    const swtPast = BUILT_IN_SUBJECTS.find((s) => s.id === 'swt-past');
+    expect(swtPast).toBeDefined();
+    assertSubjectIntegrity(swtPast!, 9, 547, 0, 10);
+    expect(swtPast!.practicalExams).toBeDefined();
+    expect(swtPast!.practicalExams!.length).toBe(8);
+  });
 });
 
