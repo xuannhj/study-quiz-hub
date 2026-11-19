@@ -185,14 +185,15 @@ export function computeDaysUntilExamDate(
 }
 
 /**
- * Returns upcoming primary FE/PE exams (skipping secondary 2NDFE retake slots by default).
+ * Returns upcoming exams (including 2NDFE retake slots so students see countdown for all remaining exams).
  */
 export function getUpcomingPrimaryExams(
-  now: Date = new Date()
+  now: Date = new Date(),
+  includeRetakes: boolean = true
 ): ExamScheduleSlot[] {
-  return XUAN_NHI_EXAM_SCHEDULE.filter(
-    (slot) =>
-      slot.examType !== '2NDFE' && computeDaysUntilExamDate(slot.date, now) >= 0
-  );
+  return XUAN_NHI_EXAM_SCHEDULE.filter((slot) => {
+    if (!includeRetakes && slot.examType === '2NDFE') return false;
+    return computeDaysUntilExamDate(slot.date, now) >= 0;
+  });
 }
 
