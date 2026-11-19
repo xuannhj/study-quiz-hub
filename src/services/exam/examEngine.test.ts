@@ -6,7 +6,23 @@ import {
   buildExamQuestions,
   gradeExam,
   createDynamicExamPack,
+  remapExplanationLetters,
 } from './examEngine';
+
+describe('remapExplanationLetters', () => {
+  it('rewrites answer letters to match shuffled option positions', () => {
+    const original = [
+      { id: 'A', text: 'one' },
+      { id: 'B', text: 'two' },
+      { id: 'C', text: 'three' },
+      { id: 'D', text: 'four' },
+    ];
+    const shuffled = [original[3], original[1], original[2], original[0]];
+    expect(
+      remapExplanationLetters('**Đáp án đúng: A** — vì A đúng. Câu 48: **D**', original, shuffled)
+    ).toBe('**Đáp án đúng: D** — vì A đúng. Câu 48: **A**');
+  });
+});
 
 const makeQuestion = (
   id: string,

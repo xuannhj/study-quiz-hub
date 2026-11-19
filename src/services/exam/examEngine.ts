@@ -143,10 +143,46 @@ export function buildExamQuestions(
     );
   }
 
-  return chosen.map((q) => ({
-    ...q,
-    options: shuffleOptions ? shuffleArray(q.options, rng) : [...q.options],
-  }));
+  return chosen.map((q) => {
+    if (!shuffleOptions) return { ...q, options: [...q.options] };
+    const shuffled = shuffleArray(q.options, rng);
+    return {
+      ...q,
+      options: shuffled,
+      explanation: remapExplanationLetters(q.explanation, q.options, shuffled),
+    };
+  });
+}
+
+const LETTERS = 'ABCDEFGH';
+
+/**
+ * Khi xáo trộn đáp án, nhãn hiển thị (A/B/C/D) theo vị trí mới.
+ * Hàm này đổi các tham chiếu chữ cái trong lời giải thích
+ * (vd: "Đáp án đúng: A", "Câu 48: **B**") sang nhãn mới tương ứng.
+ */
+export function remapExplanationLetters(
+  explanation: string,
+  original: readonly Question['options'][number][],
+  shuffled: readonly Question['options'][number][]
+): string {
+  if (!explanation) return explanation;
+  const map = new Map<string, string>();
+  original.forEach((opt, oldIdx) => {
+    const newIdx = shuffled.findIndex((o) => o.id === opt.id);
+    if (newIdx >= 0 && oldIdx < LETTERS.length && newIdx < LETTERS.length) {
+      map.set(LETTERS[oldIdx], LETTERS[newIdx]);
+    }
+  });
+  const swap = (letter: string) => {
+    const upper = letter.toUpperCase();
+    const mapped = map.get(upper);
+    if (!mapped) return letter;
+    return letter === upper ? mapped : mapped.toLowerCase();
+  };
+  const pattern =
+    /((?:Đáp án(?: đúng)?(?: là)?|đáp án(?: đúng)?(?: là)?|Câu\s*\d+|Phương án|phương án|Lựa chọn|lựa chọn|Option|option|Answer|answer)\s*[:：]?\s*\**\s*)([A-Ha-h])(?![A-Za-z0-9À-ỹ])/g;
+  return explanation.replace(pattern, (_m, prefix: string, letter: string) => prefix + swap(letter));
 }
 
 export function gradeExam(
