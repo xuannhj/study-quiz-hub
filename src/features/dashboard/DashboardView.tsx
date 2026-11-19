@@ -133,8 +133,12 @@ export function DashboardView() {
     setShowCreateModal(false);
   };
 
+  const isFallbackExamBank = Boolean(
+    fallbackStudyTarget?.subject.id.includes('-past')
+  );
+
   const quickStudyUrl =
-    fallbackStudyTarget?.nextChapter
+    fallbackStudyTarget?.nextChapter && !isFallbackExamBank
       ? `/subjects/${fallbackStudyTarget.subject.id}/study/${fallbackStudyTarget.nextChapter.id}`
       : fallbackStudyTarget
         ? `/subjects/${fallbackStudyTarget.subject.id}`

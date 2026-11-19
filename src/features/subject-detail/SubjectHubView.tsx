@@ -10,6 +10,7 @@ import {
   FileQuestion,
   GraduationCap,
   History,
+  Laptop,
   Play,
   RotateCcw,
   Shuffle,
@@ -18,8 +19,9 @@ import { storageService } from '../../services/storage';
 import { createDynamicExamPack } from '../../services/exam/examEngine';
 import type { ExamMode, ExamPack } from '../../types/study';
 import type { ExamLaunchState } from '../exam/types';
+import { PracticalExamView } from '../pe/PracticalExamView';
 
-type SubjectTab = 'study' | 'quiz' | 'final' | 'mistakes';
+type SubjectTab = 'study' | 'quiz' | 'final' | 'pe' | 'mistakes';
 
 export function SubjectHubView() {
   const { subjectId = '' } = useParams();
@@ -33,7 +35,15 @@ export function SubjectHubView() {
     setProgress(storageService.getProgress(subjectId));
   }, [subjectId]);
 
-  const [activeTab, setActiveTab] = useState<SubjectTab>('study');
+  const isExamBank = Boolean(subject?.id.includes('-past'));
+  const hasPracticalExams = Boolean(
+    subject?.practicalExams && subject.practicalExams.length > 0
+  );
+
+  const [activeTab, setActiveTab] = useState<SubjectTab>(() => {
+    if (subject?.id.includes('-past')) return 'final';
+    return 'study';
+  });
   const [selectedPack, setSelectedPack] = useState<ExamPack | null>(null);
   const [launchMode, setLaunchMode] = useState<ExamMode>('exam');
   const [shuffleQuestions, setShuffleQuestions] = useState(true);
@@ -207,13 +217,31 @@ export function SubjectHubView() {
       </div>
 
       <div className="flex flex-wrap gap-2">
+        {hasPracticalExams && (
+          <button
+            type="button"
+            onClick={() => setActiveTab('pe')}
+            className={tabClass('pe')}
+          >
+            <Laptop className="h-4 w-4" />
+            Luyện PE (90 phút) ({subject.practicalExams?.length})
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={() => setActiveTab('final')}
+          className={tabClass('final')}
+        >
+          <GraduationCap className="h-4 w-4" />
+          {isExamBank ? 'Đề Thi Các Kì' : 'Thi Final'} ({finalPacks.length})
+        </button>
         <button
           type="button"
           onClick={() => setActiveTab('study')}
           className={tabClass('study')}
         >
           <BookOpen className="h-4 w-4" />
-          Học Lý Thuyết
+          {isExamBank ? 'Luyện Theo Kì' : 'Học Lý Thuyết'} ({subject.chapters.length})
         </button>
         <button
           type="button"
@@ -225,14 +253,6 @@ export function SubjectHubView() {
         </button>
         <button
           type="button"
-          onClick={() => setActiveTab('final')}
-          className={tabClass('final')}
-        >
-          <GraduationCap className="h-4 w-4" />
-          Thi Final ({finalPacks.length})
-        </button>
-        <button
-          type="button"
           onClick={() => setActiveTab('mistakes')}
           className={tabClass('mistakes')}
         >
@@ -241,6 +261,10 @@ export function SubjectHubView() {
         </button>
       </div>
 
+      {activeTab === 'pe' && subject.practicalExams && (
+        <PracticalExamView exams={subject.practicalExams} />
+      )}
+
       {activeTab === 'study' && (
         <div className="space-y-3">
           {subject.chapters.map((chapter) => {
@@ -248,20 +272,27 @@ export function SubjectHubView() {
             const qCount = subject.questions.filter(
               (q) => q.chapterId === chapter.id
             ).length;
+            const matchingPack =
+              subject.examPacks.find(
+                (p) =>
+                  (p.chapterIds.length === 1 && p.chapterIds[0] === chapter.id) ||
+                  p.title.toLowerCase().includes(chapter.title.toLowerCase())
+              ) || null;
+
             return (
               <div
                 key={chapter.id}
                 className="rounded-3xl border border-sage-border bg-paper p-5 shadow-cozy flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-moss/40 transition-colors"
               >
-                <div className="space-y-1.5">
+                <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-lg bg-sage-tint px-2 py-0.5 text-xs font-semibold text-moss">
-                      Chương {chapter.order}
+                      {isExamBank ? `Đề Kì ${chapter.order}` : `Chương ${chapter.order}`}
                     </span>
                     {done && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-blossom-soft border border-blossom/30 px-2.5 py-0.5 text-xs font-medium text-blossom-ink">
                         <CheckCircle2 className="h-3 w-3" />
-                        Đã học
+                        Đã làm
                       </span>
                     )}
                     <span className="text-xs text-ink-soft">
@@ -271,19 +302,103 @@ export function SubjectHubView() {
                   <h2 className="text-base font-bold text-ink">
                     {chapter.title}
                   </h2>
-                  <p className="text-sm leading-relaxed text-ink-soft">
+                  <p className="text-sm leading-relaxed text-ink-soft line-clamp-2">
                     {chapter.summary}
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
-                  <Link
-                    to={`/subjects/${subject.id}/study/${chapter.id}`}
-                    className="inline-flex items-center gap-1.5 rounded-2xl bg-moss px-4 py-2 text-sm font-semibold text-white hover:bg-moss-hover transition-colors"
-                  >
-                    <BookOpen className="h-4 w-4" />
-                    Đọc bài học
-                  </Link>
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
+                  {isExamBank ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const targetPack =
+                            matchingPack ||
+                            createDynamicExamPack({
+                              subjectId: subject.id,
+                              category: 'final',
+                              title: `Đề thi: ${chapter.title}`,
+                              chapterIds: [chapter.id],
+                              questionCount: Math.max(qCount, 1),
+                              durationMinutes: Math.min(
+                                60,
+                                Math.max(30, Math.round(qCount * 1.2))
+                              ),
+                              passScorePercent: 50,
+                            });
+                          openLaunchConfig(targetPack, 'exam');
+                        }}
+                        className="inline-flex items-center gap-1.5 rounded-2xl bg-moss px-4 py-2 text-sm font-semibold text-white hover:bg-moss-hover transition-colors shadow-sm"
+                      >
+                        <Play className="h-4 w-4 fill-white" />
+                        Vào thi ngay ({qCount} câu)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const targetPack =
+                            matchingPack ||
+                            createDynamicExamPack({
+                              subjectId: subject.id,
+                              category: 'final',
+                              title: `Đề thi: ${chapter.title}`,
+                              chapterIds: [chapter.id],
+                              questionCount: Math.max(qCount, 1),
+                              durationMinutes: Math.min(
+                                60,
+                                Math.max(30, Math.round(qCount * 1.2))
+                              ),
+                              passScorePercent: 50,
+                            });
+                          openLaunchConfig(targetPack, 'practice');
+                        }}
+                        className="inline-flex items-center gap-1.5 rounded-2xl border border-sage-border bg-paper px-3 py-2 text-sm font-medium text-ink hover:bg-sage-tint transition-colors"
+                      >
+                        Luyện tập
+                      </button>
+                      <Link
+                        to={`/subjects/${subject.id}/study/${chapter.id}`}
+                        className="inline-flex items-center gap-1 text-xs text-ink-soft hover:text-moss font-medium px-2 py-1 transition-colors"
+                      >
+                        <BookOpen className="h-3.5 w-3.5" />
+                        Ghi chú &amp; bẫy
+                      </Link>
+                    </>
+                  ) : matchingPack ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => openLaunchConfig(matchingPack, 'exam')}
+                        className="inline-flex items-center gap-1.5 rounded-2xl bg-moss px-4 py-2 text-sm font-semibold text-white hover:bg-moss-hover transition-colors shadow-sm"
+                      >
+                        <Play className="h-4 w-4 fill-white" />
+                        Luyện đề
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => openLaunchConfig(matchingPack, 'practice')}
+                        className="inline-flex items-center gap-1.5 rounded-2xl border border-sage-border bg-paper px-3 py-2 text-sm font-medium text-ink hover:bg-sage-tint transition-colors"
+                      >
+                        Luyện tập
+                      </button>
+                      <Link
+                        to={`/subjects/${subject.id}/study/${chapter.id}`}
+                        className="inline-flex items-center gap-1 text-xs text-ink-soft hover:text-moss font-medium px-2 py-1 transition-colors"
+                      >
+                        <BookOpen className="h-3.5 w-3.5" />
+                        Lý thuyết
+                      </Link>
+                    </>
+                  ) : (
+                    <Link
+                      to={`/subjects/${subject.id}/study/${chapter.id}`}
+                      className="inline-flex items-center gap-1.5 rounded-2xl bg-moss px-4 py-2 text-sm font-semibold text-white hover:bg-moss-hover transition-colors"
+                    >
+                      <BookOpen className="h-4 w-4" />
+                      Đọc bài học
+                    </Link>
+                  )}
                 </div>
               </div>
             );
