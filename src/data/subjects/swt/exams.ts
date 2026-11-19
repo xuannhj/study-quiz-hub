@@ -100,7 +100,7 @@ export const swtExamPacks: ExamPack[] = [
     "title": "Progress Test 3 (Chương 5 & 6: Test Management & Tools)",
     "description": "Bài kiểm tra tiến độ 3 chuẩn FLM FPT (30 câu - 30 phút). Đánh giá kiến thức về Test Plan IEEE 829, quản lý rủi ro, Defect lifecycle, phân loại công cụ và dự án thí điểm (Pilot).",
     "durationMinutes": 30,
-    "questionCount": 30,
+    "questionCount": 25,
     "chapterIds": [
       "swt-ch5",
       "swt-ch6"
@@ -288,7 +288,11 @@ export const swtExamPacks: ExamPack[] = [
       "swt-c7-07",
       "swt-c7-08",
       "swt-c7-09",
-      "swt-c7-10"
+      "swt-c7-10",
+      "swt-c1-01",
+      "swt-c1-02",
+      "swt-c1-03",
+      "swt-c1-04"
     ],
     "passScorePercent": 50
   },
@@ -445,7 +449,12 @@ export const swtExamPacks: ExamPack[] = [
       "swt-c7-02",
       "swt-c7-03",
       "swt-c7-04",
-      "swt-c7-05"
+      "swt-c7-05",
+      "swt-c1-01",
+      "swt-c1-02",
+      "swt-c1-03",
+      "swt-c1-04",
+      "swt-c1-05"
     ],
     "passScorePercent": 50
   },
