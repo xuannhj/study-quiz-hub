@@ -320,13 +320,23 @@ export function ExamRunnerView() {
 
   const handleCheckPractice = useCallback(() => {
     if (!currentQuestion || !session || session.mode !== 'practice') return;
+    const selected = session.answers[currentQuestion.id] ?? [];
+    if (selected.length === 0) return;
+    const isCorrect = isAnswerCorrect(currentQuestion, selected);
+
     if (!session.checkedQuestionIds.includes(currentQuestion.id)) {
-      const selected = session.answers[currentQuestion.id] ?? [];
-      recordAnsweredQuestions(
-        1,
-        isAnswerCorrect(currentQuestion, selected) ? 1 : 0
-      );
+      recordAnsweredQuestions(1, isCorrect ? 1 : 0);
     }
+
+    if (subject) {
+      storageService.recordPracticeAnswer(
+        subject.id,
+        currentQuestion.id,
+        isCorrect
+      );
+      setProgress(storageService.getProgress(subject.id));
+    }
+
     updateSession((prev) =>
       prev.checkedQuestionIds.includes(currentQuestion.id)
         ? prev
@@ -335,7 +345,7 @@ export function ExamRunnerView() {
             checkedQuestionIds: [...prev.checkedQuestionIds, currentQuestion.id],
           }
     );
-  }, [currentQuestion, session, updateSession]);
+  }, [currentQuestion, session, subject, updateSession]);
 
   const toggleFlag = useCallback(() => {
     if (!currentQuestion) return;

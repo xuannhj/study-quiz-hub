@@ -144,6 +144,15 @@ describe('storageService', () => {
     const p4 = svc.setQuestionMastered('swr', 'swr-q1', true);
     expect(p4.wrongQuestionStats['swr-q1'].mastered).toBe(true);
 
+    // Instant auto-save via recordPracticeAnswer
+    const pPracticeWrong = svc.recordPracticeAnswer('swr', 'swr-q-instant', false);
+    expect(pPracticeWrong.wrongQuestionStats['swr-q-instant']).toMatchObject({
+      wrongCount: 1,
+      mastered: false,
+    });
+    const pPracticeRight = svc.recordPracticeAnswer('swr', 'swr-q-instant', true);
+    expect(pPracticeRight.wrongQuestionStats['swr-q-instant'].mastered).toBe(true);
+
     const session: ActiveExamSession = {
       id: 'sess-1',
       subjectId: 'swr',

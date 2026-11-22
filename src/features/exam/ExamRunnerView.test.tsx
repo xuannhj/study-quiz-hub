@@ -64,6 +64,15 @@ describe('ExamRunnerView', () => {
 
     fireEvent.keyDown(window, { key: 'ArrowRight' });
     expect(screen.getByText(/Câu 2 \/ 2/i)).toBeInTheDocument();
+
+    // Select wrong option and check answer immediately in practice mode
+    fireEvent.click(screen.getByText(/Ứng dụng bắt buộc phải triển khai/i));
+    fireEvent.click(screen.getByRole('button', { name: /kiểm tra đáp án/i }));
+
+    expect(storageService.getProgress('swr').wrongQuestionStats['swr-q-002']).toMatchObject({
+      wrongCount: 1,
+      mastered: false,
+    });
   });
 
   it('submits Timed Exam, records attempt/wrong stats, and restores saved session on reload', () => {
