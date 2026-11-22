@@ -697,5 +697,51 @@ export const swtPastExamPacks: ExamPack[] = [
       "swt-past-exam-10-q07"
     ],
     "passScorePercent": 70
+  },
+  {
+    "id": "swt-past-exam-su23-ftes",
+    "subjectId": "swt-past",
+    "category": "final",
+    "title": "Đề 11: Kì Summer 2023 (SU23 — Đề Thi Thật FTES 40 Câu)",
+    "description": "Đề thi FE chính thức kỳ Summer 2023 (40 câu) trích xuất trực tiếp từ ngân hàng phòng thi thật FTES kèm ảnh đề gốc và giải thích.",
+    "durationMinutes": 45,
+    "questionCount": 40,
+    "chapterIds": [
+      "swt-ch-su23-ftes"
+    ],
+    "fixedQuestionIds": [
+      "swt-past-su23-q01", "swt-past-su23-q02", "swt-past-su23-q03", "swt-past-su23-q04", "swt-past-su23-q05",
+      "swt-past-su23-q06", "swt-past-su23-q07", "swt-past-su23-q08", "swt-past-su23-q09", "swt-past-su23-q10",
+      "swt-past-su23-q11", "swt-past-su23-q12", "swt-past-su23-q13", "swt-past-su23-q14", "swt-past-su23-q15",
+      "swt-past-su23-q16", "swt-past-su23-q17", "swt-past-su23-q18", "swt-past-su23-q19", "swt-past-su23-q20",
+      "swt-past-su23-q21", "swt-past-su23-q22", "swt-past-su23-q23", "swt-past-su23-q24", "swt-past-su23-q25",
+      "swt-past-su23-q26", "swt-past-su23-q27", "swt-past-su23-q28", "swt-past-su23-q29", "swt-past-su23-q30",
+      "swt-past-su23-q31", "swt-past-su23-q32", "swt-past-su23-q33", "swt-past-su23-q34", "swt-past-su23-q35",
+      "swt-past-su23-q36", "swt-past-su23-q37", "swt-past-su23-q38", "swt-past-su23-q39", "swt-past-su23-q40"
+    ],
+    "passScorePercent": 60
+  },
+  {
+    "id": "swt-past-exam-sp23-ftes",
+    "subjectId": "swt-past",
+    "category": "final",
+    "title": "Đề 12: Kì Spring 2023 (SP23 — Đề Thi Thật FTES 40 Câu)",
+    "description": "Đề thi FE chính thức kỳ Spring 2023 (40 câu) trích xuất trực tiếp từ ngân hàng phòng thi thật FTES kèm ảnh đề gốc.",
+    "durationMinutes": 45,
+    "questionCount": 40,
+    "chapterIds": [
+      "swt-ch-sp23-ftes"
+    ],
+    "fixedQuestionIds": [
+      "swt-past-sp23-q01", "swt-past-sp23-q02", "swt-past-sp23-q03", "swt-past-sp23-q04", "swt-past-sp23-q05",
+      "swt-past-sp23-q06", "swt-past-sp23-q07", "swt-past-sp23-q08", "swt-past-sp23-q09", "swt-past-sp23-q10",
+      "swt-past-sp23-q11", "swt-past-sp23-q12", "swt-past-sp23-q13", "swt-past-sp23-q14", "swt-past-sp23-q15",
+      "swt-past-sp23-q16", "swt-past-sp23-q17", "swt-past-sp23-q18", "swt-past-sp23-q19", "swt-past-sp23-q20",
+      "swt-past-sp23-q21", "swt-past-sp23-q22", "swt-past-sp23-q23", "swt-past-sp23-q24", "swt-past-sp23-q25",
+      "swt-past-sp23-q26", "swt-past-sp23-q27", "swt-past-sp23-q28", "swt-past-sp23-q29", "swt-past-sp23-q30",
+      "swt-past-sp23-q31", "swt-past-sp23-q32", "swt-past-sp23-q33", "swt-past-sp23-q34", "swt-past-sp23-q35",
+      "swt-past-sp23-q36", "swt-past-sp23-q37", "swt-past-sp23-q38", "swt-past-sp23-q39", "swt-past-sp23-q40"
+    ],
+    "passScorePercent": 60
   }
 ];

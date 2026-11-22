@@ -208,4 +208,50 @@ export const swtPastChapters: Chapter[] = [
       },
     ],
   },
+  {
+    id: 'swt-ch-su23-ftes',
+    order: 10,
+    title: 'Kì Summer 2023 (SU23 — Đề Thi Thật FTES)',
+    summary:
+      'Đề thi FE chính thức kỳ hè Summer 2023 (40 câu) trích xuất từ đề thi thật phòng máy trên FTES kèm ảnh chụp gốc và giải thích.',
+    sections: [
+      {
+        id: 'swt-ch-su23-sec1',
+        type: 'concept',
+        title: 'Trọng tâm kì SU23',
+        content:
+          'Chiến lược kiểm thử phân tích rủi ro (Risk-based Testing), Pilot Project công cụ quản lý test, thứ tự ưu tiên thực thi ca kiểm thử theo thời gian và mức độ rủi ro.',
+      },
+      {
+        id: 'swt-ch-su23-sec2',
+        type: 'exam_tip',
+        title: 'Mẹo làm bài SU23',
+        content:
+          'Khi lập báo cáo sự cố (Defect Report), phiên bản phần mềm được test (Software Version) và môi trường kiểm thử là thông tin sống còn để lập trình viên có thể tái hiện lỗi (reproduce).',
+      },
+    ],
+  },
+  {
+    id: 'swt-ch-sp23-ftes',
+    order: 11,
+    title: 'Kì Spring 2023 (SP23 — Đề Thi Thật FTES)',
+    summary:
+      'Đề thi FE chính thức kỳ xuân Spring 2023 (40 câu) trích xuất từ ngân hàng đề thi thật phòng máy FTES kèm ảnh chụp gốc.',
+    sections: [
+      {
+        id: 'swt-ch-sp23-sec1',
+        type: 'concept',
+        title: 'Trọng tâm kì SP23',
+        content:
+          'Quản lý cấu hình (Configuration Management cho Test object, Test material, Test environment), Tiêu chuẩn hoàn thành kiểm thử (Test completion criteria / Exit criteria).',
+      },
+      {
+        id: 'swt-ch-sp23-sec2',
+        type: 'exam_tip',
+        title: 'Mẹo làm bài SP23',
+        content:
+          'Test completion criterion (tiêu chí kết thúc kiểm thử) dùng để xác định "Khi nào thì dừng kiểm thử" (When to stop testing), dựa trên độ bao phủ, số lỗi còn tồn đọng và ngân sách/thời gian cho phép.',
+      },
+    ],
+  },
 ];

@@ -4,11 +4,14 @@ import { BUILT_IN_SUBJECTS } from './index';
 import { buildExamQuestions } from '../../services/exam/examEngine';
 import type { Subject } from '../../types/study';
 
-const PUBLIC_IMAGES = new Set(
-  Object.keys(import.meta.glob('../../../public/images/**/*')).map((p) =>
+const PUBLIC_IMAGES = new Set([
+  ...Object.keys(import.meta.glob('../../../public/images/**/*')).map((p) =>
     p.replace(/^.*\/public/, '')
-  )
-);
+  ),
+  ...Object.keys(import.meta.glob('../../../public/materials/**/*')).map((p) =>
+    p.replace(/^.*\/public/, '')
+  ),
+]);
 
 function assertSubjectIntegrity(
   subject: Subject,
@@ -108,10 +111,10 @@ describe('BUILT_IN_SUBJECTS integrity', () => {
     expect(swt!.practicalExams!.length).toBe(8);
   });
 
-  it('registers SWT-PAST subject with 9 term chapters, 547 crawled questions, 10 exam packs, and 8 PE exams', () => {
+  it('registers SWT-PAST subject with 11 term chapters, 627 crawled questions, 12 exam packs, and 8 PE exams', () => {
     const swtPast = BUILT_IN_SUBJECTS.find((s) => s.id === 'swt-past');
     expect(swtPast).toBeDefined();
-    assertSubjectIntegrity(swtPast!, 9, 547, 0, 10);
+    assertSubjectIntegrity(swtPast!, 11, 627, 0, 12);
     expect(swtPast!.practicalExams).toBeDefined();
     expect(swtPast!.practicalExams!.length).toBe(8);
   });
