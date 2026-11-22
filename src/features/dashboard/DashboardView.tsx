@@ -13,6 +13,11 @@ import {
   computeDaysUntilExamDate,
   getUpcomingPrimaryExams,
 } from '../../data/examSchedule';
+import {
+  COURSE_GROUPS,
+  getSubjectCourseGroup,
+  type CourseGroup,
+} from '../../utils/courseGrouping';
 
 type SubjectFilter = 'all' | 'review';
 
@@ -30,6 +35,7 @@ export function DashboardView() {
   );
   const [query, setQuery] = useState('');
   const [filterMode, setFilterMode] = useState<SubjectFilter>('all');
+  const [selectedCourseGroup, setSelectedCourseGroup] = useState<CourseGroup>('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
@@ -108,13 +114,15 @@ export function DashboardView() {
     navigate(`/subjects/${subject.id}/exam`, { state: launchState });
   };
 
-  const showSearchAndFilter = subjects.length >= 5;
-
   const filtered = subjectSummaries.filter(({ subject, wrongCount }) => {
-    if (showSearchAndFilter && filterMode === 'review' && wrongCount === 0) {
+    if (selectedCourseGroup !== 'all') {
+      const grp = getSubjectCourseGroup(subject.id, subject.code);
+      if (grp !== selectedCourseGroup) return false;
+    }
+    if (filterMode === 'review' && wrongCount === 0) {
       return false;
     }
-    const q = showSearchAndFilter ? query.trim().toLowerCase() : '';
+    const q = query.trim().toLowerCase();
     if (!q) return true;
     return (
       subject.code.toLowerCase().includes(q) ||
@@ -211,46 +219,73 @@ export function DashboardView() {
         <FireflyJarCard stats={stats} />
       </section>
 
-      {/* Search & Filter (shown cleanly once 5+ subjects) */}
-      {showSearchAndFilter && (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="relative flex-1">
-            <Search className="h-4 w-4 text-ink-soft/70 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Tìm nhanh môn học..."
-              className="w-full rounded-2xl border border-sage-border bg-paper pl-10 pr-4 py-2.5 text-sm text-ink placeholder:text-ink-soft/60 outline-none focus:border-moss focus:ring-2 focus:ring-moss/15 transition-all"
-            />
-          </div>
+      {/* Subject Category Tabs (Clean FER - SWR - SWT Segmented Control) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-2xl bg-paper border border-sage-border shadow-soft">
+          {COURSE_GROUPS.map((tab) => {
+            const count =
+              tab.id === 'all'
+                ? subjectSummaries.length
+                : subjectSummaries.filter(
+                    (s) =>
+                      getSubjectCourseGroup(s.subject.id, s.subject.code) === tab.id
+                  ).length;
+            const isActive = selectedCourseGroup === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setSelectedCourseGroup(tab.id)}
+                className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs sm:text-sm font-semibold transition-all ${
+                  isActive
+                    ? 'bg-moss text-white shadow-sm'
+                    : 'text-ink-soft hover:text-ink hover:bg-mist/70'
+                }`}
+              >
+                <span>{tab.icon}</span>
+                <span>{tab.label}</span>
+                <span
+                  className={`text-[11px] px-1.5 py-0.2 rounded-full font-mono ${
+                    isActive ? 'bg-white/20 text-white' : 'bg-mist-deep text-ink-soft'
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2">
+          {subjectsNeedingReview > 0 && (
             <button
               type="button"
-              onClick={() => setFilterMode('all')}
-              className={`rounded-xl px-3.5 py-2 text-xs font-semibold transition-colors ${
-                filterMode === 'all'
-                  ? 'bg-moss text-white shadow-sm'
-                  : 'border border-sage-border bg-paper text-ink-soft hover:bg-sage-tint'
-              }`}
-            >
-              Tất cả ({subjects.length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilterMode('review')}
-              className={`rounded-xl px-3.5 py-2 text-xs font-semibold transition-colors ${
+              onClick={() =>
+                setFilterMode((prev) => (prev === 'review' ? 'all' : 'review'))
+              }
+              className={`rounded-2xl px-3.5 py-2 text-xs font-semibold transition-colors flex items-center gap-1.5 ${
                 filterMode === 'review'
                   ? 'bg-firefly text-ink shadow-sm'
                   : 'border border-sage-border bg-paper text-ink-soft hover:bg-sage-tint'
               }`}
             >
+              <AlertCircle className="h-3.5 w-3.5 text-wood" />
               Cần ôn lại ({subjectsNeedingReview})
             </button>
+          )}
+
+          <div className="relative min-w-[160px] sm:min-w-[200px]">
+            <Search className="h-4 w-4 text-ink-soft/70 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Tìm nhanh môn..."
+              className="w-full rounded-2xl border border-sage-border bg-paper pl-9 pr-3 py-1.5 text-xs sm:text-sm text-ink placeholder:text-ink-soft/60 outline-none focus:border-moss focus:ring-2 focus:ring-moss/15 transition-all"
+            />
           </div>
         </div>
-      )}
+      </div>
 
       {/* Minimal Subject Grid (only 4 items + optional review badge) */}
       {filtered.length === 0 ? (

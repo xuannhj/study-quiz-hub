@@ -82,7 +82,8 @@ export interface StorageService {
   clearActiveSession(subjectId: string): void;
   recordExamAttempt(
     subjectId: string,
-    attempt: ExamAttempt
+    attempt: ExamAttempt,
+    completedChapterIds?: string[]
   ): UserSubjectProgress;
   setQuestionMastered(
     subjectId: string,
@@ -334,12 +335,21 @@ export function createStorageService(
 
     recordExamAttempt(
       subjectId: string,
-      attempt: ExamAttempt
+      attempt: ExamAttempt,
+      completedChapterIds?: string[]
     ): UserSubjectProgress {
       const payload = read();
       const progress = ensureProgress(payload, subjectId);
       progress.attempts = [attempt, ...progress.attempts];
       delete progress.activeSession;
+
+      if (completedChapterIds && completedChapterIds.length > 0) {
+        for (const chId of completedChapterIds) {
+          if (!progress.completedChapterIds.includes(chId)) {
+            progress.completedChapterIds.push(chId);
+          }
+        }
+      }
 
       for (const ans of attempt.answers) {
         const current = progress.wrongQuestionStats[ans.questionId];

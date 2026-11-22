@@ -15,6 +15,7 @@ import {
 import { storageService } from '../../services/storage';
 import {
   recordAnsweredQuestions,
+  recordCompletedChapter,
   recordCompletedExam,
 } from '../../services/studyStreak';
 import {
@@ -28,6 +29,7 @@ import type { ActiveExamSession, Question } from '../../types/study';
 import type { ExamLaunchState } from './types';
 import { ExamResultView } from './ExamResultView';
 import { QuestionDiagram } from './QuestionDiagram';
+import { FormattedText, FormattedOptionText } from '../../components/FormattedText';
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
@@ -212,24 +214,42 @@ export function ExamRunnerView() {
     }
     recordCompletedExam();
 
-    storageService.recordExamAttempt(subject.id, {
-      id: `attempt-${Date.now()}`,
-      examPackId: session.examPackId,
-      examTitle: session.examTitle,
-      category: session.category,
-      mode: session.mode,
-      completedAt: new Date().toISOString(),
-      scorePercent: summary.scorePercent,
-      correctCount: summary.correctCount,
-      totalCount: summary.totalCount,
-      passed: summary.passed,
-      durationSpentSeconds: spent,
-      answers: summary.results.map((r) => ({
-        questionId: r.question.id,
-        selectedOptionIds: r.selectedOptionIds,
-        isCorrect: r.isCorrect,
-      })),
-    });
+    // Auto-complete chapter(s) if this exam/quiz corresponds to specific chapter(s)
+    const targetPack = subject.examPacks.find(
+      (p) => p.id === session.examPackId
+    );
+    const targetChapterIds =
+      targetPack?.chapterIds && targetPack.chapterIds.length > 0
+        ? targetPack.chapterIds
+        : [];
+    if (targetChapterIds.length > 0 && targetChapterIds.length <= 3) {
+      for (let i = 0; i < targetChapterIds.length; i++) {
+        recordCompletedChapter();
+      }
+    }
+
+    storageService.recordExamAttempt(
+      subject.id,
+      {
+        id: `attempt-${Date.now()}`,
+        examPackId: session.examPackId,
+        examTitle: session.examTitle,
+        category: session.category,
+        mode: session.mode,
+        completedAt: new Date().toISOString(),
+        scorePercent: summary.scorePercent,
+        correctCount: summary.correctCount,
+        totalCount: summary.totalCount,
+        passed: summary.passed,
+        durationSpentSeconds: spent,
+        answers: summary.results.map((r) => ({
+          questionId: r.question.id,
+          selectedOptionIds: r.selectedOptionIds,
+          isCorrect: r.isCorrect,
+        })),
+      },
+      targetChapterIds.length <= 3 ? targetChapterIds : undefined
+    );
 
     setLastSpentSeconds(spent);
     setProgress(storageService.getProgress(subject.id));
@@ -571,9 +591,9 @@ export function ExamRunnerView() {
             </div>
           </div>
 
-          <p className="text-base font-medium leading-relaxed text-ink">
-            {currentQuestion.prompt}
-          </p>
+          <div className="text-base font-medium leading-relaxed text-ink">
+            <FormattedText content={currentQuestion.prompt} />
+          </div>
 
           <QuestionDiagram
             imageUrl={currentQuestion.imageUrl}
@@ -618,7 +638,9 @@ export function ExamRunnerView() {
                   >
                     {LETTERS[idx] ?? idx + 1}
                   </span>
-                  <span className="pt-0.5 leading-relaxed">{opt.text}</span>
+                  <div className="pt-0.5 leading-relaxed flex-1">
+                    <FormattedOptionText text={opt.text} />
+                  </div>
                 </button>
               );
             })}
@@ -657,10 +679,13 @@ export function ExamRunnerView() {
                   : 'Não mình đang làm quen với ý này đó, đọc nhẹ phần giải thích bên dưới nha.'}
               </p>
               {currentQuestion.explanation && (
-                <p className="mt-2 text-ink/90 leading-relaxed">
-                  <strong>Giải thích: </strong>
-                  {currentQuestion.explanation}
-                </p>
+                <div className="mt-2 text-ink/90 leading-relaxed text-xs sm:text-sm">
+                  <strong className="font-semibold text-ink">Giải thích: </strong>
+                  <FormattedText
+                    content={currentQuestion.explanation}
+                    className="inline font-normal"
+                  />
+                </div>
               )}
               {noteDraft && (
                 <div className="mt-3 rounded-xl border border-amber-300/70 bg-amber-50/90 p-3 text-xs text-amber-950 space-y-1">

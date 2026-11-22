@@ -26,6 +26,12 @@ import { createDynamicExamPack } from '../../services/exam/examEngine';
 import type { Question, StudyNote, Subject, WrongQuestionStat } from '../../types/study';
 import type { ExamLaunchState } from '../exam/types';
 import { QuestionDiagram } from '../exam/QuestionDiagram';
+import { FormattedText, FormattedOptionText } from '../../components/FormattedText';
+import {
+  COURSE_GROUPS,
+  getSubjectCourseGroup,
+  type CourseGroup,
+} from '../../utils/courseGrouping';
 
 export interface MistakeItem {
   subject: Subject;
@@ -44,6 +50,7 @@ export function MistakeNotebookView() {
     storageService.getSubjects()
   );
   const [mainTab, setMainTab] = useState<MainTab>('mistakes');
+  const [selectedCourseGroup, setSelectedCourseGroup] = useState<CourseGroup>('all');
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('unmastered');
   const [viewMode, setViewMode] = useState<ViewMode>('flashcard');
@@ -134,9 +141,33 @@ export function MistakeNotebookView() {
     };
   }, [subjects, notes]);
 
+  // Grouped stats by course code (FER, SWR, SWT)
+  const courseGroupStats = useMemo(() => {
+    const groupStats: Record<CourseGroup, { unmastered: number; noteCount: number }> = {
+      all: { unmastered: subjectStats.all.unmastered, noteCount: notes.length },
+      fer: { unmastered: 0, noteCount: 0 },
+      swr: { unmastered: 0, noteCount: 0 },
+      swt: { unmastered: 0, noteCount: 0 },
+    };
+
+    for (const sub of subjects) {
+      const grp = getSubjectCourseGroup(sub.id, sub.code);
+      const stat = subjectStats.perSubject[sub.id];
+      if (stat) {
+        groupStats[grp].unmastered += stat.unmastered;
+        groupStats[grp].noteCount += stat.noteCount;
+      }
+    }
+    return groupStats;
+  }, [subjects, subjectStats, notes]);
+
   // Filtered items based on subject selection and status filter
   const filteredItems = useMemo(() => {
     return allMistakeItems.filter((item) => {
+      if (selectedCourseGroup !== 'all') {
+        const grp = getSubjectCourseGroup(item.subject.id, item.subject.code);
+        if (grp !== selectedCourseGroup) return false;
+      }
       if (selectedSubjectId !== 'all' && item.subject.id !== selectedSubjectId) {
         return false;
       }
@@ -151,11 +182,16 @@ export function MistakeNotebookView() {
       }
       return true;
     });
-  }, [allMistakeItems, selectedSubjectId, statusFilter]);
+  }, [allMistakeItems, selectedCourseGroup, selectedSubjectId, statusFilter]);
 
   // Filtered notes based on subject and status
   const filteredNotes = useMemo(() => {
     return notes.filter((n) => {
+      if (selectedCourseGroup !== 'all') {
+        const sub = subjects.find((s) => s.id === n.subjectId);
+        const grp = getSubjectCourseGroup(n.subjectId, sub?.code);
+        if (grp !== selectedCourseGroup) return false;
+      }
       if (selectedSubjectId !== 'all' && n.subjectId !== selectedSubjectId) {
         return false;
       }
@@ -163,7 +199,7 @@ export function MistakeNotebookView() {
       if (noteStatusFilter === 'completed' && !n.isCompleted) return false;
       return true;
     });
-  }, [notes, selectedSubjectId, noteStatusFilter]);
+  }, [notes, subjects, selectedCourseGroup, selectedSubjectId, noteStatusFilter]);
 
   // Keep index in bound
   const safeIndex =
@@ -434,71 +470,96 @@ export function MistakeNotebookView() {
         </button>
       </div>
 
-      {/* Multi-subject selector bar */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
-        <button
-          type="button"
-          onClick={() => {
-            setSelectedSubjectId('all');
-            goToCard(0);
-          }}
-          className={`shrink-0 inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-xs sm:text-sm font-semibold transition-colors border ${
-            selectedSubjectId === 'all'
-              ? 'bg-moss text-white border-moss shadow-sm'
-              : 'bg-paper text-ink-soft border-sage-border hover:bg-sage-tint hover:text-ink'
-          }`}
-        >
-          <span>Tất cả các môn</span>
-          <span
-            className={`rounded-full px-2 py-0.5 text-xs font-bold ${
-              selectedSubjectId === 'all'
-                ? 'bg-white/20 text-white'
-                : 'bg-sage-tint text-ink'
-            }`}
-          >
-            {mainTab === 'mistakes'
-              ? subjectStats.all.unmastered
-              : subjectStats.all.noteCount}
-          </span>
-        </button>
+      {/* Course Group Selector (FER - SWR - SWT Segmented Control) */}
+      <div className="space-y-2">
+        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-2xl bg-paper border border-sage-border shadow-soft">
+          {COURSE_GROUPS.map((tab) => {
+            const isActive = selectedCourseGroup === tab.id;
+            const badgeCount =
+              mainTab === 'mistakes'
+                ? courseGroupStats[tab.id].unmastered
+                : courseGroupStats[tab.id].noteCount;
 
-        {subjects.map((sub) => {
-          const stat = subjectStats.perSubject[sub.id];
-          const badgeCount =
-            mainTab === 'mistakes'
-              ? stat?.unmastered ?? 0
-              : stat?.noteCount ?? 0;
-          const isSelected = selectedSubjectId === sub.id;
-
-          return (
-            <button
-              key={sub.id}
-              type="button"
-              onClick={() => {
-                setSelectedSubjectId(sub.id);
-                goToCard(0);
-              }}
-              className={`shrink-0 inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-xs sm:text-sm font-semibold transition-colors border ${
-                isSelected
-                  ? 'bg-moss text-white border-moss shadow-sm'
-                  : 'bg-paper text-ink-soft border-sage-border hover:bg-sage-tint hover:text-ink'
-              }`}
-            >
-              <span>{sub.code}</span>
-              <span
-                className={`rounded-full px-2 py-0.5 text-xs font-bold ${
-                  isSelected
-                    ? 'bg-white/20 text-white'
-                    : badgeCount > 0
-                      ? 'bg-blossom-soft text-blossom-ink'
-                      : 'bg-sage-tint text-ink-soft'
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => {
+                  setSelectedCourseGroup(tab.id);
+                  setSelectedSubjectId('all');
+                  goToCard(0);
+                }}
+                className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs sm:text-sm font-semibold transition-all ${
+                  isActive
+                    ? 'bg-moss text-white shadow-sm'
+                    : 'text-ink-soft hover:text-ink hover:bg-mist/70'
                 }`}
               >
-                {badgeCount}
-              </span>
+                <span>{tab.icon}</span>
+                <span>{tab.label}</span>
+                <span
+                  className={`text-[11px] px-1.5 py-0.2 rounded-full font-mono ${
+                    isActive ? 'bg-white/20 text-white' : 'bg-mist-deep text-ink-soft'
+                  }`}
+                >
+                  {badgeCount}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Sub-selector if a course group is selected (e.g. FER, SWR, SWT) */}
+        {selectedCourseGroup !== 'all' && (
+          <div className="flex flex-wrap items-center gap-1.5 pl-1 animate-fade-in">
+            <span className="text-xs text-ink-soft mr-1 font-medium">Chi tiết:</span>
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedSubjectId('all');
+                goToCard(0);
+              }}
+              className={`rounded-xl px-3 py-1 text-xs font-semibold transition-colors ${
+                selectedSubjectId === 'all'
+                  ? 'bg-sage-tint text-moss border border-moss/30 font-bold'
+                  : 'bg-paper text-ink-soft border border-sage-border hover:bg-mist'
+              }`}
+            >
+              Tất cả {COURSE_GROUPS.find((g) => g.id === selectedCourseGroup)?.label}
             </button>
-          );
-        })}
+            {subjects
+              .filter(
+                (s) =>
+                  getSubjectCourseGroup(s.id, s.code) === selectedCourseGroup
+              )
+              .map((sub) => {
+                const isSelected = selectedSubjectId === sub.id;
+                const stat = subjectStats.perSubject[sub.id];
+                const count =
+                  mainTab === 'mistakes'
+                    ? stat?.unmastered ?? 0
+                    : stat?.noteCount ?? 0;
+                return (
+                  <button
+                    key={sub.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedSubjectId(sub.id);
+                      goToCard(0);
+                    }}
+                    className={`rounded-xl px-3 py-1 text-xs font-semibold transition-colors flex items-center gap-1.5 ${
+                      isSelected
+                        ? 'bg-sage-tint text-moss border border-moss/30 font-bold'
+                        : 'bg-paper text-ink-soft border border-sage-border hover:bg-mist'
+                    }`}
+                  >
+                    <span>{sub.code}</span>
+                    <span className="text-[10px] opacity-75 font-mono">({count})</span>
+                  </button>
+                );
+              })}
+          </div>
+        )}
       </div>
 
       {/* Modal / Form: Create New Study Note */}
@@ -713,9 +774,9 @@ export function MistakeNotebookView() {
                           Phím tắt: [Space] Lật thẻ
                         </span>
                       </div>
-                      <h2 className="text-base sm:text-lg font-semibold text-ink leading-relaxed">
-                        {currentItem.question.prompt}
-                      </h2>
+                      <div className="text-base sm:text-lg font-semibold text-ink leading-relaxed">
+                        <FormattedText content={currentItem.question.prompt} />
+                      </div>
                     </div>
 
                     <QuestionDiagram
@@ -751,7 +812,9 @@ export function MistakeNotebookView() {
                               >
                                 {letter}
                               </span>
-                              <span className="pt-0.5">{opt.text}</span>
+                              <div className="pt-0.5 flex-1">
+                                <FormattedOptionText text={opt.text} />
+                              </div>
                             </button>
                           );
                         })}
@@ -787,9 +850,9 @@ export function MistakeNotebookView() {
                       </button>
                     </div>
 
-                    <p className="text-sm font-medium text-ink-soft line-clamp-2">
-                      {currentItem.question.prompt}
-                    </p>
+                    <div className="text-sm font-medium text-ink-soft">
+                      <FormattedText content={currentItem.question.prompt} />
+                    </div>
 
                     {/* Correct Options Highlight */}
                     <div className="space-y-2">
@@ -823,8 +886,8 @@ export function MistakeNotebookView() {
                               >
                                 {letter}
                               </span>
-                              <div className="space-y-0.5">
-                                <div>{opt.text}</div>
+                              <div className="space-y-0.5 flex-1">
+                                <div><FormattedOptionText text={opt.text} /></div>
                                 {isCorrect && (
                                   <span className="text-xs text-emerald-700 font-semibold inline-flex items-center gap-1">
                                     <CheckCircle2 className="h-3 w-3" /> Đáp án đúng
@@ -848,10 +911,13 @@ export function MistakeNotebookView() {
                         <HelpCircle className="h-4 w-4 text-moss" />
                         <span>Giải thích chi tiết &amp; Nguồn kiến thức:</span>
                       </div>
-                      <p className="text-sm text-ink leading-relaxed whitespace-pre-line">
-                        {currentItem.question.explanation ||
-                          'Câu hỏi này cần nắm vững định nghĩa trong Slide bài giảng.'}
-                      </p>
+                      <div className="text-sm text-ink leading-relaxed">
+                        {currentItem.question.explanation ? (
+                          <FormattedText content={currentItem.question.explanation} />
+                        ) : (
+                          'Câu hỏi này cần nắm vững định nghĩa trong Slide bài giảng.'
+                        )}
+                      </div>
                     </div>
 
                     {/* Personal Note for this question if exists */}
@@ -933,9 +999,9 @@ export function MistakeNotebookView() {
                               </span>
                             )}
                           </div>
-                          <p className="text-sm font-semibold text-ink leading-relaxed">
-                            {item.question.prompt}
-                          </p>
+                          <div className="text-sm font-semibold text-ink leading-relaxed">
+                            <FormattedText content={item.question.prompt} />
+                          </div>
                         </div>
 
                         <button
@@ -988,7 +1054,9 @@ export function MistakeNotebookView() {
                               }`}
                             >
                               <span className="font-bold">{letter}.</span>
-                              <span>{opt.text}</span>
+                              <div className="flex-1">
+                                <FormattedOptionText text={opt.text} />
+                              </div>
                               {isCorrect && (
                                 <span className="ml-auto text-[11px] text-emerald-700">
                                   (Đáp án đúng)
@@ -1003,7 +1071,7 @@ export function MistakeNotebookView() {
                       {item.question.explanation && (
                         <div className="rounded-xl bg-mist-deep p-3 text-xs text-ink leading-relaxed">
                           <strong className="text-moss">Giải thích: </strong>
-                          {item.question.explanation}
+                          <FormattedText content={item.question.explanation} className="inline font-normal" />
                         </div>
                       )}
 

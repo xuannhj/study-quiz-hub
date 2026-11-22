@@ -20,6 +20,7 @@ import { createDynamicExamPack } from '../../services/exam/examEngine';
 import type { ExamMode, ExamPack } from '../../types/study';
 import type { ExamLaunchState } from '../exam/types';
 import { PracticalExamView } from '../pe/PracticalExamView';
+import { FormattedText } from '../../components/FormattedText';
 
 type SubjectTab = 'study' | 'quiz' | 'final' | 'pe' | 'mistakes';
 
@@ -644,7 +645,9 @@ export function SubjectHubView() {
                       key={q.id}
                       className="py-3.5 flex items-start justify-between gap-4"
                     >
-                      <p className="text-sm text-ink">{q.prompt}</p>
+                      <div className="text-sm text-ink flex-1">
+                        <FormattedText content={q.prompt} />
+                      </div>
                       <div className="flex items-center gap-2 shrink-0">
                         {wrongStat && !wrongStat.mastered && (
                           <span className="inline-flex items-center gap-1 rounded-lg bg-blossom-soft px-2.5 py-0.5 text-xs font-medium text-blossom-ink">

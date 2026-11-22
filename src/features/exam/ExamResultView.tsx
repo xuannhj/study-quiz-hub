@@ -4,6 +4,7 @@ import { CheckCircle2, RotateCcw, Sparkles } from 'lucide-react';
 import type { ExamGradeSummary } from '../../services/exam/examEngine';
 import type { Question } from '../../types/study';
 import { QuestionDiagram } from './QuestionDiagram';
+import { FormattedText, FormattedOptionText } from '../../components/FormattedText';
 import { generateSessionCompanionNote } from '../../services/studyCompanion';
 import {
   computeStreakStats,
@@ -189,9 +190,10 @@ export function ExamResultView({
             }`}
           >
             <div className="flex items-start justify-between gap-2">
-              <p className="font-semibold text-ink text-sm leading-relaxed">
-                Câu {idx + 1}: {item.question.prompt}
-              </p>
+              <div className="font-semibold text-ink text-sm leading-relaxed">
+                <span className="font-bold text-moss mr-1.5">Câu {idx + 1}:</span>
+                <FormattedText content={item.question.prompt} className="inline font-normal" />
+              </div>
               <span
                 className={`shrink-0 rounded-lg px-2.5 py-0.5 text-xs font-semibold ${
                   item.isCorrect
@@ -236,7 +238,9 @@ export function ExamResultView({
                     key={opt.id}
                     className={`rounded-xl border px-3.5 py-2 flex items-center justify-between gap-3 ${style}`}
                   >
-                    <span>{opt.text}</span>
+                    <div className="flex-1">
+                      <FormattedOptionText text={opt.text} />
+                    </div>
                     {label && (
                       <span className="text-xs shrink-0">{label}</span>
                     )}
@@ -247,8 +251,8 @@ export function ExamResultView({
 
             {item.question.explanation && (
               <div className="mt-3 rounded-2xl bg-rain-soft/45 border border-rain/20 p-3.5 text-xs text-ink leading-relaxed">
-                <strong className="text-rain-ink">Giải thích: </strong>
-                {item.question.explanation}
+                <strong className="text-rain-ink font-semibold">Giải thích: </strong>
+                <FormattedText content={item.question.explanation} className="inline font-normal" />
               </div>
             )}
           </div>
