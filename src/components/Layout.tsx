@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import {
   BookMarked,
   BookOpen,
+  Cloud,
   CloudRain,
   Moon,
   Music2,
@@ -12,6 +13,12 @@ import {
   VolumeX,
 } from 'lucide-react';
 import { storageService } from '../services/storage';
+import {
+  cloudSyncService,
+  CLOUD_SYNC_EVENT,
+  type SyncStatus,
+} from '../services/firebase/syncService';
+import { CloudSyncModal } from './CloudSyncModal';
 import {
   AmbientContext,
   applyThemeClass,
@@ -55,6 +62,22 @@ export function Layout({ children }: { children: ReactNode }) {
   const [soundMode, setSoundMode] = useState<LofiSoundMode>('off');
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>(() =>
+    cloudSyncService.getStatus()
+  );
+  const [isCloudModalOpen, setIsCloudModalOpen] = useState(false);
+  const [syncCounter, setSyncCounter] = useState(0);
+
+  useEffect(() => {
+    cloudSyncService.initializeAutoConnect();
+    const unsub = cloudSyncService.subscribeStatus((st) => setSyncStatus(st));
+    const handleCloudEvent = () => setSyncCounter((c) => c + 1);
+    window.addEventListener(CLOUD_SYNC_EVENT, handleCloudEvent);
+    return () => {
+      unsub();
+      window.removeEventListener(CLOUD_SYNC_EVENT, handleCloudEvent);
+    };
+  }, []);
 
   const totalWrongCount = useMemo(() => {
     try {
@@ -69,7 +92,7 @@ export function Layout({ children }: { children: ReactNode }) {
     } catch {
       return 0;
     }
-  }, [location.pathname]);
+  }, [location.pathname, syncCounter]);
 
   useEffect(() => {
     applyThemeClass(theme);
@@ -272,6 +295,36 @@ export function Layout({ children }: { children: ReactNode }) {
                   </button>
                 </div>
 
+                {/* Cloud Sync Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsCloudModalOpen(true)}
+                  title={
+                    syncStatus.connected
+                      ? `Đang kết nối đám mây: ${syncStatus.syncCode}`
+                      : 'Đồng bộ đám mây (Cloud Sync)'
+                  }
+                  className={`inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-xs font-semibold transition-all ${
+                    syncStatus.connected
+                      ? 'bg-moss-soft text-moss border border-moss/30 shadow-xs'
+                      : 'text-ink-soft hover:bg-sage-tint hover:text-ink'
+                  }`}
+                >
+                  <span className="relative flex items-center justify-center">
+                    <Cloud
+                      className={`h-3.5 w-3.5 ${
+                        syncStatus.isSyncing ? 'animate-bounce text-moss' : ''
+                      }`}
+                    />
+                    {syncStatus.connected && (
+                      <span className="absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full bg-emerald-500 ring-1 ring-white" />
+                    )}
+                  </span>
+                  <span className="hidden sm:inline">
+                    {syncStatus.connected ? syncStatus.syncCode : 'Đồng bộ'}
+                  </span>
+                </button>
+
                 <div ref={menuRef} className="relative">
                   <button
                     type="button"
@@ -325,6 +378,24 @@ export function Layout({ children }: { children: ReactNode }) {
                         </span>
                       </button>
 
+                      <button
+                        type="button"
+                        role="menuitem"
+                        onClick={() => {
+                          setMenuOpen(false);
+                          setIsCloudModalOpen(true);
+                        }}
+                        className="w-full flex items-center justify-between gap-2 rounded-xl px-3 py-2 text-xs font-medium text-ink hover:bg-sage-tint transition-colors"
+                      >
+                        <span className="inline-flex items-center gap-2">
+                          <Cloud className="h-4 w-4 text-moss" />
+                          Đồng bộ Đám mây
+                        </span>
+                        <span className="text-[11px] font-mono text-moss">
+                          {syncStatus.connected ? syncStatus.syncCode : 'Chưa bật'}
+                        </span>
+                      </button>
+
                       <div className="border-t border-sage-border/70 my-1" />
 
                       <Link
@@ -370,6 +441,11 @@ export function Layout({ children }: { children: ReactNode }) {
         <main className="relative z-10 flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-6 sm:py-8">
           {children}
         </main>
+
+        <CloudSyncModal
+          isOpen={isCloudModalOpen}
+          onClose={() => setIsCloudModalOpen(false)}
+        />
       </div>
     </AmbientContext.Provider>
   );

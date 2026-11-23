@@ -1,7 +1,8 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AlertCircle, ArrowRight, BookMarked, Play, Plus, Search, X } from 'lucide-react';
 import { storageService } from '../../services/storage';
+import { CLOUD_SYNC_EVENT } from '../../services/firebase/syncService';
 import { createDynamicExamPack } from '../../services/exam/examEngine';
 import type { Subject } from '../../types/study';
 import type { ExamLaunchState } from '../exam/types';
@@ -40,6 +41,14 @@ export function DashboardView() {
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+
+  useEffect(() => {
+    const handleSync = () => {
+      setSubjects(storageService.getSubjects());
+    };
+    window.addEventListener(CLOUD_SYNC_EVENT, handleSync);
+    return () => window.removeEventListener(CLOUD_SYNC_EVENT, handleSync);
+  }, []);
 
   const stats = useActiveStudyTracker();
   const upcoming = getUpcomingPrimaryExams();

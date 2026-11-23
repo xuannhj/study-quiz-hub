@@ -137,6 +137,9 @@ export function createStorageService(
 
   const write = (payload: AppStoragePayload): void => {
     targetStorage?.setItem(STORAGE_KEY, JSON.stringify(payload));
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('study-storage-updated'));
+    }
   };
 
   const mergeSubject = (

@@ -22,6 +22,7 @@ import {
   Calendar,
 } from 'lucide-react';
 import { storageService } from '../../services/storage';
+import { CLOUD_SYNC_EVENT } from '../../services/firebase/syncService';
 import { createDynamicExamPack } from '../../services/exam/examEngine';
 import type { Question, StudyNote, Subject, WrongQuestionStat } from '../../types/study';
 import type { ExamLaunchState } from '../exam/types';
@@ -82,6 +83,15 @@ export function MistakeNotebookView() {
   const refreshNotes = useCallback(() => {
     setNotes(storageService.getAllNotes());
   }, []);
+
+  useEffect(() => {
+    const handleSync = () => {
+      refreshSubjects();
+      refreshNotes();
+    };
+    window.addEventListener(CLOUD_SYNC_EVENT, handleSync);
+    return () => window.removeEventListener(CLOUD_SYNC_EVENT, handleSync);
+  }, [refreshSubjects, refreshNotes]);
 
   // Collect all mistake items across all subjects
   const allMistakeItems = useMemo(() => {
