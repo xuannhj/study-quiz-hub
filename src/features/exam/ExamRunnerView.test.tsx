@@ -73,6 +73,13 @@ describe('ExamRunnerView', () => {
       wrongCount: 1,
       mastered: false,
     });
+
+    // Sidebar question list should show green for checked-correct Q1 and red for checked-wrong Q2
+    const q1NavBtn = screen.getByRole('button', { name: '1' });
+    const q2NavBtn = screen.getByRole('button', { name: '2' });
+    expect(q1NavBtn.className).toContain('bg-moss-soft');
+    expect(q2NavBtn.className).toContain('bg-blossom-soft');
+    expect(q2NavBtn.className).toContain('text-blossom-ink');
   });
 
   it('submits Timed Exam, records attempt/wrong stats, and restores saved session on reload', () => {

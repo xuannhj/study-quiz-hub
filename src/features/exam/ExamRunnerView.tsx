@@ -784,18 +784,33 @@ export function ExamRunnerView() {
           <h2 className="text-sm font-bold text-ink">Danh sách câu hỏi</h2>
           <div className="grid grid-cols-5 gap-2">
             {questions.map((q, idx) => {
-              const answered = (session.answers[q.id]?.length ?? 0) > 0;
+              const qSelected = session.answers[q.id] ?? [];
+              const answered = qSelected.length > 0;
               const flagged = session.flaggedQuestionIds.includes(q.id);
               const isCurrent = idx === session.currentIndex;
+              const isQChecked =
+                session.mode === 'practice' &&
+                session.checkedQuestionIds.includes(q.id);
+              const isQCorrect = isQChecked
+                ? isAnswerCorrect(q, qSelected)
+                : null;
 
               let btnClass = 'border-sage-border bg-mist text-ink-soft';
-              if (flagged) {
+              if (isQChecked) {
+                btnClass = isQCorrect
+                  ? 'border-moss/50 bg-moss-soft text-moss'
+                  : 'border-blossom bg-blossom-soft text-blossom-ink';
+              } else if (flagged) {
                 btnClass = 'border-firefly bg-firefly-soft text-wood';
               } else if (answered) {
                 btnClass = 'border-moss/50 bg-moss-soft text-moss';
               }
+
               if (isCurrent) {
-                btnClass += ' ring-2 ring-moss';
+                btnClass +=
+                  isQChecked && !isQCorrect
+                    ? ' ring-2 ring-blossom'
+                    : ' ring-2 ring-moss';
               }
 
               return (
@@ -805,13 +820,35 @@ export function ExamRunnerView() {
                   onClick={() =>
                     updateSession((prev) => ({ ...prev, currentIndex: idx }))
                   }
-                  className={`h-9 rounded-xl border text-xs font-mono font-semibold transition-all ${btnClass}`}
+                  className={`relative h-9 rounded-xl border text-xs font-mono font-semibold transition-all ${btnClass}`}
                 >
                   {idx + 1}
+                  {flagged && isQChecked && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-firefly border border-paper"
+                    />
+                  )}
                 </button>
               );
             })}
           </div>
+          {session.mode === 'practice' && (
+            <div className="flex flex-wrap items-center gap-3 text-[11px] text-ink-soft pt-1">
+              <span className="inline-flex items-center gap-1">
+                <span className="h-2.5 w-2.5 rounded-sm border border-moss/50 bg-moss-soft" />
+                Đúng
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="h-2.5 w-2.5 rounded-sm border border-blossom bg-blossom-soft" />
+                Sai
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="h-2.5 w-2.5 rounded-sm border border-firefly bg-firefly-soft" />
+                Cắm cờ
+              </span>
+            </div>
+          )}
           <p className="text-xs text-ink-soft leading-relaxed">
             Phím tắt: <code className="font-mono text-moss">1-6</code> chọn đáp án,{' '}
             <code className="font-mono text-moss">←/→</code> chuyển câu,{' '}
