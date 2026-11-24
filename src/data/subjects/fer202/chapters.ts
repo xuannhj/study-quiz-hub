@@ -167,7 +167,26 @@ export const fer202Chapters: Chapter[] = [
         type: 'exam_tip',
         title: 'Mẹo & Bẫy Đề Thi FE Slot 4–5',
         content: `• **Bẫy tính số phần tử trên 1 hàng:** Đề cho \`<div class="col-sm-6 col-md-4 col-lg-3">\` và hỏi *"Trên màn hình rộng 800px (hoặc md), có bao nhiêu cột trên 1 hàng?"* → Ta lấy \`12 / 4 = 3\` cột/hàng! Nếu màn hình \`1024px\` (\`lg\`) → \`12 / 3 = 4\` cột/hàng!
-• **Bẫy tiền tố \`xs\`:** Trong Bootstrap 4/5 **KHÔNG CÒN** class \`col-xs-6\` (đó là cú pháp cũ của Bootstrap 3). Ở Bootstrap 5 phải viết là **\`col-6\`**.`,
+• **Bẫy tiền tố \`xs\`:** Trong Bootstrap 4/5 **KHÔNG CÒN** class \`col-xs-6\` (đó là cú pháp cũ của Bootstrap 3). Ở Bootstrap 5 phải viết là **\`col-6\`**.
+• **Bẫy kết hợp Fluid + Fixed Width (Đề FA26):** Đề hỏi *"Làm sao kết hợp chiều rộng tràn viền (fluid) và chiều rộng cố định theo pixel?"* → Dùng responsive container như **\`.container-md\`** (tràn 100% ở màn nhỏ dưới \`md\`, từ \`md ≥ 768px\` trở lên khóa \`max-width\` theo pixel!).`,
+      },
+      {
+        id: 'fer202-ch3-s5',
+        type: 'concept',
+        title: 'Hiểu Nhanh Từ Gốc: Container, Utility Classes & Components Hay Ra Thi',
+        content: `• **1. Phân biệt 3 loại Container trong 5 giây:**
+  - \`.container\`: Luôn có viền trắng hai bên (cố định \`max-width\` theo từng cỡ màn hình).
+  - \`.container-fluid\`: Luôn **tràn viền 100%** ở mọi cỡ màn hình (từ điện thoại tới màn hình 4K).
+  - \`.container-md\` (hoặc \`-lg\`, \`-xl\`): **Lai giữa hai loại trên** — tràn 100% ở màn nhỏ, nhưng khi màn hình đạt \`md\` (\`768px\`) trở lên thì khóa \`max-width\` gọn vào giữa.
+• **2. Các Utility Class cực hay gặp trong đề thi:**
+  - **Màu nền & Màu chữ:** \`bg-primary\` (nền xanh dương), \`bg-success\` (xanh lá), \`bg-danger\` (đỏ), \`text-white\` (chữ trắng).
+  - **Khoảng cách (Spacing):** Công thức \`{m|p}{t|b|s|e|x|y}-{0..5}\`. Ví dụ: \`mt-3\` = \`margin-top: 1rem\`; \`px-4\` = padding trái + phải \`1.5rem\`.
+  - **Ẩn / Hiện theo màn hình (Display):** \`d-none d-md-flex\` = ẩn trên điện thoại, từ tablet (\`md\`) trở lên hiện kiểu \`display: flex\`.
+• **3. Nhận diện nhanh Component Bootstrap hay hỏi:**
+  - **\`.carousel\`**: Tạo **slideshow** trình chiếu ảnh xoay vòng.
+  - **\`.modal\`**: Hộp thoại popup bật lên giữa màn hình.
+  - **\`.popover\`**: Hộp chú thích nhỏ bật ra khi bấm vào phần tử.
+  - **\`.nav-pills\`**: Thanh tab điều hướng dạng nút bo tròn.`,
       },
     ],
   },
@@ -269,7 +288,44 @@ export const fer202Chapters: Chapter[] = [
         type: 'exam_tip',
         title: 'Mẹo & Bẫy Đề Thi FE Slot 7',
         content: `• **Bẫy quên import CSS:** Nếu cài \`react-bootstrap\` và import \`<Button variant="primary">\` nhưng nút hiển thị không có màu xanh của Bootstrap → Nguyên nhân là **chưa import \`'bootstrap/dist/css/bootstrap.min.css'\`**.
-• **Bẫy điều khiển \`<Modal>\`:** Trong React-Bootstrap, \`<Modal>\` được bật/tắt bằng cặp prop **\`show={boolean}\`** và **\`onHide={callback}\`** (không phải \`isOpen\` hay \`visible\`).`,
+• **Bẫy điều khiển \`<Modal>\`:** Trong React-Bootstrap, \`<Modal>\` được bật/tắt bằng cặp prop **\`show={boolean}\`** và **\`onHide={callback}\`** (không phải \`isOpen\` hay \`visible\`).
+• **Bẫy đếm số cột trong \`<Row>\` (Đề FA26):** Nếu \`<Row>\` chứa 2 thẻ \`<Col sm={6} md={4}>\` và \`<Col sm={6} md={8}>\`, đề hỏi *"layout có bao nhiêu cột?"* → Đếm số thẻ \`<Col>\` là **2 cột** (tỉ lệ 4/12 và 8/12 trên màn \`md\`).`,
+      },
+      {
+        id: 'fer202-ch5-s5',
+        type: 'concept',
+        title: 'Ví Dụ Thực Chiến React-Bootstrap Dễ Nhớ Nhất',
+        content: `• **Tại sao nên dùng React-Bootstrap thay vì copy HTML Bootstrap thuần?**
+  - Vì nó có tính **Component-Based**: viết UI theo đúng phong cách React (truyền \`props\`, quản lý đóng/mở bằng \`useState\`, tái sử dụng dễ dàng) mà không phải đụng DOM thủ công hay cài jQuery.
+• **Mẫu code chuẩn 4 thành phần hay thi nhất:**
+\`\`\`jsx
+import { Container, Row, Col, Button, Modal, Form, Alert } from 'react-bootstrap';
+
+// 1. Chia lưới 2 cột responsive (Mobile: xếp chồng 12/12, Tablet+: 4/12 và 8/12)
+<Container>
+  <Row>
+    <Col xs={12} md={4}>Sidebar</Col>
+    <Col xs={12} md={8}>Main Content</Col>
+  </Row>
+</Container>
+
+// 2. Nút xanh chữ trắng / nút viền xanh lá
+<Button variant="primary" className="bg-primary text-white">Save</Button>
+<Button variant="outline-success">Confirm</Button>
+
+// 3. Popup Modal điều khiển bằng state
+<Modal show={isOpen} onHide={() => setIsOpen(false)}>
+  <Modal.Header closeButton><Modal.Title>Thông báo</Modal.Title></Modal.Header>
+  <Modal.Body>Nội dung popup</Modal.Body>
+</Modal>
+
+// 4. Form & Thông báo lỗi đỏ inline
+<Form.Group controlId="email">
+  <Form.Label>Email</Form.Label>
+  <Form.Control type="email" placeholder="nhi@fpt.edu.vn" />
+</Form.Group>
+<Alert variant="danger">Đăng nhập thất bại!</Alert>
+\`\`\``,
       },
     ],
   },
@@ -632,7 +688,37 @@ export const fer202Chapters: Chapter[] = [
         type: 'exam_tip',
         title: 'Mẹo & Bẫy Đề Thi FE Slot 15',
         content: `• **Bẫy số 1 (Rất hay ra thi):** \`React.lazy()\` hiện tại chỉ hỗ trợ **\`export default\`**! Nếu một module chỉ có Named Export (\`export const Chart = ...\`), muốn dùng với \`React.lazy\` thì phải tạo module trung gian re-export làm default hoặc nối \`.then(module => ({ default: module.Chart }))\`.
-• **Bẫy số 2:** Đề hỏi prop nào của \`<Suspense>\` dùng để truyền giao diện hiển thị trong lúc chờ tải component lười → Đáp án luôn là **\`fallback\`** (ví dụ \`<Suspense fallback={<Spinner />}>\`).`,
+• **Bẫy số 2:** Đề hỏi prop nào của \`<Suspense>\` dùng để truyền giao diện hiển thị trong lúc chờ tải component lười → Đáp án luôn là **\`fallback\`** (ví dụ \`<Suspense fallback={<Spinner />}>\`).
+• **Bẫy số 3 (Quên bọc Suspense):** Nếu render component tạo bởi \`React.lazy()\` mà **không có \`<Suspense>\`** bọc ở phía trên → React sẽ báo lỗi **runtime error** ngay khi component tạm dừng (suspend) để tải file chunk.`,
+      },
+      {
+        id: 'fer202-ch11-s5',
+        type: 'concept',
+        title: 'Hiểu Nhanh React.lazy() Bằng Ví Dụ Đời Thường & Code Đúng / Sai',
+        content: `• **Ví dụ dễ hiểu (Quyển sách 500 trang):**
+  - **Không dùng Code Splitting (Static Import):** Người dùng chỉ mới mở Trang Chủ, nhưng trình duyệt bắt tải luôn cả 500 trang (kể cả trang Admin, Biểu đồ nặng mà có khi họ chẳng bao giờ bấm vào) → Web mở lần đầu rất chậm.
+  - **Dùng \`React.lazy()\` + \`<Suspense>\`:** Chia sách thành từng chương nhỏ (chunks). Mở Trang Chủ chỉ tải Trang Chủ. Khi nào bấm sang trang Biểu đồ mới tải file Biểu đồ, trong 0.5 giây chờ tải thì \`<Suspense fallback={...}>\` hiện dòng *"Đang tải..."*.
+• **So sánh nhanh Cú pháp ĐÚNG vs SAI (để tránh bị lừa khi làm trắc nghiệm):**
+\`\`\`jsx
+// ✅ ĐÚNG: truyền một arrow function gọi dynamic import()
+const Dashboard = React.lazy(() => import('./Dashboard'));
+
+// ❌ SAI: truyền thẳng chuỗi đường dẫn
+const Dashboard = React.lazy('./Dashboard');
+
+// ✅ ĐÚNG: bọc Route bằng <Suspense fallback={...}> (kèm ErrorBoundary bên ngoài nếu mất mạng)
+<ErrorBoundary>
+  <Suspense fallback={<p>Loading page...</p>}>
+    <Routes>
+      <Route path="/dashboard" element={<Dashboard />} />
+    </Routes>
+  </Suspense>
+</ErrorBoundary>
+\`\`\`
+• **Tóm tắt 3 ý ăn điểm tuyệt đối khi gặp câu hỏi Lazy:**
+  1. Mục đích Code Splitting = **Giảm thời gian tải ban đầu (reduce initial load time)** bằng cách chỉ tải khi cần.
+  2. Component đi cặp bắt buộc với \`React.lazy\` = **\`<Suspense fallback={...}>\`**.
+  3. Yêu cầu export của file được lazy load = **\`export default\`**.`,
       },
     ],
   },
@@ -689,7 +775,53 @@ export const fer202Chapters: Chapter[] = [
         type: 'exam_tip',
         title: 'Mẹo & Bẫy Đề Thi FE Slot 16–17',
         content: `• **Bẫy phân biệt Flux vs Redux (Cực hay hỏi):** Nhớ 2 điểm khác biệt lớn nhất: (1) Flux có **Multiple Stores** và có **Dispatcher**; (2) Redux chỉ có **Single Store**, **không có Dispatcher**, và dùng **Pure Reducers** với **Immutable State**.
-• **Bẫy thuộc tính bắt buộc của Action Object:** Mọi Redux Action object bắt buộc phải có thuộc tính **\`type\`** (\`{ type: 'todos/add', payload: 'Học FER202' }\`).`,
+• **Bẫy thuộc tính bắt buộc của Action Object:** Mọi Redux Action object bắt buộc phải có thuộc tính **\`type\`** (\`{ type: 'todos/add', payload: 'Học FER202' }\`).
+• **Bẫy \`default: return state;\` & \`initialState\`:** Tham số \`state = initialState\` cung cấp giá trị ban đầu cho reducer, còn nhánh \`default: return state;\` bắt buộc phải có để các action không liên quan không làm state bị biến thành \`undefined\`.
+• **Bẫy Redux Thunk (Đề FA26 hỏi tới 2 câu!):** Hễ thấy câu hỏi về **Redux Thunk**, nhớ ngay từ khóa: *"allows an action creator to **return a function** (instead of a plain object) to handle **asynchronous logic / API calls** before dispatching real actions"*.`,
+      },
+      {
+        id: 'fer202-ch12-s5',
+        type: 'concept',
+        title: 'Hiểu Redux Trong 1 Phút Bằng Ví Dụ Ngân Hàng + Code Mẫu Đầy Đủ',
+        content: `• **Ví dụ Ngân Hàng để nhớ trọn bộ từ khóa Redux:**
+  - **Store (Két sắt trung tâm):** Nơi cất toàn bộ tiền/dữ liệu của ứng dụng — chỉ có **1 két duy nhất**. Bạn **không bao giờ** được tự mở két sửa tiền trực tiếp!
+  - **Action (Phiếu yêu cầu):** Tờ giấy ghi rõ muốn làm gì, ví dụ \`{ type: "DEPOSIT", payload: 500 }\`.
+  - **Dispatch (Giao dịch viên):** Người cầm phiếu Action bạn đưa và chuyển vào phòng xử lý (\`useDispatch()\`).
+  - **Reducer (Quy trình kế toán thuần khiết):** Nhận *(Số dư cũ + Phiếu Action)* → tính ra **số dư mới** và ghi vào sổ cái mới (không gạch xóa trực tiếp lên sổ cũ).
+  - **Selector (Màn hình xem số dư):** Component dùng \`useSelector()\` để đọc đúng phần dữ liệu mình cần từ két sắt.
+  - **Redux Thunk (Nhân viên chạy việc bên ngoài):** Khi cần gọi API (mất thời gian chờ mạng), giao dịch viên không thể gọi thẳng trong Reducer được → **Thunk** cho phép đưa một **hàm \`async (dispatch) => { ... }\`** để gọi API xong rồi mới nộp phiếu Action thật!
+• **Code mẫu đối chiếu Redux Thuần vs Redux Thunk vs Redux Toolkit (RTK):**
+\`\`\`javascript
+// 1. Redux Reducer thuần (phải copy immutable & có default: return state)
+function counterReducer(state = { count: 0 }, action) {
+  switch (action.type) {
+    case 'INCREMENT':
+      return { ...state, count: state.count + 1 };
+    default:
+      return state;
+  }
+}
+
+// 2. Redux Thunk (trả về FUNCTION để gọi API bất đồng bộ)
+const fetchUsers = () => async (dispatch) => {
+  const res = await fetch('/api/users');
+  const data = await res.json();
+  dispatch({ type: 'USERS_LOADED', payload: data });
+};
+
+// 3. Redux Toolkit (RTK) hiện đại — gọn nhẹ, tích hợp Immer & Thunk sẵn!
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: { value: 0 },
+  reducers: {
+    increment: (state) => { state.value += 1; }, // An toàn nhờ Immer!
+  },
+});
+// Trong Component:
+const value = useSelector((state) => state.counter.value);
+const dispatch = useDispatch();
+dispatch(counterSlice.actions.increment());
+\`\`\``,
       },
     ],
   },
