@@ -97,10 +97,10 @@ describe('BUILT_IN_SUBJECTS integrity', () => {
     assertSubjectIntegrity(fer!, 15, 150, 5, 4);
   });
 
-  it('registers FER202-PAST subject with 9 term chapters, 804 crawled questions, and 18 exam packs', () => {
+  it('registers FER202-PAST subject with 10 term chapters, 954 questions, and 21 exam packs', () => {
     const ferPast = BUILT_IN_SUBJECTS.find((s) => s.id === 'fer202-past');
     expect(ferPast).toBeDefined();
-    assertSubjectIntegrity(ferPast!, 9, 804, 1, 17);
+    assertSubjectIntegrity(ferPast!, 10, 954, 1, 20);
   });
 
   it('registers SWT301 software testing subject with 7 chapters, 150 questions, 14 exam packs, and 8 PE practical exams', () => {

@@ -22,8 +22,28 @@ export const fer202PastChapters: Chapter[] = [
     ],
   },
   {
-    id: 'fer-ch-su26',
+    id: 'fer-ch-fa26-mock',
     order: 2,
+    title: 'Bộ 3 Đề Dự Đoán Chuẩn Form FA26 (150 câu mới)',
+    summary: '3 bộ đề luyện thi dự đoán (150 câu không trùng lặp) xây dựng trực tiếp từ ma trận đề thi thật FER202_FA26_FE_163998 và khung chương trình FER202 hiện đại.',
+    sections: [
+      {
+        id: 'fer-ch-fa26-mock-sec1',
+        type: 'concept',
+        title: 'Cấu trúc 3 đề dự đoán FA26',
+        content: 'Đề 01 bám sát tỷ lệ ma trận đề thật FA26; Đề 02 tập trung đọc code, dự đoán output và bẫy phòng thi; Đề 03 phủ kín toàn bộ khung chương trình (Hooks, RTK, Router v6, Next.js App/Pages Router, Tailwind CSS, Bootstrap 5, REST API, PropTypes).',
+      },
+      {
+        id: 'fer-ch-fa26-mock-sec2',
+        type: 'exam_tip',
+        title: 'Chiến lược luyện 3 đề dự đoán',
+        content: 'Làm Đề 01 ở chế độ Thi thử 45 phút để đo tốc độ, làm Đề 02 ở chế độ Luyện tập để nhớ kỹ các bẫy code kinh điển, rồi tổng duyệt bằng Đề 03 và ôn lại các câu sai trong Sổ tay Flashcard.',
+      },
+    ],
+  },
+  {
+    id: 'fer-ch-su26',
+    order: 3,
     title: 'Kì Summer 2026 (SU26)',
     summary: 'Bộ đề thi trắc nghiệm FE chính thức kì SU26 (50 câu) bao quát React Hooks, Redux Toolkit, React-Bootstrap và Axios.',
     sections: [
