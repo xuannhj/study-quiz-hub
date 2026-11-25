@@ -56,7 +56,7 @@ describe('ExamRunnerView', () => {
     expect(screen.getByText(/Câu 1 \/ 2/i)).toBeInTheDocument();
     expect(screen.getByText(/Vision and Scope Document/i)).toBeInTheDocument();
 
-    fireEvent.keyDown(window, { key: '1' });
+    fireEvent.keyDown(window, { key: 'a' });
     fireEvent.keyDown(window, { key: 'Enter' });
 
     expect(screen.getByText(/Giải thích:/i)).toBeInTheDocument();

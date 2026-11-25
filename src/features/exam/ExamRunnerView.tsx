@@ -367,8 +367,16 @@ export function ExamRunnerView() {
       if (target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) {
         return;
       }
-      if (e.key >= '1' && e.key <= '6') {
+      if (e.ctrlKey || e.metaKey || e.altKey) {
+        return;
+      }
+      const lowerKey = e.key.toLowerCase();
+      if (/^[1-6]$/.test(e.key)) {
         const opt = currentQuestion.options[Number(e.key) - 1];
+        if (opt) toggleOption(opt.id);
+      } else if (/^[a-e]$/.test(lowerKey)) {
+        const idx = lowerKey.charCodeAt(0) - 'a'.charCodeAt(0);
+        const opt = currentQuestion.options[idx];
         if (opt) toggleOption(opt.id);
       } else if (e.key === 'ArrowRight') {
         updateSession((prev) => ({
@@ -380,7 +388,7 @@ export function ExamRunnerView() {
           ...prev,
           currentIndex: Math.max(0, prev.currentIndex - 1),
         }));
-      } else if (e.key.toLowerCase() === 'f') {
+      } else if (lowerKey === 'f') {
         toggleFlag();
       } else if (e.key === 'Enter' && session.mode === 'practice') {
         handleCheckPractice();
@@ -850,7 +858,8 @@ export function ExamRunnerView() {
             </div>
           )}
           <p className="text-xs text-ink-soft leading-relaxed">
-            Phím tắt: <code className="font-mono text-moss">1-6</code> chọn đáp án,{' '}
+            Phím tắt: <code className="font-mono text-moss">A-D</code> hoặc{' '}
+            <code className="font-mono text-moss">1-6</code> chọn đáp án,{' '}
             <code className="font-mono text-moss">←/→</code> chuyển câu,{' '}
             <code className="font-mono text-moss">F</code> cắm cờ,{' '}
             <code className="font-mono text-moss">Enter</code> kiểm tra.
