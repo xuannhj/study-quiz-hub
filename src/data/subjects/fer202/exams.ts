@@ -20,7 +20,59 @@ const MOCK_3_IDS = ALL_IDS.filter((_, idx) => idx % 3 === 2); // 50 câu rải �
 
 const ALL_CHAPTERS = Array.from({ length: 15 }, (_, idx) => `fer202-ch${idx + 1}`);
 
+const DRILL_BOOTSTRAP_IDS = Array.from(
+  { length: 15 },
+  (_, idx) => `fer202-drill-bs${String(idx + 1).padStart(2, '0')}`
+);
+const DRILL_LAZY_IDS = Array.from(
+  { length: 15 },
+  (_, idx) => `fer202-drill-lz${String(idx + 1).padStart(2, '0')}`
+);
+const DRILL_REDUX_IDS = Array.from(
+  { length: 15 },
+  (_, idx) => `fer202-drill-rx${String(idx + 1).padStart(2, '0')}`
+);
+
 export const fer202ExamPacks: ExamPack[] = [
+  {
+    id: 'fer202-drill-bootstrap',
+    subjectId: 'fer202',
+    category: 'quiz',
+    title: 'Bài Tập Chuyên Đề: Bootstrap 5 & React-Bootstrap (15 câu)',
+    description:
+      'Luyện chắc phần kiến thức bổ sung Chương 3 & 5: Container (.container-md), Grid 12 cột & 6 Breakpoints, Utility classes (d-none d-md-flex, mt-3, bg-primary), .carousel, <Modal show/onHide>, <Form.Group controlId>, prop as và bẫy quên import CSS.',
+    durationMinutes: 15,
+    questionCount: DRILL_BOOTSTRAP_IDS.length,
+    chapterIds: ['fer202-ch3', 'fer202-ch5'],
+    fixedQuestionIds: DRILL_BOOTSTRAP_IDS,
+    passScorePercent: 60,
+  },
+  {
+    id: 'fer202-drill-lazy',
+    subjectId: 'fer202',
+    category: 'quiz',
+    title: 'Bài Tập Chuyên Đề: Code Splitting — React.lazy() & Suspense (15 câu)',
+    description:
+      'Luyện chắc phần kiến thức bổ sung Chương 11: Code Splitting giảm Initial Load Time, cú pháp đúng React.lazy(() => import(...)), <Suspense fallback={...}>, bẫy export default & Named Export, Route-based splitting và Error Boundary.',
+    durationMinutes: 15,
+    questionCount: DRILL_LAZY_IDS.length,
+    chapterIds: ['fer202-ch11'],
+    fixedQuestionIds: DRILL_LAZY_IDS,
+    passScorePercent: 60,
+  },
+  {
+    id: 'fer202-drill-redux',
+    subjectId: 'fer202',
+    category: 'quiz',
+    title: 'Bài Tập Chuyên Đề: Flux, Redux, Redux Thunk & Redux Toolkit (15 câu)',
+    description:
+      'Luyện chắc phần kiến thức bổ sung Chương 12: So sánh Flux vs Redux, Action type, initialState & default: return state, Pure Reducer, Redux Thunk bất đồng bộ, <Provider>/useSelector/useDispatch và RTK (configureStore, createSlice, Immer, createAsyncThunk).',
+    durationMinutes: 15,
+    questionCount: DRILL_REDUX_IDS.length,
+    chapterIds: ['fer202-ch12'],
+    fixedQuestionIds: DRILL_REDUX_IDS,
+    passScorePercent: 60,
+  },
   {
     id: 'fer202-quiz-m1',
     subjectId: 'fer202',
