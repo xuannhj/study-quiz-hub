@@ -10,6 +10,7 @@ import {
   GraduationCap,
   History,
   Laptop,
+  Layers,
   Play,
   RotateCcw,
   Shuffle,
@@ -20,6 +21,8 @@ import type { ExamMode, ExamPack } from '../../types/study';
 import type { ExamLaunchState } from '../exam/types';
 import { PracticalExamView } from '../pe/PracticalExamView';
 import { ExamAnswerBankView } from './ExamAnswerBankView';
+import { SwrExamBankView } from './SwrExamBankView';
+import { SwtExamBankView } from './SwtExamBankView';
 import { FormattedText } from '../../components/FormattedText';
 import { cleanQuestionPrompt } from '../../utils/cleanPrompt';
 
@@ -265,6 +268,26 @@ export function SubjectHubView() {
             Tổng Hợp Đáp Án (SU25→FA26)
           </button>
         )}
+        {subject.id === 'swr-past' && (
+          <button
+            type="button"
+            onClick={() => setActiveTab('answer-bank')}
+            className={tabClass('answer-bank')}
+          >
+            <Layers className="h-4 w-4" />
+            Tổng Hợp 7 Đề Gốc (Phân Dạng &amp; Câu Sai)
+          </button>
+        )}
+        {subject.id === 'swt-past' && (
+          <button
+            type="button"
+            onClick={() => setActiveTab('answer-bank')}
+            className={tabClass('answer-bank')}
+          >
+            <Layers className="h-4 w-4" />
+            Tổng Hợp Đề Gốc (Phân Dạng &amp; Câu Sai)
+          </button>
+        )}
         {!isExamBank && (
           <button
             type="button"
@@ -301,6 +324,14 @@ export function SubjectHubView() {
 
       {activeTab === 'answer-bank' && subject.id === 'fer202-past' && (
         <ExamAnswerBankView subject={subject} />
+      )}
+
+      {activeTab === 'answer-bank' && subject.id === 'swr-past' && (
+        <SwrExamBankView subject={subject} progress={progress} />
+      )}
+
+      {activeTab === 'answer-bank' && subject.id === 'swt-past' && (
+        <SwtExamBankView subject={subject} progress={progress} />
       )}
 
       {activeTab === 'study' && (
