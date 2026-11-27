@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Maximize2, X } from 'lucide-react';
+import { Image as ImageIcon, Maximize2, X } from 'lucide-react';
 
 interface QuestionDiagramProps {
   imageUrl?: string;
@@ -7,8 +7,13 @@ interface QuestionDiagramProps {
   compact?: boolean;
 }
 
+const ROOM_SCREENSHOT_PATTERN =
+  /^\/(images\/(fer202-fa26|swr-fe|swt-fe)|materials\/swt-ftes)\//;
+
 /**
  * Renders a quiz diagram image from public assets with optional click-to-zoom lightbox.
+ * Full-question room screenshots are collapsed into a compact button by default so they
+ * don't duplicate the text prompt and clutter the screen.
  */
 export function QuestionDiagram({
   imageUrl,
@@ -28,36 +33,51 @@ export function QuestionDiagram({
 
   if (!imageUrl) return null;
 
+  const isRoomScreenshot = ROOM_SCREENSHOT_PATTERN.test(imageUrl);
+
   return (
     <>
-      <figure className="rounded-2xl border border-sage-border bg-mist/70 p-3">
-        <div className="relative overflow-hidden rounded-xl border border-sage-border/80 bg-white p-2">
+      {isRoomScreenshot ? (
+        <div>
           <button
             type="button"
             onClick={() => setZoomed(true)}
-            className="group relative block w-full cursor-zoom-in text-left focus:outline-none focus:ring-2 focus:ring-moss/40 rounded-lg"
-            aria-label={`Phóng to hình minh họa${imageCaption ? `: ${imageCaption}` : ''}`}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-sage-border bg-mist/70 px-3 py-1.5 text-xs font-medium text-ink-soft hover:bg-sage-tint hover:text-ink transition-colors"
           >
-            <img
-              src={imageUrl}
-              alt={imageCaption ?? 'Hình minh họa câu hỏi'}
-              className={`mx-auto w-full object-contain transition-transform duration-200 group-hover:scale-[1.01] ${
-                compact ? 'max-h-72' : 'max-h-[420px]'
-              }`}
-              loading="lazy"
-            />
-            <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-lg border border-sage-border bg-paper/95 px-2 py-1 text-[11px] font-medium text-ink shadow-sm">
-              <Maximize2 className="h-3 w-3 text-moss" />
-              Phóng to
-            </span>
+            <ImageIcon className="h-3.5 w-3.5 text-moss" />
+            Xem ảnh đề gốc
           </button>
         </div>
-        {imageCaption && (
-          <figcaption className="mt-2 px-1 text-xs text-ink-soft leading-relaxed">
-            {imageCaption}
-          </figcaption>
-        )}
-      </figure>
+      ) : (
+        <figure className="rounded-2xl border border-sage-border bg-mist/70 p-3">
+          <div className="relative overflow-hidden rounded-xl border border-sage-border/80 bg-white p-2">
+            <button
+              type="button"
+              onClick={() => setZoomed(true)}
+              className="group relative block w-full cursor-zoom-in text-left focus:outline-none focus:ring-2 focus:ring-moss/40 rounded-lg"
+              aria-label={`Phóng to hình minh họa${imageCaption ? `: ${imageCaption}` : ''}`}
+            >
+              <img
+                src={imageUrl}
+                alt={imageCaption ?? 'Hình minh họa câu hỏi'}
+                className={`mx-auto w-full object-contain transition-transform duration-200 group-hover:scale-[1.01] ${
+                  compact ? 'max-h-72' : 'max-h-[420px]'
+                }`}
+                loading="lazy"
+              />
+              <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-lg border border-sage-border bg-paper/95 px-2 py-1 text-[11px] font-medium text-ink shadow-sm">
+                <Maximize2 className="h-3 w-3 text-moss" />
+                Phóng to
+              </span>
+            </button>
+          </div>
+          {imageCaption && (
+            <figcaption className="mt-2 px-1 text-xs text-ink-soft leading-relaxed">
+              {imageCaption}
+            </figcaption>
+          )}
+        </figure>
+      )}
 
       {zoomed && (
         <div

@@ -6,7 +6,6 @@ import {
   Bookmark,
   BookOpen,
   CheckCircle2,
-  Clock,
   FileQuestion,
   GraduationCap,
   History,
@@ -71,6 +70,27 @@ export function SubjectHubView() {
 
   const quizPacks = subject.examPacks.filter((p) => p.category === 'quiz');
   const finalPacks = subject.examPacks.filter((p) => p.category === 'final');
+
+  const attemptStatsByPackId = new Map<
+    string,
+    { count: number; bestScore: number; passed: boolean }
+  >();
+  for (const att of progress.attempts) {
+    const prev = attemptStatsByPackId.get(att.examPackId);
+    if (!prev) {
+      attemptStatsByPackId.set(att.examPackId, {
+        count: 1,
+        bestScore: att.scorePercent,
+        passed: att.passed,
+      });
+    } else {
+      attemptStatsByPackId.set(att.examPackId, {
+        count: prev.count + 1,
+        bestScore: Math.max(prev.bestScore, att.scorePercent),
+        passed: prev.passed || att.passed,
+      });
+    }
+  }
 
   const unmasteredWrongIds = Object.entries(progress.wrongQuestionStats)
     .filter(([, stat]) => !stat.mastered)
@@ -183,10 +203,7 @@ export function SubjectHubView() {
             {subject.chapters.length} chương • {subject.questions.length} câu hỏi
           </span>
         </div>
-        <h1 className="mt-2.5 text-2xl font-bold text-ink">{subject.name}</h1>
-        <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
-          {subject.description}
-        </p>
+        <h1 className="mt-2 text-2xl font-bold text-ink">{subject.name}</h1>
 
         {progress.activeSession && (
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-firefly/45 bg-firefly-soft px-4 py-3">
@@ -429,38 +446,72 @@ export function SubjectHubView() {
 
       {activeTab === 'quiz' && (
         <div className="space-y-5">
-          <div className="grid gap-4 md:grid-cols-2">
-            {quizPacks.map((pack) => (
-              <div
-                key={pack.id}
-                className="rounded-3xl border border-sage-border bg-paper p-5 shadow-cozy flex flex-col justify-between gap-4 hover:border-moss/45 transition-colors"
-              >
-                <div>
-                  <h3 className="text-base font-bold text-ink">{pack.title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
-                    {pack.description}
-                  </p>
-                  <div className="mt-3 flex items-center gap-3 text-xs text-ink-soft">
-                    <span className="inline-flex items-center gap-1">
-                      <FileQuestion className="h-3.5 w-3.5 text-rain" />
-                      Tối đa {pack.questionCount} câu
-                    </span>
-                    <span className="inline-flex items-center gap-1">
-                      <Clock className="h-3.5 w-3.5 text-moss" />
-                      {pack.durationMinutes} phút
-                    </span>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => openLaunchConfig(pack, 'practice')}
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-moss px-4 py-2.5 text-sm font-semibold text-white hover:bg-moss-hover transition-colors"
-                >
-                  <Play className="h-4 w-4" />
-                  Bắt đầu Quiz
-                </button>
-              </div>
-            ))}
+          <div className="overflow-x-auto rounded-3xl border border-sage-border bg-paper shadow-cozy">
+            <table className="min-w-full divide-y divide-sage-border/70 text-left text-sm">
+              <thead className="bg-mist/70 text-xs font-semibold uppercase tracking-wider text-ink-soft">
+                <tr>
+                  <th className="w-12 px-4 py-3 text-center">#</th>
+                  <th className="px-4 py-3">Bộ đề Quiz</th>
+                  <th className="hidden sm:table-cell w-28 px-4 py-3 text-center">Số câu</th>
+                  <th className="hidden sm:table-cell w-28 px-4 py-3 text-center">Thời gian</th>
+                  <th className="w-36 px-4 py-3 text-right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-sage-border/50 bg-paper">
+                {quizPacks.map((pack, idx) => {
+                  const packStat = attemptStatsByPackId.get(pack.id);
+                  return (
+                    <tr
+                      key={pack.id}
+                      className="hover:bg-sage-tint/45 transition-colors"
+                    >
+                      <td className="px-4 py-3 text-center font-mono text-xs text-ink-soft">
+                        {String(idx + 1).padStart(2, '0')}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-semibold text-ink">
+                            {pack.title}
+                          </span>
+                          {packStat && (
+                            <span
+                              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                                packStat.passed
+                                  ? 'bg-moss-soft text-moss border border-moss/25'
+                                  : 'bg-firefly-soft text-wood border border-firefly/40'
+                              }`}
+                            >
+                              <CheckCircle2 className="h-3 w-3" />
+                              Đã xong • {packStat.bestScore}%
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="hidden sm:table-cell px-4 py-3 text-center font-mono text-xs text-ink-soft">
+                        {pack.questionCount} câu
+                      </td>
+                      <td className="hidden sm:table-cell px-4 py-3 text-center font-mono text-xs text-ink-soft">
+                        {pack.durationMinutes} phút
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <button
+                          type="button"
+                          onClick={() => openLaunchConfig(pack, 'practice')}
+                          className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+                            packStat
+                              ? 'border border-sage-border bg-mist text-ink hover:bg-sage-tint'
+                              : 'bg-moss text-white hover:bg-moss-hover'
+                          }`}
+                        >
+                          <Play className="h-3.5 w-3.5" />
+                          {packStat ? 'Làm lại' : 'Bắt đầu'}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
 
           <div className="rounded-3xl border border-sage-border bg-paper p-5 sm:p-6 shadow-cozy space-y-4">
@@ -522,41 +573,72 @@ export function SubjectHubView() {
 
       {activeTab === 'final' && (
         <div className="space-y-5">
-          <div className="grid gap-4 md:grid-cols-2">
-            {finalPacks.map((pack) => (
-              <div
-                key={pack.id}
-                className="rounded-3xl border border-sage-border bg-paper p-5 shadow-cozy flex flex-col justify-between gap-4 hover:border-rain/60 transition-colors"
-              >
-                <div>
-                  <span className="inline-block rounded-lg bg-rain-soft px-2.5 py-0.5 text-xs font-semibold text-rain-ink">
-                    Final Exam
-                  </span>
-                  <h3 className="mt-2.5 text-base font-bold text-ink">
-                    {pack.title}
-                  </h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
-                    {pack.description}
-                  </p>
-                  <div className="mt-3 flex items-center gap-3 text-xs text-ink-soft">
-                    <span>
-                      {Math.min(pack.questionCount, subject.questions.length)}/
-                      {pack.questionCount} câu khả dụng
-                    </span>
-                    <span>• {pack.durationMinutes} phút</span>
-                    <span>• Đạt {pack.passScorePercent}%</span>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => openLaunchConfig(pack, 'exam')}
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-rain px-4 py-2.5 text-sm font-semibold text-white hover:bg-rain-hover transition-colors"
-                >
-                  <GraduationCap className="h-4 w-4" />
-                  Vào thi Final
-                </button>
-              </div>
-            ))}
+          <div className="overflow-x-auto rounded-3xl border border-sage-border bg-paper shadow-cozy">
+            <table className="min-w-full divide-y divide-sage-border/70 text-left text-sm">
+              <thead className="bg-mist/70 text-xs font-semibold uppercase tracking-wider text-ink-soft">
+                <tr>
+                  <th className="w-12 px-4 py-3 text-center">#</th>
+                  <th className="px-4 py-3">Tên bộ đề</th>
+                  <th className="hidden sm:table-cell w-28 px-4 py-3 text-center">Số câu</th>
+                  <th className="hidden sm:table-cell w-28 px-4 py-3 text-center">Thời gian</th>
+                  <th className="w-36 px-4 py-3 text-right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-sage-border/50 bg-paper">
+                {finalPacks.map((pack, idx) => {
+                  const packStat = attemptStatsByPackId.get(pack.id);
+                  return (
+                    <tr
+                      key={pack.id}
+                      className="hover:bg-sage-tint/45 transition-colors"
+                    >
+                      <td className="px-4 py-3 text-center font-mono text-xs text-ink-soft">
+                        {String(idx + 1).padStart(2, '0')}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-semibold text-ink">
+                            {pack.title}
+                          </span>
+                          {packStat && (
+                            <span
+                              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                                packStat.passed
+                                  ? 'bg-moss-soft text-moss border border-moss/25'
+                                  : 'bg-firefly-soft text-wood border border-firefly/40'
+                              }`}
+                            >
+                              <CheckCircle2 className="h-3 w-3" />
+                              Đã xong • {packStat.bestScore}%
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="hidden sm:table-cell px-4 py-3 text-center font-mono text-xs text-ink-soft">
+                        {pack.questionCount} câu
+                      </td>
+                      <td className="hidden sm:table-cell px-4 py-3 text-center font-mono text-xs text-ink-soft">
+                        {pack.durationMinutes} phút
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <button
+                          type="button"
+                          onClick={() => openLaunchConfig(pack, 'exam')}
+                          className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+                            packStat
+                              ? 'border border-sage-border bg-mist text-ink hover:bg-sage-tint'
+                              : 'bg-moss text-white hover:bg-moss-hover'
+                          }`}
+                        >
+                          <Play className="h-3.5 w-3.5" />
+                          {packStat ? 'Làm lại' : 'Vào thi'}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
 
           <div className="rounded-3xl border border-sage-border bg-paper p-5 sm:p-6 shadow-cozy flex flex-wrap items-center justify-between gap-4">

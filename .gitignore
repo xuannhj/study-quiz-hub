@@ -8,6 +8,8 @@ dist
 !.env.example
 .superpowers/
 docs/superpowers/
+docs/*.pdf
+docs/*.html
 slides/*/text/
 slides/fer/
 scratch/
