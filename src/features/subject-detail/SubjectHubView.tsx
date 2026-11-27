@@ -236,22 +236,26 @@ export function SubjectHubView() {
           <GraduationCap className="h-4 w-4" />
           {isExamBank ? 'Đề Thi Các Kì' : 'Thi Final'} ({finalPacks.length})
         </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('study')}
-          className={tabClass('study')}
-        >
-          <BookOpen className="h-4 w-4" />
-          {isExamBank ? 'Luyện Theo Kì' : 'Học Lý Thuyết'} ({subject.chapters.length})
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('quiz')}
-          className={tabClass('quiz')}
-        >
-          <FileQuestion className="h-4 w-4" />
-          Thi Quiz ({quizPacks.length})
-        </button>
+        {!isExamBank && (
+          <button
+            type="button"
+            onClick={() => setActiveTab('study')}
+            className={tabClass('study')}
+          >
+            <BookOpen className="h-4 w-4" />
+            Học Lý Thuyết ({subject.chapters.length})
+          </button>
+        )}
+        {(!isExamBank || quizPacks.length > 0) && (
+          <button
+            type="button"
+            onClick={() => setActiveTab('quiz')}
+            className={tabClass('quiz')}
+          >
+            <FileQuestion className="h-4 w-4" />
+            Thi Quiz ({quizPacks.length})
+          </button>
+        )}
         <button
           type="button"
           onClick={() => setActiveTab('mistakes')}
@@ -276,8 +280,9 @@ export function SubjectHubView() {
             const matchingPack =
               subject.examPacks.find(
                 (p) =>
-                  (p.chapterIds.length === 1 && p.chapterIds[0] === chapter.id) ||
-                  p.title.toLowerCase().includes(chapter.title.toLowerCase())
+                  ((p.chapterIds.length === 1 && p.chapterIds[0] === chapter.id) ||
+                    p.title.toLowerCase().includes(chapter.title.toLowerCase())) &&
+                  (!isExamBank || p.questionCount >= qCount)
               ) || null;
 
             return (
@@ -322,9 +327,9 @@ export function SubjectHubView() {
                               title: `Đề thi: ${chapter.title}`,
                               chapterIds: [chapter.id],
                               questionCount: Math.max(qCount, 1),
-                              durationMinutes: Math.min(
-                                60,
-                                Math.max(30, Math.round(qCount * 1.2))
+                              durationMinutes: Math.max(
+                                45,
+                                Math.round(qCount * 0.9)
                               ),
                               passScorePercent: 50,
                             });
@@ -346,9 +351,9 @@ export function SubjectHubView() {
                               title: `Đề thi: ${chapter.title}`,
                               chapterIds: [chapter.id],
                               questionCount: Math.max(qCount, 1),
-                              durationMinutes: Math.min(
-                                60,
-                                Math.max(30, Math.round(qCount * 1.2))
+                              durationMinutes: Math.max(
+                                45,
+                                Math.round(qCount * 0.9)
                               ),
                               passScorePercent: 50,
                             });

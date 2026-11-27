@@ -113,8 +113,9 @@ export function StudyChapterView() {
     const matchingPack =
       subject.examPacks.find(
         (p) =>
-          (p.chapterIds.length === 1 && p.chapterIds[0] === chapter.id) ||
-          p.title.toLowerCase().includes(chapter.title.toLowerCase())
+          ((p.chapterIds.length === 1 && p.chapterIds[0] === chapter.id) ||
+            p.title.toLowerCase().includes(chapter.title.toLowerCase())) &&
+          (!isExamBank || p.questionCount >= chapterQuestions.length)
       ) ||
       createDynamicExamPack({
         subjectId: subject.id,
@@ -123,7 +124,7 @@ export function StudyChapterView() {
         chapterIds: [chapter.id],
         questionCount: Math.max(chapterQuestions.length, 1),
         durationMinutes: isExamBank
-          ? Math.min(60, Math.max(30, Math.round(chapterQuestions.length * 1.2)))
+          ? Math.max(45, Math.round(chapterQuestions.length * 0.9))
           : 15,
         passScorePercent: 50,
       });
