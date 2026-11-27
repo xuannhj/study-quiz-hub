@@ -12,6 +12,7 @@ import {
 import type { Question, Subject } from '../../types/study';
 import { FormattedOptionText, FormattedText } from '../../components/FormattedText';
 import { QuestionDiagram } from '../exam/QuestionDiagram';
+import { cleanQuestionPrompt } from '../../utils/cleanPrompt';
 
 const SU25_TO_FA26_PACKS: Array<{
   packId: string;
@@ -40,16 +41,7 @@ interface BankItem {
   indexInExam: number;
 }
 
-function cleanPrompt(raw: string): string {
-  return (raw || '')
-    .trim()
-    .replace(/^#\s*FER202_[^\n]*\n+/i, '')
-    .replace(/^>\s*Môn:[^\n]*\n+/m, '')
-    .replace(/^###\s*Trang\s*\d+\/\d+\s*\n+/im, '')
-    .replace(/^\*\*Câu\s*\d+\.\*\*\s*/i, '')
-    .replace(/^(?:[A-F]\s*\n+){2,}/, '')
-    .trim();
-}
+const cleanPrompt = cleanQuestionPrompt;
 
 export function ExamAnswerBankView({ subject }: { subject: Subject }) {
   const [semester, setSemester] = useState<SemesterFilter>('ALL');

@@ -5,6 +5,7 @@ import type { ExamGradeSummary } from '../../services/exam/examEngine';
 import type { Question } from '../../types/study';
 import { QuestionDiagram } from './QuestionDiagram';
 import { FormattedText, FormattedOptionText } from '../../components/FormattedText';
+import { cleanQuestionPrompt } from '../../utils/cleanPrompt';
 import { generateSessionCompanionNote } from '../../services/studyCompanion';
 import {
   computeStreakStats,
@@ -192,7 +193,7 @@ export function ExamResultView({
             <div className="flex items-start justify-between gap-2">
               <div className="font-semibold text-ink text-sm leading-relaxed">
                 <span className="font-bold text-moss mr-1.5">Câu {idx + 1}:</span>
-                <FormattedText content={item.question.prompt} className="inline font-normal" />
+                <FormattedText content={cleanQuestionPrompt(item.question.prompt)} className="inline font-normal" />
               </div>
               <span
                 className={`shrink-0 rounded-lg px-2.5 py-0.5 text-xs font-semibold ${

@@ -21,6 +21,7 @@ import type { ExamLaunchState } from '../exam/types';
 import { PracticalExamView } from '../pe/PracticalExamView';
 import { ExamAnswerBankView } from './ExamAnswerBankView';
 import { FormattedText } from '../../components/FormattedText';
+import { cleanQuestionPrompt } from '../../utils/cleanPrompt';
 
 type SubjectTab = 'study' | 'quiz' | 'final' | 'pe' | 'mistakes' | 'answer-bank';
 
@@ -748,7 +749,7 @@ export function SubjectHubView() {
                       className="py-3.5 flex items-start justify-between gap-4"
                     >
                       <div className="text-sm text-ink flex-1">
-                        <FormattedText content={q.prompt} />
+                        <FormattedText content={cleanQuestionPrompt(q.prompt)} />
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         {wrongStat && !wrongStat.mastered && (

@@ -30,6 +30,7 @@ import type { ExamLaunchState } from './types';
 import { ExamResultView } from './ExamResultView';
 import { QuestionDiagram } from './QuestionDiagram';
 import { FormattedText, FormattedOptionText } from '../../components/FormattedText';
+import { cleanQuestionPrompt } from '../../utils/cleanPrompt';
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
@@ -610,7 +611,7 @@ export function ExamRunnerView() {
           </div>
 
           <div className="text-base font-medium leading-relaxed text-ink">
-            <FormattedText content={currentQuestion.prompt} />
+            <FormattedText content={cleanQuestionPrompt(currentQuestion.prompt)} />
           </div>
 
           <QuestionDiagram

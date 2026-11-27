@@ -28,6 +28,7 @@ import type { Question, StudyNote, Subject, WrongQuestionStat } from '../../type
 import type { ExamLaunchState } from '../exam/types';
 import { QuestionDiagram } from '../exam/QuestionDiagram';
 import { FormattedText, FormattedOptionText } from '../../components/FormattedText';
+import { cleanQuestionPrompt } from '../../utils/cleanPrompt';
 import {
   COURSE_GROUPS,
   getSubjectCourseGroup,
@@ -785,7 +786,7 @@ export function MistakeNotebookView() {
                         </span>
                       </div>
                       <div className="text-base sm:text-lg font-semibold text-ink leading-relaxed">
-                        <FormattedText content={currentItem.question.prompt} />
+                        <FormattedText content={cleanQuestionPrompt(currentItem.question.prompt)} />
                       </div>
                     </div>
 
@@ -861,7 +862,7 @@ export function MistakeNotebookView() {
                     </div>
 
                     <div className="text-sm font-medium text-ink-soft">
-                      <FormattedText content={currentItem.question.prompt} />
+                      <FormattedText content={cleanQuestionPrompt(currentItem.question.prompt)} />
                     </div>
 
                     {/* Correct Options Highlight */}
@@ -1010,7 +1011,7 @@ export function MistakeNotebookView() {
                             )}
                           </div>
                           <div className="text-sm font-semibold text-ink leading-relaxed">
-                            <FormattedText content={item.question.prompt} />
+                            <FormattedText content={cleanQuestionPrompt(item.question.prompt)} />
                           </div>
                         </div>
 
