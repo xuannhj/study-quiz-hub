@@ -20,9 +20,10 @@ import { createDynamicExamPack } from '../../services/exam/examEngine';
 import type { ExamMode, ExamPack } from '../../types/study';
 import type { ExamLaunchState } from '../exam/types';
 import { PracticalExamView } from '../pe/PracticalExamView';
+import { ExamAnswerBankView } from './ExamAnswerBankView';
 import { FormattedText } from '../../components/FormattedText';
 
-type SubjectTab = 'study' | 'quiz' | 'final' | 'pe' | 'mistakes';
+type SubjectTab = 'study' | 'quiz' | 'final' | 'pe' | 'mistakes' | 'answer-bank';
 
 export function SubjectHubView() {
   const { subjectId = '' } = useParams();
@@ -236,6 +237,16 @@ export function SubjectHubView() {
           <GraduationCap className="h-4 w-4" />
           {isExamBank ? 'Đề Thi Các Kì' : 'Thi Final'} ({finalPacks.length})
         </button>
+        {subject.id === 'fer202-past' && (
+          <button
+            type="button"
+            onClick={() => setActiveTab('answer-bank')}
+            className={tabClass('answer-bank')}
+          >
+            <BookOpen className="h-4 w-4" />
+            Tổng Hợp Đáp Án (SU25→FA26)
+          </button>
+        )}
         {!isExamBank && (
           <button
             type="button"
@@ -268,6 +279,10 @@ export function SubjectHubView() {
 
       {activeTab === 'pe' && subject.practicalExams && (
         <PracticalExamView exams={subject.practicalExams} />
+      )}
+
+      {activeTab === 'answer-bank' && subject.id === 'fer202-past' && (
+        <ExamAnswerBankView subject={subject} />
       )}
 
       {activeTab === 'study' && (
